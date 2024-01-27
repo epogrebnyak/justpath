@@ -6,12 +6,11 @@ Just let me see my PATH environment variable in a readable way.
 
 ## Usage
 
-You type                                                                         | I type        
--------------------------------------------------------------------------------- |---------------  
-`echo $PATH \| tr ":" "\n"`                                                      | `pathit` 
-`python -c "import os; print('\n'.join(sorted(os.environ['PATH'].split(';'))))"` | `pathit --sort` 
-
-Just `pathit`! 
+| Question                       | Answer                    |
+| ------------------------------ | ------------------------- |
+| What's on my PATH?             | `pathit`                  |
+| Sort this alphabetically!      | `pathit --sort`           |
+| Who installed so many `mingw` paths? | `pathit --includes mingw` |
 
 ## Installation
 
@@ -43,10 +42,11 @@ so I wrote this small utility.
 1. Better tools may exist.
 2. `pathit` just shows the path and will not help you change it.
 
-## Examples
+## Alternatives
 
-| Question                       | Answer                    |
-| ------------------------------ | ------------------------- |
-| What's on my PATH?             | `pathit`                  |
-| Sort this alphabetically!      | `pathit --sort`           |
-| Who installed so many `mingw` paths? | `pathit --includes mingw` |
+Obsously you can live without `pathit`:
+
+ I type         | You type                                                                         
+----------------|-------------------------------------------------------------------------------- 
+ `pathit`       | `echo $PATH \| tr ":" "\n"`                                                      
+ `pathit --sort`| `python -c "import os; print('\n'.join(sorted(os.environ['PATH'].split(';'))))"` 
