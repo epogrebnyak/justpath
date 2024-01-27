@@ -32,19 +32,26 @@ def get_paths() -> list[tuple[int, str]]:
 
 
 @typer_app.command()
-def show(sort: bool = False, includes: str | None = None, numbers: bool = False):
-    """Show PATH."""
+def show(
+    sort: bool = False,
+    includes: str | None = None,
+    numbers: bool = False,
+    color: bool = True,
+):
+    """Show PATH and highlight existing directories."""
     paths = get_enumerated_paths()
     if sort:
         paths = sorted(paths, key=lambda p: p[1])
     if includes is not None:
         paths = [path for path in paths if includes in path[1]]
     for i, path in paths:
-        prefix = Fore.GREEN if os.path.exists(path) else Fore.RED
+        prefix = ""
+        if color:
+            prefix = Fore.GREEN if os.path.exists(path) else Fore.RED
         if numbers:
-            print(prefix, i + 1, path)
+            print(prefix + f"{i + 1}", path)
         else:
-            print(prefix, path)
+            print(prefix + path)
 
 
 @typer_app.command()
