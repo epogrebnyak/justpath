@@ -6,18 +6,12 @@ Just let me see my PATH environment variable in a readable way.
 
 ## Usage
 
-You type `echo $PATH | tr \":\" \"\\n\"` I type:
+You type                                                                         | I type        
+-------------------------------------------------------------------------------- |---------------  
+`echo $PATH \| tr ":" "\n"`                                                      | `pathit` 
+`python -c "import os; print('\n'.join(sorted(os.environ['PATH'].split(';'))))"` | `pathit --sort` 
 
-```
-pathit
-```
-
-You type `python -c "import os; print('\n'.join(sorted(os.environ['PATH'].split(';'))))"`
-I type:
-
-```
-pathit --sort
-```
+Just `pathit`! 
 
 ## Installation
 
@@ -43,4 +37,4 @@ so I wrote this small utility.
 | ------------------------------ | ------------------------- |
 | What's on my PATH?             | `pathit`                  |
 | Sort this alphabetically!      | `pathit --sort`           |
-| Who installed so many `mingw`? | `pathit --includes mingw` |
+| Who installed so many `mingw` paths? | `pathit --includes mingw` |
