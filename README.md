@@ -6,10 +6,10 @@ Just let me see my PATH environment variable in a readable way.
 
 ## Usage
 
-| Question                       | Answer                    |
-| ------------------------------ | ------------------------- |
-| What's on my PATH?             | `pathit`                  |
-| Sort this alphabetically!      | `pathit --sort`           |
+| Question                             | Answer                    |
+| ------------------------------------ | ------------------------- |
+| What's on my PATH?                   | `pathit`                  |
+| Sort this alphabetically!            | `pathit --sort`           |
 | Who installed so many `mingw` paths? | `pathit --includes mingw` |
 
 ## Installation
@@ -25,10 +25,6 @@ or shorter:
 ```
 pip install git+https://github.com/epogrebnyak/what-the-path.git
 ```
-
-PyPI says _400 The name 'pathit' is too similar to an existing project_, 
-(but does not provide a way to check for alternative names),
-so the package is not there.
 
 ## Rationale
 
@@ -46,7 +42,7 @@ so I wrote this small utility.
 
 Obsously you can live without `pathit`:
 
- I type         | You type                                                                         
-----------------|-------------------------------------------------------------------------------- 
- `pathit`       | `echo $PATH \| tr ":" "\n"`                                                      
- `pathit --sort`| `python -c "import os; print('\n'.join(sorted(os.environ['PATH'].split(';'))))"` 
+| I type          | You type                                                                         |
+| --------------- | -------------------------------------------------------------------------------- |
+| `pathit`        | `echo $PATH \| tr ":" "\n"`                                                      |
+| `pathit --sort` | `python -c "import os; print('\n'.join(sorted(os.environ['PATH'].split(';'))))"` |
