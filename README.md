@@ -19,6 +19,17 @@ What are the paths with `bin`?
 - `pathit show --includes bin`,
 - or `echo $PATH | tr ";" "\n" | grep bin`
 
+More complex sorting cases are easier with `pathit`:
+
+```console
+$ poetry run pathit show --sort --includes sdkman
+19 /usr/local/sdkman/bin
+23 /usr/local/sdkman/candidates/ant/current/bin (directory does not exist)
+21 /usr/local/sdkman/candidates/gradle/current/bin
+20 /usr/local/sdkman/candidates/java/current/bin
+22 /usr/local/sdkman/candidates/maven/current/bin
+```
+
 ## Installation
 
 ```

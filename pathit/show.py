@@ -1,69 +1,89 @@
-"""Show and modify PATH variable.
-
-Usage:
-  pathit show [--sort] [--includes text] [--numbers]
-  pathit suggest [--add DIR] [--drop n] 
-"""
+"""Explore PATH environment variable and demonstrate how to modify it."""
 
 import os
-import typer
+from collections import UserDict
 from pathlib import Path
-from colorama import Fore
-from typing import Annotated
 
-typer_app = typer.Typer(
-    add_completion=False,
-    # does not seem to work
-    help="Just show me my PATH variable.",
-    short_help="Just show the PATH.",
-)
+import typer
+from colorama import Fore
 
 
 def sep():
     return ";" if os.name == "nt" else ":"
 
 
-def get_enumerated_paths() -> list[tuple[int, str]]:
-    return [(i, path) for i, path in enumerate(os.environ["PATH"].split(sep()))]
+def get_paths() -> list[str]:
+    return os.environ["PATH"].split(sep())
 
 
-def get_paths() -> list[tuple[int, str]]:
-    return [path for _, path in get_enumerated_paths()]
+class PathVar(UserDict[int, Path]):
+    @classmethod
+    def populate(cls):
+        return cls([(i + 1, Path(p)) for i, p in enumerate(get_paths())])
+
+    def drop(self, i: int):
+        del self.data[i]
+
+    def append(self, path: Path):
+        key = 1 + self.max_key
+        self.data[key] = path
+
+    @property
+    def max_key(self):
+        return max(self.data.keys())
+
+    def tuples(self):
+        n = len(str(self.max_key))
+
+        def offset(i: int) -> str:
+            return str(i).rjust(n)
+
+        return [(offset(i), str(p)) for i, p in self.data.items()]
+
+
+typer_app = typer.Typer(
+    add_completion=False,
+)
+
+
+@typer_app.command()
+def raw():
+    print(os.environ["PATH"])
 
 
 @typer_app.command()
 def show(
     sort: bool = False,
     includes: str | None = None,
-    numbers: bool = False,
+    excludes: str | None = None,
+    display_numbers: bool = True,
     color: bool = True,
+    purge: bool = False,
+    command: bool = False,
+    expand: bool = False,
+    only_errors: bool = False,
 ):
-    """Show PATH and highlight existing directories."""
-    paths = get_enumerated_paths()
+    """Show directories from PATH."""
+    paths = PathVar.populate().tuples()
     if sort:
-        paths = sorted(paths, key=lambda p: p[1])
+        paths = sorted(paths, key=lambda x: x[1])
     if includes is not None:
         paths = [path for path in paths if includes in path[1]]
-    for i, path in paths:
-        prefix = ""
-        if color:
-            prefix = Fore.GREEN if os.path.exists(path) else Fore.RED
-        if numbers:
-            print(prefix + f"{i + 1}", path)
-        else:
-            print(prefix + path)
-
-
-@typer_app.command()
-def suggest():
-    """Suggest a command to modify PATH."""
-
-
-#     paths = get_paths()
-#     for path in add:
-#         if not Path(path).exists():
-#             sys.exit("{path} does not exist")
-#         if not Path(path).is_dir():
-#             sys.exit("{path} is not a directory")
-#         paths.append(str(path.resolve()))
-#     print(sep().join(paths))
+    if excludes is not None:
+        paths = [path for path in paths if excludes not in path[1]]
+    if not command:
+        for i, path in paths:
+            prefix = ""
+            if color:
+                prefix = Fore.GREEN if os.path.exists(path) else Fore.RED
+            if display_numbers:
+                postfix = "" if os.path.exists(path) else "(directory does not exist)"
+                print(prefix + i, path, postfix)
+            else:
+                print(prefix + path)
+    else:
+        print("This will show `export` or `set` command.")
+    if purge:
+        print("This will drop non-existent or duplicate directories.")
+    if expand:
+        print("This will resolve directory names.")
