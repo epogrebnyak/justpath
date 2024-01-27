@@ -1,6 +1,4 @@
-# what-the-path
-
-> Path it!
+# pathit
 
 Just let me see my PATH environment variable in a readable way.
 
