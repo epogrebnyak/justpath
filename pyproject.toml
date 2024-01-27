@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "pathit"
+version = "0.0.1"
+description = "Just like `echo $PATH | tr \":\" \"\\n\"` in one command with options."
+authors = ["Evgeny Pogrebnyak <e.pogrebnyak@gmail.com>"]
+license = "GNU"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
