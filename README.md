@@ -29,3 +29,11 @@ so I wrote this small utility.
 
 1. Better tools may exist.
 2. `pathit` just shows the path and will not help you change it.
+
+## Examples
+
+| Question                       | Answer                    |
+| ------------------------------ | ------------------------- |
+| What's on my PATH?             | `pathit`                  |
+| Sort this alphabetically!      | `pathit --sort`           |
+| Who installed so many `mingw`? | `pathit --includes mingw` |
