@@ -4,11 +4,11 @@ Just let me see my PATH environment variable in a readable way.
 
 ## Usage
 
-| Question                             | Answer                    |
-| ------------------------------------ | ------------------------- |
-| What's on my PATH?                   | `pathit`                  |
-| Sort this alphabetically!            | `pathit --sort`           |
-| Who installed so many `mingw` paths? | `pathit --includes mingw` |
+| Question                    | Answer                    | Equivalent
+| ----------------------------| ------------------------- |-----------------------------
+| What's on my PATH?          | `pathit`                  | echo %PATH% | tr ";" "\n" 
+| Sort this alphabetically!   | `pathit --sort`           | echo %PATH% | tr ";" "\n" | sort
+| Paths with `mingw`?         | `pathit --includes mingw` | echo %PATH% | tr ";" "\n" | grep mingw
 
 ## Installation
 
