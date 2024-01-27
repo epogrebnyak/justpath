@@ -6,10 +6,17 @@ Just let me see my PATH environment variable in a readable way.
 
 ## Usage
 
-Instead of `echo $PATH | tr \":\" \"\\n\"` I type:
+You type `echo $PATH | tr \":\" \"\\n\"` I type:
 
 ```
 pathit
+```
+
+You type `python -c "import os; print('\n'.join(sorted(os.environ['PATH'].split(';'))))"`
+I type:
+
+```
+pathit --sort
 ```
 
 ## Installation
