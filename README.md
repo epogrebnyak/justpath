@@ -16,8 +16,20 @@ Just `pathit`!
 ## Installation
 
 ```
-pip install pathit
+git clone https://github.com/epogrebnyak/what-the-path.git
+cd what-the-path
+pip install -e .
 ```
+
+or shorter:
+
+```
+pip install git+https://github.com/epogrebnyak/what-the-path.git
+```
+
+PyPI says _400 The name 'pathit' is too similar to an existing project_, 
+(but does not provide a way to check for alternative names),
+so the package is not there.
 
 ## Rationale
 
