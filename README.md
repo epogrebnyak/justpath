@@ -38,7 +38,7 @@ so I wrote this small utility.
 
 ## Alternatives
 
-`pathit --sort` can be done as an inline command with Python:
+bash commands are listed above. `pathit --sort` can be done as an inline command with Python:
 
 ```
 python -c "import os; print('\n'.join(sorted(os.environ['PATH'].split(';'))))"
