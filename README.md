@@ -1,14 +1,14 @@
 # pathit
 
-Just let me see my PATH environment variable in a readable way.
+Just let me see the PATH environment variable.
 
 ## Usage
 
-| Question                    | Answer                    | Equivalent
-| ----------------------------| ------------------------- |-----------------------------
-| What's on my PATH?          | `pathit`                  | `echo $PATH \| tr ";" "\n"`
-| Sort this alphabetically!   | `pathit --sort`           | `echo $PATH \| tr ";" "\n" \| sort`
-| Paths with `mingw`?         | `pathit --includes mingw` | `echo $PATH \| tr ";" "\n" \| grep mingw`
+| Question                         | Answer                    | Equivalent                                |
+| -------------------------------- | ------------------------- | ----------------------------------------- |
+| What direcotries are my PATH?    | `pathit`                  | `echo $PATH \| tr ";" "\n"`               |
+| Sort them alphabetically!        | `pathit --sort`           | `echo $PATH \| tr ";" "\n" \| sort`       |
+| What are the paths with `mingw`? | `pathit --includes mingw` | `echo $PATH \| tr ";" "\n" \| grep mingw` |
 
 ## Installation
 
