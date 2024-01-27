@@ -1,14 +1,14 @@
 # pathit
 
-Just let me see the PATH environment variable.
+Just let me see the PATH environment variable on both Windows and Linux.
 
 ## Usage
 
-| Question                         | Answer                    | Equivalent                                |
-| -------------------------------- | ------------------------- | ----------------------------------------- |
-| What direcotries are my PATH?    | `pathit`                  | `echo $PATH \| tr ";" "\n"`               |
-| Sort them alphabetically!        | `pathit --sort`           | `echo $PATH \| tr ";" "\n" \| sort`       |
-| What are the paths with `mingw`? | `pathit --includes mingw` | `echo $PATH \| tr ";" "\n" \| grep mingw` |
+| Question                         | Answer                         | Equivalent                                |
+| -------------------------------- | ------------------------------ | ----------------------------------------- |
+| What direcotries are my PATH?    | `pathit show`                  | `echo $PATH \| tr ";" "\n"`               |
+| Sort them alphabetically!        | `pathit show --sort`           | `echo $PATH \| tr ";" "\n" \| sort`       |
+| What are the paths with `mingw`? | `pathit show --includes mingw` | `echo $PATH \| tr ";" "\n" \| grep mingw` |
 
 ## Installation
 
@@ -26,20 +26,10 @@ pip install git+https://github.com/epogrebnyak/what-the-path.git
 
 ## Rationale
 
-I'm scared of touching the PATH environment variable on my computer.
-I do not understand which is a global PATH and which are user-defined PATHs and how they relate.
-I do not understand why programs install so many of their directories into PATH and how to clean it. Even worse I hate it when I cannot easily check what the current PATH is,
-so I wrote this small utility.
+I'm scared of PATH environment variable syntax on Windows vs Linux,
+so I wrote this small utility to be able to explore the path more easily.
 
 ## Disclaimer
 
-1. Better tools may exist.
-2. `pathit` just shows the path and will not help you change it.
-
-## Alternatives
-
-bash commands are listed above. `pathit --sort` can be done as an inline command with Python:
-
-```
-python -c "import os; print('\n'.join(sorted(os.environ['PATH'].split(';'))))"
-```
+1. Yes, you can run `echo $PATH | tr ";" "\n" | sort` and even better tools may exist.
+2. `pathit` or any child process cannot modify PATH, but it can provide a command to do so.

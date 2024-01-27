@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pathit"
-version = "0.0.2"
+version = "0.0.3"
 description = "Just like `echo $PATH | tr \":\" \"\\n\"` in one command with options."
 authors = ["Evgeny Pogrebnyak <e.pogrebnyak@gmail.com>"]
 license = "GNU"

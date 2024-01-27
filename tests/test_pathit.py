@@ -5,15 +5,15 @@ from typer.testing import CliRunner
 
 runner = CliRunner()
 
-# do not know how to make a Typer app with no subcommands
-@pytest.mark.skip
+
 def test_it_runs():
-    result = runner.invoke(typer_app, ["--sort", "--includes", "mingw"])
+    result = runner.invoke(
+        typer_app, ["show", "--sort", "--includes", "mingw", "--numbers"]
+    )
     assert result.exit_code == 0
 
 
 def test_it_runs_subprocess():
-    # must have package script installed with `pip install -e .`
-    args = ["pathit", "--sort", "--includes", "mingw"]
+    args = ["pathit", "show", "--sort", "--includes", "mingw", "--numbers"]
     result = subprocess.run(args, text=True, capture_output=True)
     assert result.returncode == 0
