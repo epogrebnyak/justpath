@@ -4,6 +4,7 @@ import os
 import typer
 
 app = typer.Typer(add_completion=False, 
+                  #does not work
                   help="Just show me my PATH variable.",
                   short_help="Just show the PATH.")
 
