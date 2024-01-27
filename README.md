@@ -6,9 +6,9 @@ Just let me see my PATH environment variable in a readable way.
 
 | Question                    | Answer                    | Equivalent
 | ----------------------------| ------------------------- |-----------------------------
-| What's on my PATH?          | `pathit`                  | echo %PATH% | tr ";" "\n" 
-| Sort this alphabetically!   | `pathit --sort`           | echo %PATH% | tr ";" "\n" | sort
-| Paths with `mingw`?         | `pathit --includes mingw` | echo %PATH% | tr ";" "\n" | grep mingw
+| What's on my PATH?          | `pathit`                  | `echo $PATH \| tr ";" "\n"`
+| Sort this alphabetically!   | `pathit --sort`           | `echo $PATH \| tr ";" "\n" \| sort`
+| Paths with `mingw`?         | `pathit --includes mingw` | `echo $PATH \| tr ";" "\n" \| grep mingw`
 
 ## Installation
 
@@ -38,9 +38,8 @@ so I wrote this small utility.
 
 ## Alternatives
 
-Obsously you can live without `pathit`:
+`pathit --sort` can be done as an inline command with Python:
 
-| I type          | You type                                                                         |
-| --------------- | -------------------------------------------------------------------------------- |
-| `pathit`        | `echo $PATH \| tr ":" "\n"`                                                      |
-| `pathit --sort` | `python -c "import os; print('\n'.join(sorted(os.environ['PATH'].split(';'))))"` |
+```
+python -c "import os; print('\n'.join(sorted(os.environ['PATH'].split(';'))))"
+```
