@@ -9,7 +9,6 @@ readme = "README.md"
 [tool.poetry.scripts]
 pathit = "justpath.show:typer_app"
 justpath = "justpath.show:typer_app"
-jp = "justpath.show:typer_app"
 
 [tool.poetry.dependencies]
 python = "^3.10"

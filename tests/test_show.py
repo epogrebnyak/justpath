@@ -15,6 +15,6 @@ def test_it_runs():
 
 
 def test_it_runs_subprocess():
-    args = ["pathit", "show", "--sort", "--includes", "mingw", "--display-numbers"]
+    args = ["justpath", "show", "--sort", "--includes", "mingw", "--display-numbers"]
     result = subprocess.run(args, text=True, capture_output=True)
     assert result.returncode == 0
