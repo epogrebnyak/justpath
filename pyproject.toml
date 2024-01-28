@@ -5,6 +5,7 @@ description = "Explore PATH environment variable on Windows and Linux."
 authors = ["Evgeny Pogrebnyak <e.pogrebnyak@gmail.com>"]
 license = "GNU"
 readme = "README.md"
+repository = "https://github.com/epogrebnyak/justpath"
 
 [tool.poetry.scripts]
 pathit = "justpath.show:typer_app"

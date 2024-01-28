@@ -3,6 +3,7 @@
 import os
 import sys
 from collections import UserDict
+from json import dumps
 from pathlib import Path
 from typing import Annotated
 
@@ -61,8 +62,21 @@ typer_app = typer.Typer(
 
 @typer_app.command()
 def raw():
-    """Print PATH as is."""
+    """Print PATH as is. Same as `justpath show --string`."""
     print(os.environ["PATH"])
+
+
+@typer_app.command()
+def stats(json: bool = False):
+    """Number total and valid of directories in your PATH."""
+    path_var = PathVar.populate()
+    k = sum(map(is_valid, path_var.values()))
+    if json:
+        print(dumps(dict(total=len(path_var), valid=k)))
+    else:
+        print("Directories in your PATH")
+        print("- total:", len(path_var))
+        print("- valid:", k)
 
 
 @typer_app.command()
@@ -81,6 +95,7 @@ def show(
         bool, typer.Option(help="Indicate directory order in PATH.")
     ] = True,
     color: Annotated[bool, typer.Option(help="Use color to highlight errors.")] = True,
+    json: Annotated[bool, typer.Option(help="Format output as JSON.")] = False,
 ):
     """Show directories from PATH."""
     paths = PathVar.populate().tuples()
@@ -97,6 +112,9 @@ def show(
         paths = [(i, os.path.expandvars(path)) for i, path in paths]
     if string:
         print(as_string(paths))
+        sys.exit(0)
+    if json:
+        print(dumps([str(path) for _, path in paths], indent=2))
         sys.exit(0)
     for i, path in paths:
         prefix = ""

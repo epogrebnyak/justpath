@@ -1,5 +1,7 @@
 # justpath
 
+![PyPI - Version](https://img.shields.io/pypi/v/justpath)
+
 Explore PATH environment variable on both Windows and Linux.
 
 ## Basic usage
@@ -26,21 +28,6 @@ justpath show --includes bin
 
 More complex cases are easier with `justpath` than with bash on Linux or batch files in Windows.
 
-### Directory does not exist
-
-`justpath` will indicate if path does not exist or path is not a dicrectory.
-
-Below is an example from Github Codespaces, somehow `/usr/local/sdkman/candidates/ant/current/bin` does not exist, but included in `PATH`.
-
-```console
-$ poetry run justpath show --sort --includes sdkman
-19 /usr/local/sdkman/bin
-23 /usr/local/sdkman/candidates/ant/current/bin (directory does not exist)
-21 /usr/local/sdkman/candidates/gradle/current/bin
-20 /usr/local/sdkman/candidates/java/current/bin
-22 /usr/local/sdkman/candidates/maven/current/bin
-```
-
 ### Filter directory names
 
 `justpath` allows to filter paths that must or must not include a certain string.
@@ -55,6 +42,21 @@ $ justpath show --sort --includes windows --excludes system32
 46 C:\tools\Cmder\vendor\git-for-windows\cmd
 47 C:\tools\Cmder\vendor\git-for-windows\mingw64\bin
 12 C:\tools\Cmder\vendor\git-for-windows\usr\bin
+```
+
+### Directory does not exist
+
+`justpath` will indicate if path does not exist or path is not a dicrectory.
+
+Below is an example from Github Codespaces, somehow `/usr/local/sdkman/candidates/ant/current/bin` does not exist, but included in `PATH`.
+
+```console
+$ poetry run justpath show --sort --includes sdkman
+19 /usr/local/sdkman/bin
+23 /usr/local/sdkman/candidates/ant/current/bin (directory does not exist)
+21 /usr/local/sdkman/candidates/gradle/current/bin
+20 /usr/local/sdkman/candidates/java/current/bin
+22 /usr/local/sdkman/candidates/maven/current/bin
 ```
 
 ### Purge invalid paths
@@ -73,6 +75,16 @@ $ justpath show --sort --includes windows --excludes system32
 λ justpath show --includes quarto --purge
 33 C:\Program Files\Quarto\bin
 41 D:\Quarto\bin
+```
+
+### Dump `PATH` as JSON
+
+There should be a clever bash one-liner for this, but in `justpath` you can do
+to dump a list of paths from `PATH`. You may add `--purge` flag to show only correct
+paths.
+
+```
+justpath show --json --purge
 ```
 
 ### Create a new content string for `PATH`
