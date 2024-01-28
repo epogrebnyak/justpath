@@ -1,6 +1,7 @@
 """Explore PATH environment variable and demonstrate how to modify it."""
 
 import os
+import sys
 from collections import UserDict
 from pathlib import Path
 
@@ -43,6 +44,9 @@ class PathVar(UserDict[int, Path]):
 def as_string(paths):
     return sep().join([str(path) for _, path in paths])
 
+def is_valid(path) -> bool:
+    return Path(path).exists() and Path(path).is_dir()
+
 typer_app = typer.Typer(
     add_completion=False,
 )
@@ -61,9 +65,8 @@ def show(
     display_numbers: bool = True,
     color: bool = True,
     purge: bool = False,
-    string: bool = False,
     expand: bool = False,
-    only_errors: bool = False,
+    string: bool = False,
 ):
     """Show directories from PATH."""
     paths = PathVar.populate().tuples()
@@ -74,9 +77,9 @@ def show(
     if excludes is not None:
         paths = [path for path in paths if excludes.lower() not in path[1].lower()]
     if purge:
-        print("This will drop non-existent or duplicate directories.")
+        paths = [path for path in paths if is_valid(path[1])]
     if expand:
-        print("This will resolve directory names.")
+        print("This will resolve directory names, not implemented yet.")
     if string:
         print(as_string(paths))
         sys.exit(0)
@@ -84,9 +87,15 @@ def show(
     for i, path in paths:
             prefix = ""
             if color:
-                prefix = Fore.GREEN if os.path.exists(path) else Fore.RED
+                prefix = Fore.RED
+                if os.path.exists(path) and os.path.isdir(path):
+                    prefix = Fore.GREEN
             if display_numbers:
-                postfix = "" if os.path.exists(path) else "(directory does not exist)"
+                postfix = ""
+                if not os.path.exists(path):
+                    postfix = "(directory does not exist)"
+                elif not os.path.isdir(path):
+                    postfix = "(it's a file, not a directory)"
                 print(prefix + i, path, postfix)
             else:
                 print(prefix + path)
