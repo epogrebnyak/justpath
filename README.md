@@ -4,31 +4,26 @@ Explore PATH environment variable on both Windows and Linux.
 
 ## Usage
 
-What directories are part of PATH?
-
-`echo $PATH | tr ";" "\n"` or
+What directories are part of PATH? Use `echo $PATH | tr ";" "\n"` or
 
 ```console
 pathit show
 ```
 
-Sort them alphabetically:
-
-`echo $PATH | tr ";" "\n" | sort` or
+Sort them alphabetically. Use `echo $PATH | tr ";" "\n" | sort` or
 
 ```console
 pathit show --sort
 ```
 
-What are the paths with `bin`?
-
-`echo $PATH | tr ";" "\n" | grep bin` or
+What are the paths with `bin`? Use `echo $PATH | tr ";" "\n" | grep bin` or
 
 ```console
 pathit show --includes bin
 ```
 
-More complex sorting cases are easier with `pathit` than with bash or batch files.
+More complex sorting cases are easier with `pathit` than with bash on Linux
+or batch files in Windows.
 
 `pathit` will indicate non-existent directory. Below is an example from Github Codespaces,
 somehow `/usr/local/sdkman/candidates/ant/current/bin` does not exist, but included in `PATH`.
