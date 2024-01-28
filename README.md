@@ -22,7 +22,7 @@ What are the paths with `bin`?
 More complex sorting cases are easier with `pathit`:
 
 ```console
-$ poetry run pathit show --sort --includes sdkman
+$ poetry run pathit show --sort --includes sdkman --display-numbers
 19 /usr/local/sdkman/bin
 23 /usr/local/sdkman/candidates/ant/current/bin (directory does not exist)
 21 /usr/local/sdkman/candidates/gradle/current/bin
@@ -46,13 +46,15 @@ pip install git+https://github.com/epogrebnyak/what-the-path.git
 
 ## Motivation
 
-I'm scared of PATH environment variable syntax on Windows vs Linux,
-so I wrote this small utility to be able to explore PATH more easily.
+PATH environment variable syntax on Windows vs Linux scares me,
+so I wrote this utility to be able to explore PATH more easily.
 
 ## Notes
 
 1. Neither `pathit` nor any child process cannot modify your shell PATH, just view it.
-2. Yes, you can run `echo $PATH | tr ";" "\n" | sort` instead of `pathit` on Linux.
-3. Even better tools may exist:
+2. Yes, you can run `echo $PATH | tr ";" "\n" | sort` instead of `pathit show --sort` on Linux.
+3. Even better tools than `pathit` may exist:
    - [Rapid Environment Editor](https://www.rapidee.com/en/path-variable) for Windows is a gem (no affiliation, just a thankful user).
    - Maybe some smart command-line utility in Rust will emerge for PATH, but [not there yet](https://gist.github.com/sts10/).
+   - There is [pathdebug](https://github.com/d-led/pathdebug) written in Go that goes a step futher and attempts to trace where
+     your PATH is defined.
