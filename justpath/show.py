@@ -11,12 +11,8 @@ import typer
 from colorama import Fore
 
 
-def sep():
-    return ";" if os.name == "nt" else ":"
-
-
 def get_paths() -> list[str]:
-    return os.environ["PATH"].split(sep())
+    return os.environ["PATH"].split(os.pathsep)
 
 
 NumberedPaths = list[tuple[str, str]]  # should be a type vatiable?
@@ -48,7 +44,7 @@ class PathVar(UserDict[int, Path]):
 
 
 def as_string(paths: NumberedPaths) -> str:
-    return sep().join([str(path) for _, path in paths])
+    return os.pathsep.join([str(path) for _, path in paths])
 
 
 def is_valid(path: str) -> bool:
