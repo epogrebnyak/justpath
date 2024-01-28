@@ -2,7 +2,7 @@ import subprocess
 
 from typer.testing import CliRunner
 
-from pathit.show import typer_app
+from justpath.show import typer_app
 
 runner = CliRunner()
 

@@ -1,13 +1,15 @@
 [tool.poetry]
-name = "pathit"
-version = "0.0.3"
-description = "Just like `echo $PATH | tr \":\" \"\\n\"` in one command with options."
+name = "justpath"
+version = "0.0.4"
+description = "Explore PATH environment variable on Windows and Linux."
 authors = ["Evgeny Pogrebnyak <e.pogrebnyak@gmail.com>"]
 license = "GNU"
 readme = "README.md"
 
 [tool.poetry.scripts]
-pathit = "pathit.show:typer_app"
+pathit = "justpath.show:typer_app"
+justpath = "justpath.show:typer_app"
+jp = "justpath.show:typer_app"
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -15,9 +17,11 @@ typer = "^0.9.0"
 colorama = "^0.4.6"
 types-colorama = "^0.4.15.20240106"
 
-
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.8.0"
+ruff = "^0.1.14"
+isort = "^5.13.2"
+black = "^24.1.1"
 
 [build-system]
 requires = ["poetry-core"]

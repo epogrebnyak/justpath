@@ -67,14 +67,10 @@ def raw():
 
 @typer_app.command()
 def show(
-    sort: Annotated[
-        bool, typer.Option(help="Sort output alphabetically.")
-    ] = False,
-    includes: str | None = None, # Show paths that include a specific string.
-    excludes: str | None = None, # Show paths that exclude a specific string.
-    purge: Annotated[
-        bool, typer.Option(help="Exclude invalid directories.")
-    ] = False,
+    sort: Annotated[bool, typer.Option(help="Sort output alphabetically.")] = False,
+    includes: str | None = None,  # Show paths that include a specific string.
+    excludes: str | None = None,  # Show paths that exclude a specific string.
+    purge: Annotated[bool, typer.Option(help="Exclude invalid directories.")] = False,
     expand: Annotated[
         bool, typer.Option(help="Expand environment variables if found inside PATH.")
     ] = False,
@@ -84,9 +80,7 @@ def show(
     display_numbers: Annotated[
         bool, typer.Option(help="Indicate directory order in PATH.")
     ] = True,
-    color: Annotated[
-        bool, typer.Option(help="Use color to highlight errors.")
-    ]  = True,
+    color: Annotated[bool, typer.Option(help="Use color to highlight errors.")] = True,
 ):
     """Show directories from PATH."""
     paths = PathVar.populate().tuples()
