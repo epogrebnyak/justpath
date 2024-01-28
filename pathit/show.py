@@ -40,6 +40,8 @@ class PathVar(UserDict[int, Path]):
 
         return [(offset(i), str(p)) for i, p in self.data.items()]
 
+def as_string(paths):
+    return sep().join([str(path) for _, path in paths])
 
 typer_app = typer.Typer(
     add_completion=False,
@@ -59,7 +61,7 @@ def show(
     display_numbers: bool = True,
     color: bool = True,
     purge: bool = False,
-    command: bool = False,
+    string: bool = False,
     expand: bool = False,
     only_errors: bool = False,
 ):
@@ -68,11 +70,18 @@ def show(
     if sort:
         paths = sorted(paths, key=lambda x: x[1])
     if includes is not None:
-        paths = [path for path in paths if includes in path[1]]
+        paths = [path for path in paths if includes.lower() in path[1].lower()]
     if excludes is not None:
-        paths = [path for path in paths if excludes not in path[1]]
-    if not command:
-        for i, path in paths:
+        paths = [path for path in paths if excludes.lower() not in path[1].lower()]
+    if purge:
+        print("This will drop non-existent or duplicate directories.")
+    if expand:
+        print("This will resolve directory names.")
+    if string:
+        print(as_string(paths))
+        sys.exit(0)
+    # TODO: control for duplicates    
+    for i, path in paths:
             prefix = ""
             if color:
                 prefix = Fore.GREEN if os.path.exists(path) else Fore.RED
@@ -81,9 +90,3 @@ def show(
                 print(prefix + i, path, postfix)
             else:
                 print(prefix + path)
-    else:
-        print("This will show `export` or `set` command.")
-    if purge:
-        print("This will drop non-existent or duplicate directories.")
-    if expand:
-        print("This will resolve directory names.")

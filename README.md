@@ -19,15 +19,25 @@ What are the paths with `bin`?
 - `pathit show --includes bin`,
 - or `echo $PATH | tr ";" "\n" | grep bin`
 
-More complex sorting cases are easier with `pathit`:
+More complex sorting cases are easier with `pathit`.
 
 ```console
-$ poetry run pathit show --sort --includes sdkman --display-numbers
+$ poetry run pathit show --sort --includes sdkman
 19 /usr/local/sdkman/bin
 23 /usr/local/sdkman/candidates/ant/current/bin (directory does not exist)
 21 /usr/local/sdkman/candidates/gradle/current/bin
 20 /usr/local/sdkman/candidates/java/current/bin
 22 /usr/local/sdkman/candidates/maven/current/bin
+```
+
+```console
+$ pathit show --sort --includes windows --excludes system32
+39 C:\Users\Евгений\AppData\Local\Microsoft\WindowsApps
+24 C:\WINDOWS
+14 C:\Windows
+46 C:\tools\Cmder\vendor\git-for-windows\cmd
+47 C:\tools\Cmder\vendor\git-for-windows\mingw64\bin
+12 C:\tools\Cmder\vendor\git-for-windows\usr\bin
 ```
 
 ## Installation
