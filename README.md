@@ -61,7 +61,7 @@ $ pathit show --sort --includes windows --excludes system32
 51 d:\quarto\this_is_a_file (it's a file, not a directory)
 ```
 
-```
+```console
 λ pathit show --includes quarto --purge
 33 C:\Program Files\Quarto\bin
 41 D:\Quarto\bin
@@ -70,14 +70,14 @@ $ pathit show --sort --includes windows --excludes system32
 You can get a valid string for your PATH in a format native to your operating system
 using `--string` ouput flag.
 
-```
+```console
 λ pathit show --purge --string
 C:\tools\Cmder\bin;C:\tools\Cmder\vendor\bin;C:\Windows\system32;C:\Windows
 ```
 
 ## Installation
 
-```
+```console
 git clone https://github.com/epogrebnyak/what-the-path.git
 cd what-the-path
 pip install -e .
@@ -85,7 +85,7 @@ pip install -e .
 
 or shorter:
 
-```
+```console
 pip install git+https://github.com/epogrebnyak/what-the-path.git
 ```
 
