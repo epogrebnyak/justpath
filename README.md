@@ -7,7 +7,7 @@ Explore PATH environment variable on both Windows and Linux.
 What directories are part of PATH? Use `echo $PATH | tr ";" "\n"` or
 
 ```console
-jp show
+justpath show
 ```
 
 Sort them alphabetically. Use `echo $PATH | tr ";" "\n" | sort` or
@@ -26,8 +26,11 @@ justpath show --includes bin
 
 More complex cases are easier with `justpath` than with bash on Linux or batch files in Windows.
 
-`justpath` will indicate non-existent directory. Below is an example from Github Codespaces,
-somehow `/usr/local/sdkman/candidates/ant/current/bin` does not exist, but included in `PATH`.
+### Directory does not exist
+
+`justpath` will indicate if path does not exist or path is not a dicrectory.
+
+Below is an example from Github Codespaces, somehow `/usr/local/sdkman/candidates/ant/current/bin` does not exist, but included in `PATH`.
 
 ```console
 $ poetry run justpath show --sort --includes sdkman
@@ -37,6 +40,8 @@ $ poetry run justpath show --sort --includes sdkman
 20 /usr/local/sdkman/candidates/java/current/bin
 22 /usr/local/sdkman/candidates/maven/current/bin
 ```
+
+### Filter directory names
 
 `justpath` allows to filter paths that must or must not include a certain string.
 Filtering is case insensitive, `--includes windows` and `--includes Windows` will
@@ -51,6 +56,8 @@ $ justpath show --sort --includes windows --excludes system32
 47 C:\tools\Cmder\vendor\git-for-windows\mingw64\bin
 12 C:\tools\Cmder\vendor\git-for-windows\usr\bin
 ```
+
+### Purge invalid paths
 
 `--purge` flag will drop invalid paths from listing.
 
@@ -67,6 +74,8 @@ $ justpath show --sort --includes windows --excludes system32
 33 C:\Program Files\Quarto\bin
 41 D:\Quarto\bin
 ```
+
+### Create a new content string for `PATH`
 
 You can get a valid string for your PATH in a format native to your operating system
 using `--string` ouput flag.
