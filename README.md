@@ -2,7 +2,7 @@
 
 Explore PATH environment variable on both Windows and Linux.
 
-## Usage
+## Basic usage
 
 What directories are part of PATH? Use `echo $PATH | tr ";" "\n"` or
 
@@ -22,8 +22,9 @@ What are the paths with `bin`? Use `echo $PATH | tr ";" "\n" | grep bin` or
 justpath show --includes bin
 ```
 
-More complex sorting cases are easier with `justpath` than with bash on Linux
-or batch files in Windows.
+## Useful cases
+
+More complex cases are easier with `justpath` than with bash on Linux or batch files in Windows.
 
 `justpath` will indicate non-existent directory. Below is an example from Github Codespaces,
 somehow `/usr/local/sdkman/candidates/ant/current/bin` does not exist, but included in `PATH`.
