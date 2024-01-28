@@ -60,6 +60,13 @@ $ poetry run justpath show --sort --includes sdkman
 22 /usr/local/sdkman/candidates/maven/current/bin
 ```
 
+Use `--errors` flag to explore what is parts of PATH are not valid and why.
+
+```console
+λ justpath show --errors
+50 C:\tools\Cmder\vendor\git-for-windows\usr\share\vim\vim74 (directory does not exist)
+```
+
 ### Purge invalid paths
 
 `--purge` flag will drop invalid paths from listing.
@@ -122,11 +129,18 @@ pip install git+https://github.com/epogrebnyak/what-the-path.git
 
 ## CLI tools
 
-After installation you will get two aliases for the same command line tool:
+After installation you will get two aliases for the same command line tool.
+
+Preferred:
+
+```
+justpath --help
+```
+
+Being depreciated:
 
 ```
 pathit --help
-justpath --help
 ```
 
 ## Motivation

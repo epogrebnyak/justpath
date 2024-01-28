@@ -87,6 +87,9 @@ def show(
     string: Annotated[
         bool, typer.Option(help="Print a single string suitable for PATH content.")
     ] = False,
+    errors: Annotated[
+        bool, typer.Option(help="Show invalid parts of PATH.")
+    ] = False,
     display_numbers: Annotated[
         bool, typer.Option(help="Indicate directory order in PATH.")
     ] = True,
@@ -95,6 +98,8 @@ def show(
 ):
     """Show directories from PATH."""
     paths = PathVar.populate().tuples()
+    if errors:
+        paths = [path for path in paths if not is_valid(path[1])]
     if sort:
         paths = sorted(paths, key=lambda x: x[1])
     if includes is not None:
@@ -104,7 +109,7 @@ def show(
     if purge:
         paths = [path for path in paths if is_valid(path[1])]
         # TODO: control for duplicates, keep the first duplicate in a list
-    if expand:  # probably a rare case
+    if expand:
         paths = [(i, os.path.expandvars(path)) for i, path in paths]
     if string:
         print(as_string(paths))
