@@ -6,21 +6,32 @@ Explore PATH environment variable on both Windows and Linux.
 
 What directories are part of PATH?
 
-`pathit show` or `echo $PATH | tr ";" "\n"`
+`echo $PATH | tr ";" "\n"` or
+
+```console
+pathit show
+```
 
 Sort them alphabetically:
 
-`pathit show --sort` or `echo $PATH | tr ";" "\n" | sort`
+`echo $PATH | tr ";" "\n" | sort` or
+
+```console
+pathit show --sort
+```
 
 What are the paths with `bin`?
 
-`pathit show --includes bin` or `echo $PATH | tr ";" "\n" | grep bin`
+`echo $PATH | tr ";" "\n" | grep bin` or
 
-More complex sorting cases are easier with `pathit`.
+```console
+pathit show --includes bin
+```
 
-`pathit` will indicate non-existent directory (this is an example from Github Codespaces,
-somehow `/usr/local/sdkman/candidates/ant/current/bin` does not exist,
-but included in `PATH`).
+More complex sorting cases are easier with `pathit` than with bash or batch files.
+
+`pathit` will indicate non-existent directory. Below is an example from Github Codespaces,
+somehow `/usr/local/sdkman/candidates/ant/current/bin` does not exist, but included in `PATH`.
 
 ```console
 $ poetry run pathit show --sort --includes sdkman
@@ -31,7 +42,7 @@ $ poetry run pathit show --sort --includes sdkman
 22 /usr/local/sdkman/candidates/maven/current/bin
 ```
 
-`pathit` allows to filter paths that must include or do not include a certain string.
+`pathit` allows to filter paths that must or must not include a certain string.
 Filtering is case insensitive, `--includes windows` and `--includes Windows` will
 produce the same result.
 
@@ -61,12 +72,12 @@ $ pathit show --sort --includes windows --excludes system32
 41 D:\Quarto\bin
 ```
 
-You can get a valid string for your PATH in native format using `--string`
-ouput flag.
+You can get a valid string for your PATH in a format native to your operating system
+using `--string` ouput flag.
 
 ```
 λ pathit show --purge --string
-C:\tools\Cmder\bin;C:\tools\Cmder\vendor\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0;C:\ProgramData\chocolatey\bin;C:\Program Files (x86)\Skype\Phone;C:\Program Files\Amazon\AWSCLI;C:\Program Files\Git\cmd;C:\WINDOWS\System32\OpenSSH;D:\Programs\Microsoft VS Code\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0;C:\WINDOWS\System32\OpenSSH
+C:\tools\Cmder\bin;C:\tools\Cmder\vendor\bin;C:\Windows\system32;C:\Windows
 ```
 
 ## Installation

@@ -4,6 +4,7 @@ import os
 import sys
 from collections import UserDict
 from pathlib import Path
+from typing import Annotated
 
 import typer
 from colorama import Fore
@@ -15,6 +16,9 @@ def sep():
 
 def get_paths() -> list[str]:
     return os.environ["PATH"].split(sep())
+
+
+NumberedPaths = list[tuple[str, str]]  # should be a type vatiable?
 
 
 class PathVar(UserDict[int, Path]):
@@ -33,7 +37,7 @@ class PathVar(UserDict[int, Path]):
     def max_key(self):
         return max(self.data.keys())
 
-    def tuples(self):
+    def tuples(self) -> NumberedPaths:
         n = len(str(self.max_key))
 
         def offset(i: int) -> str:
@@ -41,32 +45,48 @@ class PathVar(UserDict[int, Path]):
 
         return [(offset(i), str(p)) for i, p in self.data.items()]
 
-def as_string(paths):
+
+def as_string(paths: NumberedPaths) -> str:
     return sep().join([str(path) for _, path in paths])
 
-def is_valid(path) -> bool:
+
+def is_valid(path: str) -> bool:
     return Path(path).exists() and Path(path).is_dir()
 
+
 typer_app = typer.Typer(
-    add_completion=False,
+    add_completion=False, help="Explore PATH environment variable on Windows and Linux."
 )
 
 
 @typer_app.command()
 def raw():
+    """Print PATH as is."""
     print(os.environ["PATH"])
 
 
 @typer_app.command()
 def show(
-    sort: bool = False,
-    includes: str | None = None,
-    excludes: str | None = None,
-    display_numbers: bool = True,
-    color: bool = True,
-    purge: bool = False,
-    expand: bool = False,
-    string: bool = False,
+    sort: Annotated[
+        bool, typer.Option(help="Sort output alphabetically.")
+    ] = False,
+    includes: str | None = None, # Show paths that include a specific string.
+    excludes: str | None = None, # Show paths that exclude a specific string.
+    purge: Annotated[
+        bool, typer.Option(help="Exclude invalid directories.")
+    ] = False,
+    expand: Annotated[
+        bool, typer.Option(help="Expand environment variables if found inside PATH.")
+    ] = False,
+    string: Annotated[
+        bool, typer.Option(help="Print a single string suitable for PATH content.")
+    ] = False,
+    display_numbers: Annotated[
+        bool, typer.Option(help="Indicate directory order in PATH.")
+    ] = True,
+    color: Annotated[
+        bool, typer.Option(help="Use color to highlight errors.")
+    ]  = True,
 ):
     """Show directories from PATH."""
     paths = PathVar.populate().tuples()
@@ -78,24 +98,24 @@ def show(
         paths = [path for path in paths if excludes.lower() not in path[1].lower()]
     if purge:
         paths = [path for path in paths if is_valid(path[1])]
-    if expand:
-        print("This will resolve directory names, not implemented yet.")
+        # TODO: control for duplicates, keep the first duplicate in a list
+    if expand:  # probably a rare case
+        paths = [(i, os.path.expandvars(path)) for i, path in paths]
     if string:
         print(as_string(paths))
         sys.exit(0)
-    # TODO: control for duplicates    
     for i, path in paths:
-            prefix = ""
-            if color:
-                prefix = Fore.RED
-                if os.path.exists(path) and os.path.isdir(path):
-                    prefix = Fore.GREEN
-            if display_numbers:
-                postfix = ""
-                if not os.path.exists(path):
-                    postfix = "(directory does not exist)"
-                elif not os.path.isdir(path):
-                    postfix = "(it's a file, not a directory)"
-                print(prefix + i, path, postfix)
-            else:
-                print(prefix + path)
+        prefix = ""
+        if color:
+            prefix = Fore.RED
+            if os.path.exists(path) and os.path.isdir(path):
+                prefix = Fore.GREEN
+        if display_numbers:
+            postfix = ""
+            if not os.path.exists(path):
+                postfix = "(directory does not exist)"
+            elif not os.path.isdir(path):
+                postfix = "(it's a file, not a directory)"
+            print(prefix + i, path, postfix)
+        else:
+            print(prefix + path)
