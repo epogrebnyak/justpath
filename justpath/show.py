@@ -50,8 +50,8 @@ def raw():
 
 
 @typer_app.command()
-def stats(json: bool = False):
-    """Number total and valid of directories in your PATH."""
+def count(json: bool = False):
+    """Number of directories in your PATH."""
     path_var = PathVar.populate()
     t = len(path_var)
     k = sum(map(is_valid, path_var.values()))
@@ -59,9 +59,9 @@ def stats(json: bool = False):
         print(dumps(dict(total=t, valid=k, errors=t - k)))
     else:
         print("Directories in your PATH")
-        print("-  total:", t)
-        print("-  valid:", k)
-        print("- errors:", t - k)
+        print("  Total: ", t)
+        print("  Valid: ", k)
+        print("  Errors:", t - k)
 
 
 def option(help_: str, t=bool):

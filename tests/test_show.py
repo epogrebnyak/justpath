@@ -7,16 +7,19 @@ from justpath.show import typer_app
 
 commands = [
     ["--help"],
-    ["stats"],
-    ["show", "--errors"],
+    ["count"],
+    ["count", "--json"],
+    ["show", "--errors"],    
     ["show", "--sort", "--includes", "mingw", "--excludes", "tools", "--strip"],
     ["show", "--correct", "--string"],
 ]
 
+# raw command gives a fault with non-latin characters in subprocess call
+more_commands = [["raw"]]
 
 @pytest.mark.parametrize(
-    "args", commands + [["raw"]]
-)  # raw give a fault with non-latin characters
+    "args", commands + more_commands
+)  
 def test_it_runs_with_cli_runner(args):
     runner = CliRunner()
     result = runner.invoke(typer_app, args)
