@@ -6,7 +6,7 @@ from json import dumps
 from pathlib import Path
 from typing import Annotated
 
-import typer
+from typer import Option, Typer
 from colorama import Fore
 
 
@@ -38,7 +38,7 @@ def is_valid(path: Path) -> bool:
     return path.exists() and path.is_dir()
 
 
-typer_app = typer.Typer(
+typer_app = Typer(
     add_completion=False, help="Explore PATH environment variable on Windows and Linux."
 )
 
@@ -64,28 +64,23 @@ def stats(json: bool = False):
         print("- errors:", t - k)
 
 
+def option(help_: str, t=bool):
+    return Annotated[t, Option(help=help_)]
+
+
 @typer_app.command()
 def show(
-    sort: Annotated[bool, typer.Option(help="Sort output alphabetically.")] = False,
-    includes: Annotated[
-        str, typer.Option(help="Show paths that include a specific string.")
-    ] = "",
-    excludes: Annotated[
-        str, typer.Option(help="Show paths that exclude a specific string.")
-    ] = "",
-    purge: Annotated[bool, typer.Option(help="Exclude invalid directories.")] = False,
-    expand: Annotated[
-        bool, typer.Option(help="Expand environment variables if found inside PATH.")
-    ] = False,
-    string: Annotated[
-        bool, typer.Option(help="Print a single string suitable for PATH content.")
-    ] = False,
-    errors: Annotated[bool, typer.Option(help="Show invalid parts of PATH.")] = False,
-    display_numbers: Annotated[
-        bool, typer.Option(help="Indicate directory order in PATH.")
-    ] = True,
-    color: Annotated[bool, typer.Option(help="Use color to highlight errors.")] = True,
-    json: Annotated[bool, typer.Option(help="Format output as JSON.")] = False,
+    sort: option("Sort output alphabetically.") = False,  # type: ignore
+    errors: option("Show invalid paths only.") = False,  # type: ignore
+    duplicates: option("Show duplicate paths only.") = False,  # type: ignore
+    includes: option("Show paths that include a specific string.", str) = "",  # type: ignore
+    excludes: option("Show paths that do not include a specific string.", str) = "",  # type: ignore
+    purge: option("Exclude invalid paths.") = False,  # type: ignore
+    expand: option("Expand environment variables.") = False,  # type: ignore
+    hide_numbers: option("Hide numbers that indicate path order in PATH.") = False,  # type: ignore
+    color: option("Use color to highlight errors.") = True,  # type: ignore
+    string: option("Print a single string suitable as PATH content.") = False,  # type: ignore
+    json: option("Format output as JSON.") = False,  # type: ignore
 ):
     """Show directories from PATH."""
     paths = PathVar.populate().tuples()
@@ -95,7 +90,7 @@ def show(
     elif json:
         print(dumps([str(path) for _, path in paths], indent=2))
     else:
-        print_paths(paths, color, display_numbers)
+        print_paths(paths, color, hide_numbers)
 
 
 def first(x):
@@ -128,7 +123,7 @@ def modify_paths(paths, errors, sort, includes, excludes, purge, expand):
     # TODO: control for duplicates, keep the first duplicate in a list
 
 
-def print_paths(paths, color, display_numbers):
+def print_paths(paths, color, hide_numbers):
     n = len(str(max(map(first, paths))))
 
     def offset(k: int) -> str:
@@ -140,12 +135,12 @@ def print_paths(paths, color, display_numbers):
             prefix = Fore.RED
             if os.path.exists(path) and os.path.isdir(path):
                 prefix = Fore.GREEN
-        if display_numbers:
+        if hide_numbers:
+            print(prefix + path)
+        else:
             postfix = ""
             if not os.path.exists(path):
                 postfix = "(directory does not exist)"
             elif not os.path.isdir(path):
                 postfix = "(not a directory)"
             print(prefix + offset(i), path, postfix)
-        else:
-            print(prefix + path)

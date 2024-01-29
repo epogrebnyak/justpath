@@ -149,7 +149,7 @@ pathit --help
 
 ## Motivation
 
-PATH environment variable syntax on Windows vs Linux scares me,
+PATH environment variable syntax on Windows vs Linux a bit scare me,
 so I wrote this utility to be able to explore PATH more easily.
 
 ## Notes

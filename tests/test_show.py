@@ -8,7 +8,7 @@ from justpath.show import typer_app
 commands = [
     ["--help"],
     ["stats"],
-    ["show", "--sort", "--includes", "mingw", "--display-numbers"],
+    ["show", "--sort", "--includes", "mingw", "--hide-numbers"],
 ]
 
 
