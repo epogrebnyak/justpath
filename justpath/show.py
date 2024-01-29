@@ -5,7 +5,7 @@ import sys
 from collections import UserDict
 from json import dumps
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, TypeAlias
 
 import typer
 from colorama import Fore
@@ -15,7 +15,9 @@ def get_paths() -> list[str]:
     return os.environ["PATH"].split(os.pathsep)
 
 
-NumberedPaths = list[tuple[str, str]]  # should be a type vatiable?
+# In Python 3.12 this will be
+# type NumberedPaths = list[tuple[str, str]]
+NumberedPaths: TypeAlias = list[tuple[str, str]]
 
 
 class PathVar(UserDict[int, Path]):
