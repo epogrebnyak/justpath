@@ -160,14 +160,14 @@ pathit --help
 
 ## Motivation
 
-PATH environment variable syntax on Windows vs Linux scares me a bit,
-so I wrote this utility to be able to explore PATH more easily.
-
-I think this quote about `PATH` is quite right:
+I think [this quote][quote] about `PATH` is quite right:
 
 > I always get the feeling that nobody knows what a PATH is and at this point they are too afraid to ask.
 
-\[[source](https://www.reddit.com/r/linuxquestions/comments/pgv7hm/comment/hbf3bno/)\]
+[quote]: https://www.reddit.com/r/linuxquestions/comments/pgv7hm/comment/hbf3bno/
+
+PATH environment variable syntax on Windows and on Linux does scare me a bit,
+so I wrote this utility to be able to explore PATH more easily.
 
 ## Development notes
 
