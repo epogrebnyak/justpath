@@ -1,11 +1,10 @@
 """Explore PATH environment variable and demonstrate how to modify it."""
 
 import os
-import sys
 from collections import UserDict
 from json import dumps
 from pathlib import Path
-from typing import Annotated, TypeAlias
+from typing import Annotated
 
 import typer
 from colorama import Fore
@@ -13,11 +12,6 @@ from colorama import Fore
 
 def get_paths() -> list[str]:
     return os.environ["PATH"].split(os.pathsep)
-
-
-# In Python 3.12 this will be
-# type NumberedPaths = list[tuple[str, str]]
-NumberedPaths: TypeAlias = list[tuple[str, str]]
 
 
 class PathVar(UserDict[int, Path]):
@@ -29,28 +23,19 @@ class PathVar(UserDict[int, Path]):
         del self.data[i]
 
     def append(self, path: Path):
-        key = 1 + self.max_key
+        key = 1 + max(self.keys())
         self.data[key] = path
 
-    @property
-    def max_key(self):
-        return max(self.data.keys())
-
-    def tuples(self) -> NumberedPaths:
-        n = len(str(self.max_key))
-
-        def offset(i: int) -> str:
-            return str(i).rjust(n)
-
-        return [(offset(i), str(p)) for i, p in self.data.items()]
+    def tuples(self) -> list[tuple[int, Path]]:
+        return [(i, p) for i, p in self.data.items()]
 
 
-def as_string(paths: NumberedPaths) -> str:
+def as_string(paths: list[tuple[int, Path]]) -> str:
     return os.pathsep.join([str(path) for _, path in paths])
 
 
-def is_valid(path: str) -> bool:
-    return Path(path).exists() and Path(path).is_dir()
+def is_valid(path: Path) -> bool:
+    return path.exists() and path.is_dir()
 
 
 typer_app = typer.Typer(
@@ -68,13 +53,15 @@ def raw():
 def stats(json: bool = False):
     """Number total and valid of directories in your PATH."""
     path_var = PathVar.populate()
+    t = len(path_var)
     k = sum(map(is_valid, path_var.values()))
     if json:
-        print(dumps(dict(total=len(path_var), valid=k)))
+        print(dumps(dict(total=t, valid=k, errors=t - k)))
     else:
         print("Directories in your PATH")
-        print("- total:", len(path_var))
-        print("- valid:", k)
+        print("-  total:", t)
+        print("-  valid:", k)
+        print("- errors:", t - k)
 
 
 @typer_app.command()
@@ -102,25 +89,51 @@ def show(
 ):
     """Show directories from PATH."""
     paths = PathVar.populate().tuples()
-    if errors:
-        paths = [path for path in paths if not is_valid(path[1])]
-    if sort:
-        paths = sorted(paths, key=lambda x: x[1])
-    if includes:
-        paths = [path for path in paths if includes.lower() in path[1].lower()]
-    if excludes:
-        paths = [path for path in paths if excludes.lower() not in path[1].lower()]
-    if purge:
-        paths = [path for path in paths if is_valid(path[1])]
-        # TODO: control for duplicates, keep the first duplicate in a list
-    if expand:
-        paths = [(i, os.path.expandvars(path)) for i, path in paths]
+    paths = modify_paths(paths, errors, sort, includes, excludes, purge, expand)
     if string:
         print(as_string(paths))
-        sys.exit(0)
-    if json:
+    elif json:
         print(dumps([str(path) for _, path in paths], indent=2))
-        sys.exit(0)
+    else:
+        print_paths(paths, color, display_numbers)
+
+
+def first(x):
+    return x[0]
+
+
+def second(x):
+    return x[1]
+
+
+def modify_paths(paths, errors, sort, includes, excludes, purge, expand):
+    paths = [(i, os.path.realpath(path)) for i, path in paths]
+    if sort:
+        paths = sorted(paths, key=second)
+    if errors:
+        paths = [(i, path) for i, path in paths if not is_valid(path)]
+    if includes:
+        paths = [
+            (i, path) for i, path in paths if includes.lower() in str(path).lower()
+        ]
+    if excludes:
+        paths = [
+            (i, path) for i, path in paths if excludes.lower() not in str(path).lower()
+        ]
+    if purge:
+        paths = [(i, path) for i, path in paths if not is_valid(path)]
+    if expand:
+        paths = [(i, os.path.expandvars(path)) for i, path in paths]
+    return paths
+    # TODO: control for duplicates, keep the first duplicate in a list
+
+
+def print_paths(paths, color, display_numbers):
+    n = len(str(max(map(first, paths))))
+
+    def offset(k: int) -> str:
+        return str(k).rjust(n)
+
     for i, path in paths:
         prefix = ""
         if color:
@@ -132,7 +145,7 @@ def show(
             if not os.path.exists(path):
                 postfix = "(directory does not exist)"
             elif not os.path.isdir(path):
-                postfix = "(it's a file, not a directory)"
-            print(prefix + i, path, postfix)
+                postfix = "(not a directory)"
+            print(prefix + offset(i), path, postfix)
         else:
             print(prefix + path)
