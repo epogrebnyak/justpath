@@ -78,8 +78,12 @@ def stats(json: bool = False):
 @typer_app.command()
 def show(
     sort: Annotated[bool, typer.Option(help="Sort output alphabetically.")] = False,
-    includes: str | None = None,  # Show paths that include a specific string.
-    excludes: str | None = None,  # Show paths that exclude a specific string.
+    includes: Annotated[
+        str, typer.Option(help="Show paths that include a specific string.")
+    ] = "",
+    excludes: Annotated[
+        str, typer.Option(help="Show paths that exclude a specific string.")
+    ] = "",
     purge: Annotated[bool, typer.Option(help="Exclude invalid directories.")] = False,
     expand: Annotated[
         bool, typer.Option(help="Expand environment variables if found inside PATH.")
@@ -87,9 +91,7 @@ def show(
     string: Annotated[
         bool, typer.Option(help="Print a single string suitable for PATH content.")
     ] = False,
-    errors: Annotated[
-        bool, typer.Option(help="Show invalid parts of PATH.")
-    ] = False,
+    errors: Annotated[bool, typer.Option(help="Show invalid parts of PATH.")] = False,
     display_numbers: Annotated[
         bool, typer.Option(help="Indicate directory order in PATH.")
     ] = True,
@@ -102,9 +104,9 @@ def show(
         paths = [path for path in paths if not is_valid(path[1])]
     if sort:
         paths = sorted(paths, key=lambda x: x[1])
-    if includes is not None:
+    if includes:
         paths = [path for path in paths if includes.lower() in path[1].lower()]
-    if excludes is not None:
+    if excludes:
         paths = [path for path in paths if excludes.lower() not in path[1].lower()]
     if purge:
         paths = [path for path in paths if is_valid(path[1])]
