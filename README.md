@@ -163,14 +163,16 @@ pathit --help
 PATH environment variable syntax on Windows vs Linux scares me a bit,
 so I wrote this utility to be able to explore PATH more easily.
 
-I think this quote about `PATH` is quite to the point:
+I think this quote about `PATH` is quite right:
 
-<blockquote class="reddit-embed-bq" data-embed-height="240"><a href="https://www.reddit.com/r/linuxquestions/comments/pgv7hm/comment/hbf3bno/">Comment</a><br> by<a href="https://www.reddit.com/user/SweeTLemonS_TPR/">u/SweeTLemonS_TPR</a> from discussion<a href="https://www.reddit.com/r/linuxquestions/comments/pgv7hm/whats_actually_setting_the_path_variable/"><no value=""></no></a><br> in<a href="https://www.reddit.com/r/linuxquestions/">linuxquestions</a></blockquote><script async="" src="https://embed.reddit.com/widgets.js" charset="UTF-8"></script>
+> I always get the feeling that nobody knows what a PATH is and at this point they are too afraid to ask.
+
+\[[source](https://www.reddit.com/r/linuxquestions/comments/pgv7hm/comment/hbf3bno/)\]
 
 ## Development notes
 
 - Neither `justpath` nor any child process cannot modify your shell `PATH`, just view it.
-- See <links.md> for more tribal knowledge about `PATH`.
+- See [links.md](links.md) for more tribal knowledge about `PATH`.
 
 ## Alternatives
 
