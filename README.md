@@ -8,7 +8,7 @@ Explore PATH environment variable on both Windows and Linux.
 
 ## Basic usage
 
-What directories are part of PATH? Use `echo $PATH | tr ";" "\n"` or
+What directories are part of PATH? Use `echo $PATH | tr ";" "\n"` on Linux or
 
 ```console
 justpath show
@@ -28,7 +28,8 @@ justpath show --includes bin
 
 ## Useful cases
 
-More complex cases are easier with `justpath` than with bash on Linux or batch files in Windows.
+Unless you are very skilled with bash or batch scripts, more complex cases
+are easier to achieve with `justpath`.
 
 ### Filter directory names
 
@@ -48,9 +49,11 @@ $ justpath show --sort --includes windows --excludes system32
 
 ### Directory does not exist
 
-`justpath` will indicate if path does not exist or path is not a dicrectory.
+`justpath` will indicate if path does not exist or path is not a directory.
 
-Below is an example from Github Codespaces, somehow `/usr/local/sdkman/candidates/ant/current/bin` does not exist, but included in `PATH`.
+Below is an example from Github Codespaces, for some reason
+`/usr/local/sdkman/candidates/ant/current/bin` does not exist,
+but included in `PATH`.
 
 ```console
 $ poetry run justpath show --sort --includes sdkman
@@ -88,22 +91,22 @@ Use `--errors` flag to explore what is parts of PATH are not valid and why.
 
 ### Dump `PATH` as JSON
 
-There should be a clever bash one-liner for this, but in `justpath` you can do
-to dump a list of paths from `PATH`. You may add `--purge` flag to show only correct
-paths.
+There should be a clever one-liner for this,
+but in `justpath` you can dump a list of paths from `PATH` to JSON.
+You may add `--purge` flag to list only correct paths.
 
 ```
-justpath show --json --purge
+justpath show --purge --json
 ```
 
-### Create a new content string for `PATH`
+### Create new content string for `PATH`
 
 You can get a valid string for your PATH in a format native to your operating system
 using `--string` ouput flag.
 
 ```console
 λ justpath show --purge --string
-C:\tools\Cmder\bin;C:\tools\Cmder\vendor\bin;C:\Windows\system32;C:\Windows
+C:\tools\Cmder\bin;C:\tools\Cmder\vendor\bin;C:\Windows\system32;C:\Windows;...
 ```
 
 ## Installation
