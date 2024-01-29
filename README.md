@@ -1,7 +1,7 @@
 # justpath
 
 [![Reddit](https://img.shields.io/badge/Reddit-%23FF4500.svg?style=flat&logo=Reddit&logoColor=white)](https://www.reddit.com/r/Python/comments/1ac7fao/pathit_just_show_me_my_path_in_way_i_can_read_it/)
-![PyPI - Version](https://img.shields.io/pypi/v/justpath)
+[![PyPI - Version](https://img.shields.io/pypi/v/justpath)](https://pypi.org/project/justpath/)
 
 Explore PATH environment variable on both Windows and Linux.
 
