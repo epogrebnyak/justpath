@@ -4,34 +4,43 @@
 [![PyPI - Version](https://img.shields.io/pypi/v/justpath)](https://pypi.org/project/justpath/)
 [![CI](https://github.com/epogrebnyak/justpath/actions/workflows/python-package.yml/badge.svg)](https://github.com/epogrebnyak/justpath/actions/workflows/python-package.yml)
 
-Explore PATH environment variable on both Windows and Linux.
+Explore and correct PATH environment variable on both Windows and Linux.
 
 ## Basic usage
 
-What directories are part of PATH? Use `echo $PATH | tr ";" "\n"` on Linux or
+What directories are part of PATH?
 
 ```console
 justpath show
 ```
 
-Sort them alphabetically. Use `echo $PATH | tr ";" "\n" | sort` or
+Sort them alphabetically:
 
 ```console
 justpath show --sort
 ```
 
-What are the paths with `bin`? Use `echo $PATH | tr ";" "\n" | grep bin` or
+What are the paths with `bin`?
 
 ```console
 justpath show --includes bin
 ```
 
+Are there any errors on PATH?
+
+```console
+justpath show --errors
+```
+
+What is the correct PATH with no errors?
+
+```console
+justpath show --correct --string
+```
+
 ## Useful cases
 
-Unless you are very skilled with bash or batch scripts, more complex cases
-are easier to achieve with `justpath`.
-
-### Filter directory names
+### 1. Filter directory names
 
 `justpath` allows to filter paths that must or must not include a certain string.
 Filtering is case insensitive, `--includes windows` and `--includes Windows` will
@@ -47,7 +56,7 @@ $ justpath show --sort --includes windows --excludes system32
 12 C:\tools\Cmder\vendor\git-for-windows\usr\bin
 ```
 
-### Directory does not exist
+### 2. Directory does not exist or not a directory
 
 `justpath` will indicate if path does not exist or path is not a directory.
 
@@ -64,48 +73,50 @@ $ poetry run justpath show --sort --includes sdkman
 22 /usr/local/sdkman/candidates/maven/current/bin
 ```
 
-Use `--errors` flag to explore what is parts of PATH are not valid and why.
-
-```console
-λ justpath show --errors
-50 C:\tools\Cmder\vendor\git-for-windows\usr\share\vim\vim74 (directory does not exist)
-```
-
-### Purge invalid paths
-
-`--purge` flag will drop invalid paths from listing.
+I changed my local files a bit to provide this example.
 
 ```console
 λ justpath show --includes quarto
 33 C:\Program Files\Quarto\bin
 41 D:\Quarto\bin
 50 x:\quarto\does_not_exist (directory does not exist)
-51 d:\quarto\this_is_a_file (it's a file, not a directory)
+51 d:\quarto\this_is_a_file (not a directory)
 ```
 
+Use `--errors` flag to explore what is parts of PATH are not valid and why.
+
 ```console
-λ justpath show --includes quarto --purge
+λ justpath show --includes quarto --errors
+50 x:\quarto\does_not_exist (directory does not exist)
+51 d:\quarto\this_is_a_file (not a directory)
+```
+
+### 3. Purge invalid paths
+
+`--correct` flag will drop invalid paths from listing.
+
+```console
+λ justpath show --includes quarto --correct
 33 C:\Program Files\Quarto\bin
 41 D:\Quarto\bin
 ```
 
-### Dump `PATH` as JSON
+### 4. Dump `PATH` as JSON
 
-There should be a clever one-liner for this,
-but in `justpath` you can dump a list of paths from `PATH` to JSON.
-You may add `--purge` flag to list only correct paths.
+`justpath` you can dump a list of paths from `PATH` to JSON.
+You may add `--correct` flag to list only correct paths.
 
 ```
-justpath show --purge --json
+justpath show --correct --json
 ```
 
-### Create new content string for `PATH`
+### 5. Create new content string for `PATH`
 
 You can get a valid string for your PATH in a format native to your operating system
 using `--string` ouput flag.
 
 ```console
-λ justpath show --purge --string
+λ justpath show --correct --string
 C:\tools\Cmder\bin;C:\tools\Cmder\vendor\bin;C:\Windows\system32;C:\Windows;...
 ```
 
@@ -149,14 +160,23 @@ pathit --help
 
 ## Motivation
 
-PATH environment variable syntax on Windows vs Linux a bit scare me,
+PATH environment variable syntax on Windows vs Linux scares me a bit,
 so I wrote this utility to be able to explore PATH more easily.
 
-## Notes
+I think this quote about `PATH` is quite to the point:
 
-1. Neither `justpath` nor any child process cannot modify your shell PATH, just view it.
-2. Yes, you can run `echo $PATH | tr ";" "\n" | sort` instead of `justpath show --sort` on Linux.
-3. Even better tools than `justpath` may exist:
-   - [Rapid Environment Editor](https://www.rapidee.com/en/path-variable) for Windows is a gem (no affiliation, just a thankful user).
-   - Maybe some smart command-line utility in Rust will emerge for PATH, but [not there yet](https://gist.github.com/sts10/daadbc2f403bdffad1b6d33aff016c0a).
-   - There is [pathdebug](https://github.com/d-led/pathdebug) written in Go that goes a step futher and attempts to trace where your PATH is defined.
+<blockquote class="reddit-embed-bq" data-embed-height="240"><a href="https://www.reddit.com/r/linuxquestions/comments/pgv7hm/comment/hbf3bno/">Comment</a><br> by<a href="https://www.reddit.com/user/SweeTLemonS_TPR/">u/SweeTLemonS_TPR</a> from discussion<a href="https://www.reddit.com/r/linuxquestions/comments/pgv7hm/whats_actually_setting_the_path_variable/"><no value=""></no></a><br> in<a href="https://www.reddit.com/r/linuxquestions/">linuxquestions</a></blockquote><script async="" src="https://embed.reddit.com/widgets.js" charset="UTF-8"></script>
+
+## Development notes
+
+- Neither `justpath` nor any child process cannot modify your shell `PATH`, just view it.
+- See <links.md> for more tribal knowledge about `PATH`.
+
+## Alternatives
+
+Even better tools than `justpath` may exist.
+
+- On Linux you can run `echo $PATH | tr ";" "\n" | sort | grep bin` instead of trivial parts of `justpath`.
+- [Rapid Environment Editor](https://www.rapidee.com/en/path-variable) for Windows is a gem (no affiliation, just a thankful user).
+- Maybe some smart command-line utility in Rust will emerge for PATH, but [not there yet](https://gist.github.com/sts10/daadbc2f403bdffad1b6d33aff016c0a).
+- There is [pathdebug](https://github.com/d-led/pathdebug) written in Go that goes a step futher and attempts to trace where your PATH is defined.

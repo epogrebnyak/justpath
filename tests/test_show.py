@@ -9,11 +9,14 @@ commands = [
     ["--help"],
     ["stats"],
     ["show", "--errors"],
-    ["show", "--sort", "--includes", "mingw", "--strip"],
+    ["show", "--sort", "--includes", "mingw", "--excludes", "tools", "--strip"],
+    ["show", "--correct", "--string"],
 ]
 
 
-@pytest.mark.parametrize("args", commands + [["raw"]])
+@pytest.mark.parametrize(
+    "args", commands + [["raw"]]
+)  # raw give a fault with non-latin characters
 def test_it_runs_with_cli_runner(args):
     runner = CliRunner()
     result = runner.invoke(typer_app, args)
