@@ -6,8 +6,8 @@ from json import dumps
 from pathlib import Path
 from typing import Annotated
 
-from typer import Option, Typer
 from colorama import Fore
+from typer import Option, Typer
 
 
 def get_paths() -> list[str]:
@@ -76,21 +76,20 @@ def show(
     includes: option("Show paths that include a specific string.", str) = "",  # type: ignore
     excludes: option("Show paths that do not include a specific string.", str) = "",  # type: ignore
     purge: option("Exclude invalid paths.") = False,  # type: ignore
-    expand: option("Expand environment variables.") = False,  # type: ignore
-    hide_numbers: option("Hide numbers that indicate path order in PATH.") = False,  # type: ignore
+    strip: option("Hide extra information about paths.") = False,  # type: ignore
     color: option("Use color to highlight errors.") = True,  # type: ignore
     string: option("Print a single string suitable as PATH content.") = False,  # type: ignore
     json: option("Format output as JSON.") = False,  # type: ignore
 ):
     """Show directories from PATH."""
     paths = PathVar.populate().tuples()
-    paths = modify_paths(paths, errors, sort, includes, excludes, purge, expand)
+    paths = modify_paths(paths, errors, sort, includes, excludes, purge)
     if string:
         print(as_string(paths))
     elif json:
         print(dumps([str(path) for _, path in paths], indent=2))
     else:
-        print_paths(paths, color, hide_numbers)
+        print_paths(paths, color, strip)
 
 
 def first(x):
@@ -101,8 +100,8 @@ def second(x):
     return x[1]
 
 
-def modify_paths(paths, errors, sort, includes, excludes, purge, expand):
-    paths = [(i, os.path.realpath(path)) for i, path in paths]
+def modify_paths(paths, errors, sort, includes, excludes, purge):
+    paths = [(i, Path(os.path.realpath(path))) for i, path in paths]
     if sort:
         paths = sorted(paths, key=second)
     if errors:
@@ -117,30 +116,32 @@ def modify_paths(paths, errors, sort, includes, excludes, purge, expand):
         ]
     if purge:
         paths = [(i, path) for i, path in paths if not is_valid(path)]
-    if expand:
-        paths = [(i, os.path.expandvars(path)) for i, path in paths]
+    # probably already handled by os.path.realpath
+    # if expand:
+    #     paths = [(i, os.path.expandvars(path)) for i, path in paths]
     return paths
     # TODO: control for duplicates, keep the first duplicate in a list
 
 
-def print_paths(paths, color, hide_numbers):
-    n = len(str(max(map(first, paths))))
+def print_paths(paths, color, strip):
+    last_number = max([0] + [i for i, _ in paths])
+    n = len(str(last_number))
 
     def offset(k: int) -> str:
         return str(k).rjust(n)
 
     for i, path in paths:
-        prefix = ""
+        modifier = ""
         if color:
-            prefix = Fore.RED
+            modifier = Fore.RED
             if os.path.exists(path) and os.path.isdir(path):
-                prefix = Fore.GREEN
-        if hide_numbers:
-            print(prefix + path)
+                modifier = Fore.GREEN
+        if strip:
+            print(modifier + str(path))
         else:
             postfix = ""
             if not os.path.exists(path):
                 postfix = "(directory does not exist)"
             elif not os.path.isdir(path):
                 postfix = "(not a directory)"
-            print(prefix + offset(i), path, postfix)
+            print(modifier + offset(i), path, postfix)
