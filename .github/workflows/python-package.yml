@@ -19,5 +19,6 @@ jobs:
         uses: abatilo/actions-poetry@v2
         with:
           poetry-version: ${{ matrix.poetry-version }}
-      - run: poetry install
+      - run: poetry install      
+      - run: pip install -e . # this is for Windows runnable justpath.exe to exist
       - run: poetry run pytest
