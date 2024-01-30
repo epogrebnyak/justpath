@@ -186,3 +186,5 @@ Even better tools than `justpath` may exist.
   is a gem (no affiliation).
 - Maybe some smart command-line utility in Rust will emerge for PATH,
   but [not there yet](https://gist.github.com/sts10/daadbc2f403bdffad1b6d33aff016c0a).
+- There is [pathdebug](https://github.com/d-led/pathdebug) written in Go
+  that goes a step futher and attempts to trace where your PATH is defined.
