@@ -1,6 +1,7 @@
 """Explore PATH environment variable and demonstrate how to modify it."""
 
 import os
+import sys
 from collections import UserDict
 from json import dumps
 from pathlib import Path
@@ -73,9 +74,9 @@ def show(
     sort: option("Sort output alphabetically.") = False,  # type: ignore
     errors: option("Show invalid paths only.") = False,  # type: ignore
     duplicates: option("Show duplicate paths only.") = False,  # type: ignore
+    correct: option("Drop invalid or duplicate paths.") = False,  # type: ignore
     includes: option("Show paths that include a specific string.", str) = "",  # type: ignore
     excludes: option("Show paths that do not include a specific string.", str) = "",  # type: ignore
-    correct: option("Drop invalid paths.") = False,  # type: ignore
     strip: option("Hide extra information about paths.") = False,  # type: ignore
     color: option("Use color to highlight errors.") = True,  # type: ignore
     string: option("Print a single string suitable as PATH content.") = False,  # type: ignore
@@ -83,7 +84,7 @@ def show(
 ):
     """Show directories from PATH."""
     paths = PathVar.populate().tuples()
-    paths = modify_paths(paths, errors, sort, includes, excludes, correct)
+    paths = modify_paths(paths, duplicates, errors, sort, includes, excludes, correct)
     if string:
         print(as_string(paths))
     elif json:
@@ -92,40 +93,37 @@ def show(
         print_paths(paths, color, strip)
 
 
-def first(x):
-    return x[0]
-
-
 def second(x):
     return x[1]
 
 
-def modify_paths(paths, errors, sort, includes, excludes, correct):
+def modify_paths(paths, duplicates, errors, sort, includes, excludes, correct):
     paths = [(i, Path(os.path.realpath(path))) for i, path in paths]
+    if duplicates:
+        sys.exit("`--duplicates` flag not implemented yet.")
     if sort:
         paths = sorted(paths, key=second)
+    if includes:
+        paths = [(i, p) for i, p in paths if includes.lower() in str(p).lower()]
+    if excludes:
+        paths = [(i, p) for i, p in paths if excludes.lower() not in str(p).lower()]
     if errors:
         paths = [(i, path) for i, path in paths if not is_valid(path)]
-    if includes:
-        paths = [
-            (i, path) for i, path in paths if includes.lower() in str(path).lower()
-        ]
-    if excludes:
-        paths = [
-            (i, path) for i, path in paths if excludes.lower() not in str(path).lower()
-        ]
     if correct:
-        paths = [(i, path) for i, path in paths if not is_valid(path)]
-    # probably already handled by os.path.realpath
-    # if expand:
-    #     paths = [(i, os.path.expandvars(path)) for i, path in paths]
+        paths = [(i, path) for i, path in paths if is_valid(path)]
     return paths
-    # TODO: control for duplicates, keep the first duplicate in a list
+
+
+def n_positions(xs: list[int]) -> int:
+    if xs:
+        return len(str(max(xs)))
+    else:
+        # sometimes xs may be empty
+        return 0
 
 
 def print_paths(paths, color, strip):
-    last_number = max([0] + [i for i, _ in paths])
-    n = len(str(last_number))
+    n = n_positions([i for i, _ in paths])
 
     def offset(k: int) -> str:
         return str(k).rjust(n)

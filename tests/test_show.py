@@ -9,17 +9,17 @@ commands = [
     ["--help"],
     ["count"],
     ["count", "--json"],
-    ["show", "--errors"],    
+    ["show", "--errors"],
     ["show", "--sort", "--includes", "mingw", "--excludes", "tools", "--strip"],
-    ["show", "--correct", "--string"],
 ]
 
-# raw command gives a fault with non-latin characters in subprocess call
-more_commands = [["raw"]]
+# several commands give a fault with non-latin characters in subprocess call
+# UnicodeEncodeError: 'charmap' codec can't encode characters in position \n894-900
+# these commands are not tested with subprocess
+more_commands = [["raw"], ["show", "--correct", "--string"]]
 
-@pytest.mark.parametrize(
-    "args", commands + more_commands
-)  
+
+@pytest.mark.parametrize("args", commands + more_commands)
 def test_it_runs_with_cli_runner(args):
     runner = CliRunner()
     result = runner.invoke(typer_app, args)
