@@ -6,7 +6,10 @@
 
 [reddit]: https://www.reddit.com/r/Python/comments/1aehs4i/clean_path_of_nonexistent_directories_with/
 
-Explore and correct PATH environment variable on both Windows and Linux.
+It's a revolutionary... AI-powered... innovative... Yet no.
+
+Just a simple utility to explore and generate `PATH` environment variable
+on both Windows and Linux.
 
 ## Basic usage
 
@@ -16,13 +19,15 @@ What directories are part of PATH?
 justpath show
 ```
 
-Sort them alphabetically:
+Sort them alphabetically[^1]:
 
 ```console
 justpath show --sort
 ```
 
-What are the paths with `bin`?
+[^1]: Sorting helps to view and analyze `PATH`. Do not put a sorted `PATH` back on your system as you are likely to loose useful information about path resolution order.
+
+What are the paths that contain `bin` string?
 
 ```console
 justpath show --includes bin
@@ -114,6 +119,9 @@ justpath show --correct --json
 
 ### 5. Create new content string for `PATH`
 
+With `justpath` you can create new `PATH` contents and use it in your shell startup script.
+As any child process `justpath` itself cannot modify PATH in your current environment.
+
 You can get a valid string for your PATH in a format native to your operating system
 using `--string` ouput flag.
 
@@ -133,31 +141,23 @@ pip install justpath
 ### Development version
 
 ```console
-git clone https://github.com/epogrebnyak/what-the-path.git
-cd what-the-path
+git clone https://github.com/epogrebnyak/justpath.git
+cd justpath
 pip install -e .
 ```
 
 or shorter:
 
 ```console
-pip install git+https://github.com/epogrebnyak/what-the-path.git
+pip install git+https://github.com/epogrebnyak/justpath.git
 ```
 
-## CLI tools
+## CLI tool
 
-After installation you will get two aliases for the same command line tool.
-
-Preferred:
+After installation you can try the command line script:
 
 ```
 justpath --help
-```
-
-Being depreciated:
-
-```
-pathit --help
 ```
 
 ## Motivation
@@ -180,7 +180,9 @@ so I wrote this utility to be able to explore PATH more easily.
 
 Even better tools than `justpath` may exist.
 
-- On Linux you can run `echo $PATH | tr ";" "\n" | sort | grep bin` instead of trivial parts of `justpath`.
-- [Rapid Environment Editor](https://www.rapidee.com/en/path-variable) for Windows is a gem (no affiliation, just a thankful user).
-- Maybe some smart command-line utility in Rust will emerge for PATH, but [not there yet](https://gist.github.com/sts10/daadbc2f403bdffad1b6d33aff016c0a).
-- There is [pathdebug](https://github.com/d-led/pathdebug) written in Go that goes a step futher and attempts to trace where your PATH is defined.
+- On Linux you can run `echo $PATH | tr ";" "\n"` to view your path line by line and
+  combine it with `grep` to gain more insights.
+- [Rapid Environment Editor](https://www.rapidee.com/en/path-variable) for Windows
+  is a gem (no affiliation).
+- Maybe some smart command-line utility in Rust will emerge for PATH,
+  but [not there yet](https://gist.github.com/sts10/daadbc2f403bdffad1b6d33aff016c0a).
