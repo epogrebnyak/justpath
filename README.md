@@ -174,7 +174,7 @@ so I wrote this utility to be able to explore PATH more easily.
 ## Development notes
 
 - Neither `justpath` nor any child process cannot modify your shell `PATH`, just view it.
-- See [links.md](links.md) for more tribal knowledge about `PATH`.
+- See [links.md](docs/links.md) for more tribal knowledge about `PATH`.
 
 ## Alternatives
 
