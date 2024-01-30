@@ -47,7 +47,7 @@ Filtering is case insensitive, `--includes windows` and `--includes Windows` wil
 produce the same result.
 
 ```console
-$ justpath show --sort --includes windows --excludes system32
+λ justpath show --sort --includes windows --excludes system32
 39 C:\Users\Евгений\AppData\Local\Microsoft\WindowsApps
 24 C:\WINDOWS
 14 C:\Windows
@@ -65,7 +65,7 @@ Below is an example from Github Codespaces, for some reason
 but included in `PATH`.
 
 ```console
-$ poetry run justpath show --sort --includes sdkman
+λ justpath show --sort --includes sdkman
 19 /usr/local/sdkman/bin
 23 /usr/local/sdkman/candidates/ant/current/bin (directory does not exist)
 21 /usr/local/sdkman/candidates/gradle/current/bin
@@ -73,7 +73,7 @@ $ poetry run justpath show --sort --includes sdkman
 22 /usr/local/sdkman/candidates/maven/current/bin
 ```
 
-I changed my local files a bit to provide this example.
+Added file `touch d:\quarto\this_is_a_file` for example below.
 
 ```console
 λ justpath show --includes quarto
