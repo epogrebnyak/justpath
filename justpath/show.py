@@ -2,7 +2,8 @@
 
 import os
 import sys
-from collections import UserDict
+from collections import Counter, UserDict
+from dataclasses import dataclass
 from json import dumps
 from pathlib import Path
 from typing import Annotated
@@ -30,6 +31,10 @@ class PathVar(UserDict[int, Path]):
     def tuples(self) -> list[tuple[int, Path]]:
         return [(i, p) for i, p in self.data.items()]
 
+    @property
+    def max_digits(self):
+        return len(str(max(self.keys()))) if self.keys() else 0
+
 
 def as_string(paths: list[tuple[int, Path]]) -> str:
     return os.pathsep.join([str(path) for _, path in paths])
@@ -37,6 +42,37 @@ def as_string(paths: list[tuple[int, Path]]) -> str:
 
 def is_valid(path: Path) -> bool:
     return path.exists() and path.is_dir()
+
+
+@dataclass
+class Duplicate:
+    count: int
+
+
+@dataclass
+class Row:
+    i: int
+    path: Path
+    count: int
+    error: FileNotFoundError | NotADirectoryError | None = None
+
+
+def get_error(path: Path):
+    if not os.path.exists(path):
+        return FileNotFoundError
+    elif not os.path.isdir(path):
+        return NotADirectoryError
+    else:
+        return None
+
+
+def to_rows(path_var: PathVar) -> list[Row]:
+    counter = Counter([os.path.realpath(p) for p in path_var.values()])
+    rows = []
+    for i, path in path_var.items():
+        row = Row(i, path, counter[os.path.realpath(path)], get_error(path))
+        rows.append(row)
+    return rows
 
 
 typer_app = Typer(
@@ -48,6 +84,36 @@ typer_app = Typer(
 def raw():
     """Print PATH as is. Same as `justpath show --string`."""
     print(os.environ["PATH"])
+
+
+def print_row(row, color, n):
+    def offset(k: int) -> str:
+        return str(k).rjust(n)
+
+    modifier = ""
+    if color:
+        modifier = Fore.GREEN
+        if row.error is not None:
+            modifier = Fore.RED
+        elif row.count > 1:
+            modifier = Fore.YELLOW
+    postfixes = []
+    if row.error == FileNotFoundError:
+        postfixes.append("directory does not exist")
+    elif row.error == NotADirectoryError():
+        postfixes.append("not a directory")
+    if (n := row.count) > 1:
+        postfixes.append(f"duplicates: {n}")
+    last = "(" + ", ".join(postfixes) + ")" if postfixes else ""
+    print(modifier + offset(row.i), row.path, last)
+
+
+@typer_app.command()
+def rows():
+    path_var = PathVar.populate()
+    rows = to_rows(PathVar.populate())
+    for row in rows:
+        print_row(row, color=True, n=path_var.max_digits)
 
 
 @typer_app.command()

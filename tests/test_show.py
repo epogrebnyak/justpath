@@ -16,7 +16,7 @@ commands = [
 # several commands give a fault with non-latin characters in subprocess call
 # UnicodeEncodeError: 'charmap' codec can't encode characters in position \n894-900
 # these commands are not tested with subprocess
-more_commands = [["raw"], ["show", "--correct", "--string"]]
+more_commands = [["raw"], ["rows"], ["show", "--correct", "--string"]]
 
 
 @pytest.mark.parametrize("args", commands + more_commands)
