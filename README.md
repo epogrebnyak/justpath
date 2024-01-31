@@ -13,7 +13,13 @@ on both Windows and Linux.
 
 ## Basic usage
 
-What directories are part of PATH?
+What is the content of `PATH`?
+
+```
+justpath raw
+```
+
+List directories that part of `PATH` line by line.
 
 ```console
 justpath show
@@ -33,13 +39,19 @@ What are the paths that contain `bin` string?
 justpath show --includes bin
 ```
 
-Are there any errors on PATH?
+Are there any errors on `PATH`?
 
 ```console
 justpath show --errors
 ```
 
-What is the correct PATH with no errors?
+Are there any duplicate directories?
+
+```console
+justpath show --duplicates
+```
+
+What is the correct `PATH` with no errors?
 
 ```console
 justpath show --correct --string
