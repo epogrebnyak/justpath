@@ -3,10 +3,6 @@
 # python -c "import os; os.environ['STATE'] = 'Мэн'; print(os.environ['STATE'])"
 
 
-
-
-
-
 import os
 import subprocess
 
@@ -20,7 +16,7 @@ print(t)
 command = """
 import os; os.environ['STATE'] = 'Мэн'; print(os.environ['STATE'])
 """
-#import sys
+# import sys
 # sys.stdout.reconfigure(encoding='utf-8')
 
 print("\nAttempting to run subporcess:", command)
@@ -28,9 +24,9 @@ print("\nAttempting to run subporcess:", command)
 cmd = "; ".join(command.strip().split("\n"))
 result = subprocess.run(
     ["python", "-c", cmd],
-    #text=True,
+    # text=True,
     capture_output=True,
-    #encoding="utf8"
+    # encoding="utf8"
 )
 print("\nResult (stdout):")
 print(repr(result.stdout))
