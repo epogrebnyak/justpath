@@ -15,11 +15,11 @@ on both Windows and Linux.
 
 What is the content of `PATH`?
 
-```
+```console
 justpath raw
 ```
 
-List directories that part of `PATH` line by line.
+List directories in `PATH` line by line.
 
 ```console
 justpath show
