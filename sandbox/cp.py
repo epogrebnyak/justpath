@@ -19,6 +19,10 @@ import subprocess
 # https://github.com/python/cpython/issues/105312
 
 
+# > If you set PYTHONIOENCODING=utf-8 before launching, it will write UTF-8, 
+# > and provided your subprocess call is expecting it (through using the encoding= 
+# > argument, rather than the discouraged text=True argument), you shouldn't have a problem.
+
 # result = subprocess.run(
 #     ["python", "-c", "print('Делавер')"],
 #     capture_output=True,
