@@ -5,8 +5,10 @@ from typer.testing import CliRunner
 
 from justpath.show import typer_app, unseen_before
 
+
 def test_unseen_before():
     assert unseen_before([1, 2, 2, 1, 0]) == [1, 2, 0]
+
 
 commands = [
     ["--help"],
@@ -15,7 +17,9 @@ commands = [
     ["--bare"],
     ["--sort", "--includes", "mingw", "--excludes", "tools"],
     ["--invalid"],
-    ["--purge-invalid-paths"],
+    ["--purge-invalid"],
+    ["--duplicates"],
+    ["--purge-duplicates"],
     ["--correct"],
 ]
 

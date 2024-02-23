@@ -1,5 +1,5 @@
 # https://www.reddit.com/r/learnpython/comments/1afcb97/how_to_make_subprocessrun_guess_the_enconding_of/
-# set PYTHONIOENCODING=utf-8 
+# set PYTHONIOENCODING=utf-8
 # python -c "import os; os.environ['STATE'] = 'Мэн'; print(os.environ['STATE'])"
 
 

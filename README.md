@@ -79,19 +79,19 @@ justpath --duplicates
 What is the `PATH` without invalid paths and duplicates?
 
 ```console
-justpath --purge-invalid-paths --purge-duplicates
+justpath --purge-invalid --purge-duplicates
 ```
 
 More concise:
 
 ```console
-justpath --clean
+justpath --correct
 ```
 
 A clean `PATH` string in OS-native format:
 
 ```console
-justpath --clean --string
+justpath --correct --string
 ```
 
 ## Useful cases
@@ -157,7 +157,7 @@ Use `--invalid` flag to explore what is parts of PATH do not exist.
 41 D:\Quarto\bin
 ```
 
-`--correct` flag is the same as applying both `--purge-invalid-paths` and `--purge-duplicates`
+`--correct` flag is the same as applying both `--purge-invalid` and `--purge-duplicates`
 flag.
 
 ### 4. Dump `PATH` as JSON

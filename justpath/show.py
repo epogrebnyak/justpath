@@ -71,7 +71,7 @@ def show_stats(json: bool = False):
     t = len(path_var)
     rows = to_rows(path_var)
     e = sum([1 for row in rows if row.has_error])
-    d = sum([1 for row in rows if row.count > 1]) 
+    d = sum([1 for row in rows if row.count > 1])
     if json:
         info = dict(total=t, invalid=e, duplicates=d)
         print(dumps(info))
@@ -91,9 +91,9 @@ def show(
     count: option("Print number of directories in your PATH.") = False,  # type: ignore
     sort: option("Sort output alphabetically.") = False,  # type: ignore
     invalid: option("Show invalid paths only.") = False,  # type: ignore
-    purge_invalid_paths: option("Exclude invalid paths.") = False,  # type: ignore
+    purge_invalid: option("Exclude invalid paths.") = False,  # type: ignore
     duplicates: option("Show duplicate paths only.") = False,  # type: ignore
-    purge_duplicate_paths: option("Exclude duplicate paths.") = False,  # type: ignore
+    purge_duplicates: option("Exclude duplicate paths.") = False,  # type: ignore
     correct: option("Exclude invalid and duplicate paths.") = False,  # type: ignore
     includes: option("Show paths that include a specific string.", str) = "",  # type: ignore
     excludes: option("Show paths that do not include a specific string.", str) = "",  # type: ignore
@@ -112,15 +112,15 @@ def show(
     path_var = PathVar.populate()
     rows = to_rows(path_var)
     if correct:
-        purge_duplicate_paths = True
-        purge_invalid_paths = True
+        purge_duplicates = True
+        purge_invalid = True
     rows = modify_rows(
         rows,
         sort,
         duplicates,
-        purge_duplicate_paths,
+        purge_duplicates,
         invalid,
-        purge_invalid_paths,
+        purge_invalid,
         includes,
         excludes,
     )
@@ -142,9 +142,9 @@ def modify_rows(
     rows,
     sort,
     duplicates,
-    purge_duplicate_paths,
+    purge_duplicates,
     invalid,
-    purge_invalid_paths,
+    purge_invalid,
     includes,
     excludes,
 ):
@@ -152,12 +152,12 @@ def modify_rows(
         rows = sorted(rows, key=lambda r: realpath(r.path))
     if duplicates:
         rows = [row for row in rows if row.count > 1]
-    if purge_duplicate_paths:
-        rows = unseen_before(rows)
+    if purge_duplicates:
+        rows = no_duplicates(rows)
     if invalid:
         rows = [row for row in rows if row.has_error]
-    if purge_invalid_paths:
-        rows = purge_duplicates(rows)
+    if purge_invalid:
+        rows = [row for row in rows if not row.has_error]
     if includes:
         rows = [row for row in rows if includes.lower() in realpath(row.path).lower()]
     if excludes:
@@ -195,23 +195,25 @@ def print_row(row: Row, color: bool, n: int):
     postfix = get_postfix(row)
     print(modifier + str(row.i).rjust(n), str(row.path), postfix)
 
+
 def unseen_before(xs):
     seen = set()
     return [x for x in xs if not (x in seen or seen.add(x))]
 
-def purge_duplicates(rows):
+
+def no_duplicates(rows):
     paths = [realpath(r.path).lower() for r in rows]
-    print(paths)
-    print(unseen_before(paths))
     return make_rows(unseen_before(paths))
+
 
 def make_rows(paths: list[str]) -> list[Row]:
     counter = Counter([realpath(p) for p in paths])
     rows = []
     for i, path in enumerate(paths):
-        row = Row(i, path, counter[realpath(path)])
+        row = Row(i, Path(path), counter[realpath(path)])
         rows.append(row)
-    return rows    
+    return rows
+
 
 def to_rows(path_var: PathVar) -> list[Row]:
-    return  make_rows(path_var.values())
+    return make_rows([str(p) for p in path_var.values()])
