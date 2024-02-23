@@ -2,7 +2,6 @@
 
 import os
 import sys
-from collections import UserDict
 from collections import Counter, UserDict
 from dataclasses import dataclass
 from json import dumps
@@ -78,14 +77,18 @@ def show_stats(json: bool = False):
     """Number of directories in your PATH."""
     path_var = PathVar.populate()
     t = len(path_var)
-    k = sum([1 for row in to_rows(path_var) if row.error is not None])
+    rows = to_rows(path_var)
+    k = sum([1 for row in rows if row.has_error])
+    d = sum([1 for row in rows if row.count > 1]) 
     if json:
-        print(dumps(dict(total=t, exist=k, no_exist=t - k)))
+        info = dict(total=t, exist=k, no_exist=t - k, duplicates=d)
+        print(dumps(info))
     else:
         print("Directories in your PATH")
-        print("  total:      ", t)
-        print("  exist:      ", k)
-        print("  do not exit:", t - k)
+        print("  total:       ", t)
+        print("  exist:       ", k)
+        print("  do not exist:", t - k)
+        print("  duplicates:  ", d)
 
 
 def option(help_: str, t=bool):
@@ -120,7 +123,7 @@ def show(
     rows = to_rows(path_var)
     if correct:
         purge_duplicate_paths = True
-        purge_invalid_paths = True 
+        purge_invalid_paths = True
     rows = modify_rows(
         rows,
         sort,

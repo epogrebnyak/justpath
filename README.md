@@ -12,9 +12,9 @@ Just a simple utility to explore and generate `PATH` environment variable on bot
 
 Note that neither `justpath` nor any child process cannot modify your shell `PATH`, just view it.
 With `justpath` you can get a modified version of `PATH` (e.g. by excluding non-existent paths),
-and later you can use the generated string in at your shell start.
+and later you can use the generated string in your shell startup start.
 
-## If you are in a hurry
+## Try quickly
 
 Install:
 
@@ -26,11 +26,10 @@ Try the following:
 
 ```console
 justpath
-justpath --raw
-justpath --bare
 justpath --invalid
 justpath --duplicates
 justpath --correct
+justpath --correct --string
 ```
 
 ## Basic usage
@@ -47,7 +46,7 @@ List directories in `PATH` line by line.
 justpath
 ```
 
-Same as above, no line numbers, no comments, no color, just bare text.
+Same as above, but no line numbers, no comments, no color, just bare text.
 
 ```console
 justpath --bare --no-color
@@ -82,10 +81,16 @@ justpath --duplicates
 What is the correct `PATH` with no invalid paths and no duplicates?
 
 ```console
-justpath --purge-invalid-paths --purge-duplicates --string
+justpath --purge-invalid-paths --purge-duplicates
 ```
 
 More concise:
+
+```console
+justpath --clean
+```
+
+A clean `PATH` string in OS-native format:
 
 ```console
 justpath --clean --string
@@ -100,7 +105,7 @@ Filtering is case insensitive, `--includes windows` and `--includes Windows` wil
 produce the same result.
 
 ```console
-λ justpath show --sort --includes windows --excludes system32
+λ justpath --sort --includes windows --excludes system32
 39 C:\Users\Евгений\AppData\Local\Microsoft\WindowsApps
 24 C:\WINDOWS
 14 C:\Windows
@@ -118,7 +123,7 @@ Below is an example from Github Codespaces, for some reason
 but included in `PATH`.
 
 ```console
-λ justpath show --sort --includes sdkman
+λ justpath --sort --includes sdkman
 19 /usr/local/sdkman/bin
 23 /usr/local/sdkman/candidates/ant/current/bin (directory does not exist)
 21 /usr/local/sdkman/candidates/gradle/current/bin
@@ -129,30 +134,33 @@ but included in `PATH`.
 Added file `touch d:\quarto\this_is_a_file` for example below.
 
 ```console
-λ justpath show --includes quarto
+λ justpath --includes quarto
 33 C:\Program Files\Quarto\bin
 41 D:\Quarto\bin
 50 x:\quarto\does_not_exist (directory does not exist)
 51 d:\quarto\this_is_a_file (not a directory)
 ```
 
-Use `--invalid-paths` flag to explore what is parts of PATH are not valid.
+Use `--invalid` flag to explore what is parts of PATH do not exist.
 
 ```console
-λ justpath show --includes quarto --invalid-paths
+λ justpath --includes quarto --invalid
 50 x:\quarto\does_not_exist (directory does not exist)
 51 d:\quarto\this_is_a_file (not a directory)
 ```
 
-### 3. Purge invalid paths
+### 3. Purge incorrect paths
 
 `--correct` flag will drop invalid paths from listing.
 
 ```console
-λ justpath show --includes quarto --correct
+λ justpath --includes quarto --correct
 33 C:\Program Files\Quarto\bin
 41 D:\Quarto\bin
 ```
+
+`--correct` flag is the same as applying both `--purge-invalid-paths` and `--purge-duplicates`
+flag.
 
 ### 4. Dump `PATH` as JSON
 
@@ -160,7 +168,7 @@ Use `--invalid-paths` flag to explore what is parts of PATH are not valid.
 You may add `--correct` flag to list only correct paths.
 
 ```
-justpath show --correct --json
+justpath --correct --json
 ```
 
 ### 5. Create new content string for `PATH`
@@ -172,8 +180,19 @@ You can get a valid string for your PATH in a format native to your operating sy
 using `--string` ouput flag.
 
 ```console
-λ justpath show --correct --string
+λ justpath --correct --string
 C:\tools\Cmder\bin;C:\tools\Cmder\vendor\bin;C:\Windows\system32;C:\Windows;...
+```
+
+### 6. Count directories in `PATH`
+
+```console
+λ justpath --count
+Directories in your PATH
+  total:        39
+  exist:        2
+  do not exist: 37
+  duplicates:   21
 ```
 
 ## Installation
@@ -214,8 +233,8 @@ I think [this quote][quote] about `PATH` is quite right:
 
 [quote]: https://www.reddit.com/r/linuxquestions/comments/pgv7hm/comment/hbf3bno/
 
-PATH environment variable syntax on Windows and on Linux are a bit different,
-so I wrote this utility to be able to explore PATH more easily.
+`PATH` environment variable syntax on Windows and on Linux are a bit different,
+so I wrote this utility to be able to explore `PATH` more easily.
 
 ## Development notes
 
