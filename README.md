@@ -6,8 +6,6 @@
 
 [reddit]: https://www.reddit.com/r/Python/comments/1aehs4i/clean_path_of_nonexistent_directories_with/
 
-It's a revolutionary... AI-powered... innovative... Yet no.
-
 Just a simple utility to explore and generate `PATH` environment variable on both Windows and Linux.
 
 Note that neither `justpath` nor any child process cannot modify your shell `PATH`, just view it.
@@ -72,13 +70,13 @@ Are there any direcotries in `PATH` that do not exist?
 justpath --invalid
 ```
 
-Are there any duplicate directories?
+Are there any duplicate directories in `PATH`?
 
 ```console
 justpath --duplicates
 ```
 
-What is the correct `PATH` with no invalid paths and no duplicates?
+What is the `PATH` without invalid paths and duplicates?
 
 ```console
 justpath --purge-invalid-paths --purge-duplicates
@@ -188,11 +186,14 @@ C:\tools\Cmder\bin;C:\tools\Cmder\vendor\bin;C:\Windows\system32;C:\Windows;...
 
 ```console
 λ justpath --count
-Directories in your PATH
-  total:        39
-  exist:        2
-  do not exist: 37
-  duplicates:   21
+52 directories in your PATH
+1 does not exist
+16 duplicates
+```
+
+```
+λ justpath --count --json
+{"total": 52, "invalid": 1, "duplicates": 16}
 ```
 
 ## Installation
@@ -233,13 +234,13 @@ I think [this quote][quote] about `PATH` is quite right:
 
 [quote]: https://www.reddit.com/r/linuxquestions/comments/pgv7hm/comment/hbf3bno/
 
-`PATH` environment variable syntax on Windows and on Linux are a bit different,
+`PATH` environment variable syntax on Windows and on Linux are different,
 so I wrote this utility to be able to explore `PATH` more easily.
 
 ## Development notes
 
-- See [links.md](docs/links.md) for more tribal knowledge about `PATH`.
-- Few good links about CLI apps
+- See [links.md](docs/links.md) for more about `PATH`.
+- Few good links about CLI apps in general
   - [docopt](http://docopt.org/) is a great package to develop intuition about command line interfaces.
   - [clig](https://clig.dev/) - ton of useful suggestions about CLIs.
   - [12 factor CLI app](https://panlw.github.io/15394417631263.html) - cited by `clig`.

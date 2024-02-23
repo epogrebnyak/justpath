@@ -78,17 +78,15 @@ def show_stats(json: bool = False):
     path_var = PathVar.populate()
     t = len(path_var)
     rows = to_rows(path_var)
-    k = sum([1 for row in rows if row.has_error])
+    e = sum([1 for row in rows if row.has_error])
     d = sum([1 for row in rows if row.count > 1]) 
     if json:
-        info = dict(total=t, exist=k, no_exist=t - k, duplicates=d)
+        info = dict(total=t, invalid=e, duplicates=d)
         print(dumps(info))
     else:
-        print("Directories in your PATH")
-        print("  total:       ", t)
-        print("  exist:       ", k)
-        print("  do not exist:", t - k)
-        print("  duplicates:  ", d)
+        print(t, "directories in your PATH")
+        print(e, "do" if e > 1 else "does", "not exist")
+        print(d, "duplicate" + "s" if d > 1 else "")
 
 
 def option(help_: str, t=bool):
