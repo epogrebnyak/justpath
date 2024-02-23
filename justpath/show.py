@@ -1,6 +1,7 @@
 """Explore PATH environment variable and demonstrate how to modify it."""
 
 import os
+import sys
 from collections import UserDict
 from json import dumps
 from pathlib import Path
@@ -43,25 +44,23 @@ typer_app = Typer(
 )
 
 
-@typer_app.command()
-def raw():
-    """Print PATH as is. Same as `justpath show --string`."""
+def show_raw():
+    """Print PATH as is."""
     print(os.environ["PATH"])
 
 
-@typer_app.command()
-def stats(json: bool = False):
+def show_stats(json: bool = False):
     """Number total and valid of directories in your PATH."""
     path_var = PathVar.populate()
     t = len(path_var)
     k = sum(map(is_valid, path_var.values()))
     if json:
-        print(dumps(dict(total=t, valid=k, errors=t - k)))
+        print(dumps(dict(total=t, exist=k, no_exist=t - k)))
     else:
         print("Directories in your PATH")
-        print("-  total:", t)
-        print("-  valid:", k)
-        print("- errors:", t - k)
+        print("  total:      ", t)
+        print("  exist:      ", k)
+        print("  do not exit:", t - k)
 
 
 def option(help_: str, t=bool):
@@ -70,20 +69,28 @@ def option(help_: str, t=bool):
 
 @typer_app.command()
 def show(
+    raw: option("Print PATH as is.") = False,  # type: ignore 
+    stat: option("Print number of directories in your PATH.") = False,  # type: ignore
     sort: option("Sort output alphabetically.") = False,  # type: ignore
-    errors: option("Show invalid paths only.") = False,  # type: ignore
+    show_errors: option("Show invalid paths only.") = False,  # type: ignore
+    purge_errors: option("Exclude invalid paths.") = False,  # type: ignore
     duplicates: option("Show duplicate paths only.") = False,  # type: ignore
     includes: option("Show paths that include a specific string.", str) = "",  # type: ignore
     excludes: option("Show paths that do not include a specific string.", str) = "",  # type: ignore
-    purge: option("Exclude invalid paths.") = False,  # type: ignore
     strip: option("Hide extra information about paths.") = False,  # type: ignore
     color: option("Use color to highlight errors.") = True,  # type: ignore
     string: option("Print a single string suitable as PATH content.") = False,  # type: ignore
     json: option("Format output as JSON.") = False,  # type: ignore
 ):
     """Show directories from PATH."""
+    if raw:
+        show_raw()
+        sys.exit(0)
+    if stat:
+        show_stats(json)
+        sys.exit(0)
     paths = PathVar.populate().tuples()
-    paths = modify_paths(paths, errors, sort, includes, excludes, purge)
+    paths = modify_paths(paths, sort, show_errors, purge_errors, includes, excludes)
     if string:
         print(as_string(paths))
     elif json:
@@ -100,12 +107,14 @@ def second(x):
     return x[1]
 
 
-def modify_paths(paths, errors, sort, includes, excludes, purge):
+def modify_paths(paths, sort, show_errors, purge_errors, includes, excludes):
     paths = [(i, Path(os.path.realpath(path))) for i, path in paths]
     if sort:
         paths = sorted(paths, key=second)
-    if errors:
+    if show_errors:
         paths = [(i, path) for i, path in paths if not is_valid(path)]
+    if purge_errors:
+        paths = [(i, path) for i, path in paths if is_valid(path)]
     if includes:
         paths = [
             (i, path) for i, path in paths if includes.lower() in str(path).lower()
@@ -114,11 +123,6 @@ def modify_paths(paths, errors, sort, includes, excludes, purge):
         paths = [
             (i, path) for i, path in paths if excludes.lower() not in str(path).lower()
         ]
-    if purge:
-        paths = [(i, path) for i, path in paths if not is_valid(path)]
-    # probably already handled by os.path.realpath
-    # if expand:
-    #     paths = [(i, os.path.expandvars(path)) for i, path in paths]
     return paths
     # TODO: control for duplicates, keep the first duplicate in a list
 

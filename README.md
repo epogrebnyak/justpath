@@ -6,24 +6,43 @@
 
 Explore PATH environment variable on both Windows and Linux.
 
+## If you are in a hurry
+
+Install:
+
+```
+pip install justpath
+```
+
+Try the following:
+
+```
+justpath
+justpath --raw
+justpath --bare
+justpath --show-errors
+```
+
 ## Basic usage
 
 What directories are part of PATH? Use `echo $PATH | tr ";" "\n"` on Linux or
 
 ```console
-justpath show
+justpath --bare
 ```
 
-Sort them alphabetically. Use `echo $PATH | tr ";" "\n" | sort` or
+If you drop the `--bare` flag, `justpath` adds line numbers and color codes for existing and non-existing directories.
+
+Sort your path alphabetically. Use `echo $PATH | tr ";" "\n" | sort` or
 
 ```console
-justpath show --sort
+justpath --sort
 ```
 
 What are the paths with `bin`? Use `echo $PATH | tr ";" "\n" | grep bin` or
 
 ```console
-justpath show --includes bin
+justpath --includes bin
 ```
 
 ## Useful cases
