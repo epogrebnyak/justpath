@@ -7,13 +7,22 @@ from justpath.show import typer_app
 
 commands = [
     ["--help"],
-    ["stats"],
-    ["show", "--errors"],
-    ["show", "--sort", "--includes", "mingw", "--strip"],
+    ["--raw"],
+    ["--count"],
+    ["--bare"],
+    ["--sort", "--includes", "mingw", "--excludes", "tools"],
+    ["--invalid"],
+    ["--purge-invalid-paths"],
+    ["--correct"],
 ]
 
+# several commands give a fault with non-latin characters in subprocess call
+# UnicodeEncodeError: 'charmap' codec can't encode characters in position \n894-900
+# these commands are not tested with subprocess
+more_commands = [["--raw"], ["--correct", "--string"]]
 
-@pytest.mark.parametrize("args", commands + [["raw"]])
+
+@pytest.mark.parametrize("args", commands + more_commands)
 def test_it_runs_with_cli_runner(args):
     runner = CliRunner()
     result = runner.invoke(typer_app, args)

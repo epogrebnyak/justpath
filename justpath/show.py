@@ -3,22 +3,22 @@
 import os
 import sys
 from collections import UserDict
+from collections import Counter, UserDict
+from dataclasses import dataclass
 from json import dumps
+from os.path import realpath
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, Type
 
 from colorama import Fore
 from typer import Option, Typer
 
 
-def get_paths() -> list[str]:
-    return os.environ["PATH"].split(os.pathsep)
-
-
 class PathVar(UserDict[int, Path]):
     @classmethod
     def populate(cls):
-        return cls([(i + 1, Path(p)) for i, p in enumerate(get_paths())])
+        paths = os.environ["PATH"].split(os.pathsep)
+        return cls([(i + 1, Path(p)) for i, p in enumerate(paths)])
 
     def drop(self, i: int):
         del self.data[i]
@@ -27,16 +27,41 @@ class PathVar(UserDict[int, Path]):
         key = 1 + max(self.keys())
         self.data[key] = path
 
-    def tuples(self) -> list[tuple[int, Path]]:
-        return [(i, p) for i, p in self.data.items()]
+    @property
+    def max_digits(self) -> int:
+        """Number of digits in a line number."""
+        return len(str(max(self.keys()))) if self.keys() else 0
 
 
-def as_string(paths: list[tuple[int, Path]]) -> str:
-    return os.pathsep.join([str(path) for _, path in paths])
+@dataclass
+class Row:
+    i: int
+    path: Path
+    count: int
+
+    # IDEA: maybe cache it
+    @property
+    def error(self) -> Type[FileNotFoundError] | Type[NotADirectoryError] | None:
+        # IDEA: good case for Err, Ok
+        if not os.path.exists(self.path):
+            return FileNotFoundError
+        elif not os.path.isdir(self.path):
+            return NotADirectoryError
+        else:
+            return None
+
+    @property
+    def has_error(self):
+        return self.error is not None
 
 
-def is_valid(path: Path) -> bool:
-    return path.exists() and path.is_dir()
+def to_rows(path_var: PathVar) -> list[Row]:
+    counter = Counter([realpath(p) for p in path_var.values()])
+    rows = []
+    for i, path in path_var.items():
+        row = Row(i, path, counter[realpath(path)])
+        rows.append(row)
+    return rows
 
 
 typer_app = Typer(
@@ -50,10 +75,10 @@ def show_raw():
 
 
 def show_stats(json: bool = False):
-    """Number total and valid of directories in your PATH."""
+    """Number of directories in your PATH."""
     path_var = PathVar.populate()
     t = len(path_var)
-    k = sum(map(is_valid, path_var.values()))
+    k = sum([1 for row in to_rows(path_var) if row.error is not None])
     if json:
         print(dumps(dict(total=t, exist=k, no_exist=t - k)))
     else:
@@ -69,15 +94,17 @@ def option(help_: str, t=bool):
 
 @typer_app.command()
 def show(
-    raw: option("Print PATH as is.") = False,  # type: ignore 
-    stat: option("Print number of directories in your PATH.") = False,  # type: ignore
+    raw: option("Print PATH variable as is.") = False,  # type: ignore
+    count: option("Print number of directories in your PATH.") = False,  # type: ignore
     sort: option("Sort output alphabetically.") = False,  # type: ignore
-    show_errors: option("Show invalid paths only.") = False,  # type: ignore
-    purge_errors: option("Exclude invalid paths.") = False,  # type: ignore
+    invalid: option("Show invalid paths only.") = False,  # type: ignore
+    purge_invalid_paths: option("Exclude invalid paths.") = False,  # type: ignore
     duplicates: option("Show duplicate paths only.") = False,  # type: ignore
+    purge_duplicate_paths: option("Exclude duplicate paths.") = False,  # type: ignore
+    correct: option("Exclude invalid and duplicate paths.") = False,  # type: ignore
     includes: option("Show paths that include a specific string.", str) = "",  # type: ignore
     excludes: option("Show paths that do not include a specific string.", str) = "",  # type: ignore
-    strip: option("Hide extra information about paths.") = False,  # type: ignore
+    bare: option("Hide extra information about paths.") = False,  # type: ignore
     color: option("Use color to highlight errors.") = True,  # type: ignore
     string: option("Print a single string suitable as PATH content.") = False,  # type: ignore
     json: option("Format output as JSON.") = False,  # type: ignore
@@ -86,66 +113,91 @@ def show(
     if raw:
         show_raw()
         sys.exit(0)
-    if stat:
+    if count:
         show_stats(json)
         sys.exit(0)
-    paths = PathVar.populate().tuples()
-    paths = modify_paths(paths, sort, show_errors, purge_errors, includes, excludes)
+    path_var = PathVar.populate()
+    rows = to_rows(path_var)
+    if correct:
+        purge_duplicate_paths = True
+        purge_invalid_paths = True 
+    rows = modify_rows(
+        rows,
+        sort,
+        duplicates,
+        purge_duplicate_paths,
+        invalid,
+        purge_invalid_paths,
+        includes,
+        excludes,
+    )
+    paths = [str(row.path) for row in rows]
     if string:
-        print(as_string(paths))
+        print(os.pathsep.join(paths))
     elif json:
-        print(dumps([str(path) for _, path in paths], indent=2))
+        print(dumps(paths, indent=2))
     else:
-        print_paths(paths, color, strip)
+        for row in rows:
+            if bare:
+                modifier = get_color(row) if color else ""
+                print(modifier + str(row.path))
+            else:
+                print_row(row, color, path_var.max_digits)
 
 
-def first(x):
-    return x[0]
-
-
-def second(x):
-    return x[1]
-
-
-def modify_paths(paths, sort, show_errors, purge_errors, includes, excludes):
-    paths = [(i, Path(os.path.realpath(path))) for i, path in paths]
+def modify_rows(
+    rows,
+    sort,
+    duplicates,
+    purge_duplicate_paths,
+    invalid,
+    purge_invalid_paths,
+    includes,
+    excludes,
+):
     if sort:
-        paths = sorted(paths, key=second)
-    if show_errors:
-        paths = [(i, path) for i, path in paths if not is_valid(path)]
-    if purge_errors:
-        paths = [(i, path) for i, path in paths if is_valid(path)]
+        rows = sorted(rows, key=lambda r: realpath(r.path))
+    if duplicates:
+        rows = [row for row in rows if row.count > 1]
+    if purge_duplicate_paths:
+        print("Control for duplicates not implemented yet", file=sys.stderr)
+    if invalid:
+        rows = [row for row in rows if row.has_error]
+    if purge_invalid_paths:
+        rows = [row for row in rows if not row.has_error]
     if includes:
-        paths = [
-            (i, path) for i, path in paths if includes.lower() in str(path).lower()
-        ]
+        rows = [row for row in rows if includes.lower() in realpath(row.path).lower()]
     if excludes:
-        paths = [
-            (i, path) for i, path in paths if excludes.lower() not in str(path).lower()
+        rows = [
+            row for row in rows if excludes.lower() not in realpath(row.path).lower()
         ]
-    return paths
-    # TODO: control for duplicates, keep the first duplicate in a list
+    return rows
 
 
-def print_paths(paths, color, strip):
-    last_number = max([0] + [i for i, _ in paths])
-    n = len(str(last_number))
+def get_color(row: Row):
+    """Get color modifier for regular, invalid or duplicate directories."""
+    if row.has_error:
+        return Fore.RED
+    elif row.count > 1:
+        return Fore.YELLOW
+    return Fore.GREEN
 
-    def offset(k: int) -> str:
-        return str(k).rjust(n)
 
-    for i, path in paths:
-        modifier = ""
-        if color:
-            modifier = Fore.RED
-            if os.path.exists(path) and os.path.isdir(path):
-                modifier = Fore.GREEN
-        if strip:
-            print(modifier + str(path))
-        else:
-            postfix = ""
-            if not os.path.exists(path):
-                postfix = "(directory does not exist)"
-            elif not os.path.isdir(path):
-                postfix = "(not a directory)"
-            print(modifier + offset(i), path, postfix)
+def get_postfix(row: Row) -> str:
+    """Create a string that tells about a type of error encountered."""
+    items = []
+    if row.error == FileNotFoundError:
+        items.append("directory does not exist")
+    elif row.error == NotADirectoryError():
+        items.append("not a directory")
+    if (n := row.count) > 1:
+        items.append(f"duplicates: {n}")
+    if items:
+        return "(" + ", ".join(items) + ")"
+    return ""
+
+
+def print_row(row: Row, color: bool, n: int):
+    modifier = get_color(row) if color else ""
+    postfix = get_postfix(row)
+    print(modifier + str(row.i).rjust(n), str(row.path), postfix)
