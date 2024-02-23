@@ -38,10 +38,8 @@ class Row:
     path: Path
     count: int
 
-    # IDEA: maybe cache it
     @property
     def error(self) -> Type[FileNotFoundError] | Type[NotADirectoryError] | None:
-        # IDEA: good case for Err, Ok
         if not os.path.exists(self.path):
             return FileNotFoundError
         elif not os.path.isdir(self.path):
@@ -53,14 +51,8 @@ class Row:
     def has_error(self):
         return self.error is not None
 
-
-def to_rows(path_var: PathVar) -> list[Row]:
-    counter = Counter([realpath(p) for p in path_var.values()])
-    rows = []
-    for i, path in path_var.items():
-        row = Row(i, path, counter[realpath(path)])
-        rows.append(row)
-    return rows
+    def __hash__(self):
+        return hash(realpath(self.path).lower())
 
 
 typer_app = Typer(
@@ -161,11 +153,11 @@ def modify_rows(
     if duplicates:
         rows = [row for row in rows if row.count > 1]
     if purge_duplicate_paths:
-        print("Control for duplicates not implemented yet", file=sys.stderr)
+        rows = unseen_before(rows)
     if invalid:
         rows = [row for row in rows if row.has_error]
     if purge_invalid_paths:
-        rows = [row for row in rows if not row.has_error]
+        rows = purge_duplicates(rows)
     if includes:
         rows = [row for row in rows if includes.lower() in realpath(row.path).lower()]
     if excludes:
@@ -202,3 +194,24 @@ def print_row(row: Row, color: bool, n: int):
     modifier = get_color(row) if color else ""
     postfix = get_postfix(row)
     print(modifier + str(row.i).rjust(n), str(row.path), postfix)
+
+def unseen_before(xs):
+    seen = set()
+    return [x for x in xs if not (x in seen or seen.add(x))]
+
+def purge_duplicates(rows):
+    paths = [realpath(r.path).lower() for r in rows]
+    print(paths)
+    print(unseen_before(paths))
+    return make_rows(unseen_before(paths))
+
+def make_rows(paths: list[str]) -> list[Row]:
+    counter = Counter([realpath(p) for p in paths])
+    rows = []
+    for i, path in enumerate(paths):
+        row = Row(i, path, counter[realpath(path)])
+        rows.append(row)
+    return rows    
+
+def to_rows(path_var: PathVar) -> list[Row]:
+    return  make_rows(path_var.values())

@@ -3,7 +3,10 @@ import subprocess
 import pytest
 from typer.testing import CliRunner
 
-from justpath.show import typer_app
+from justpath.show import typer_app, unseen_before
+
+def test_unseen_before():
+    assert unseen_before([1, 2, 2, 1, 0]) == [1, 2, 0]
 
 commands = [
     ["--help"],
