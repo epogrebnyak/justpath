@@ -10,7 +10,7 @@ Just a simple utility to explore and generate `PATH` environment variable on bot
 
 Note that neither `justpath` nor any child process cannot modify your shell `PATH`, just view it.
 With `justpath` you can get a modified version of `PATH` (e.g. by excluding non-existent paths),
-and later you can use the generated string in your shell startup start.
+and later you can use the generated string in your shell startup script.
 
 ## Try quickly
 
