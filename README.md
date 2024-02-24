@@ -6,11 +6,14 @@
 
 [reddit]: https://www.reddit.com/r/Python/comments/1aehs4i/clean_path_of_nonexistent_directories_with/
 
-Just a simple utility to explore and generate `PATH` environment variable on both Windows and Linux.
+Just a simple utility to explore `PATH` environment variable on both Windows and Linux.
 
-Note that neither `justpath` nor any child process cannot modify your shell `PATH`, just view it.
-With `justpath` you can get a modified version of `PATH` (e.g. by excluding non-existent paths),
-and later you can use the generated string in your shell startup script.
+## Workflow
+
+Note that neither `justpath` nor any child process cannot modify your shell `PATH`, you can just view it.
+
+With `justpath` you can get a modified version of `PATH` (e.g. by excluding non-existent directory),
+and later use this new string to set `PATH` in your shell startup script. 
 
 ## Try quickly
 
@@ -252,7 +255,9 @@ Even better tools than `justpath` may exist.
   combine it with `grep` to gain more insights.
 - [Rapid Environment Editor](https://www.rapidee.com/en/path-variable) for Windows
   is a gem (no affiliation).
-- Maybe some smart command-line utility in Rust will emerge for PATH,
+- Maybe some smart command-line utility in Rust will emerge for PATH specifically,
   but [not there yet](https://gist.github.com/sts10/daadbc2f403bdffad1b6d33aff016c0a).
 - There is [pathdebug](https://github.com/d-led/pathdebug) written in Go
   that goes a step futher and attempts to trace where your PATH is defined.
+- There is a family of tools to manage environment paths on like [dotenv](https://github.com/motdotla/dotenv)
+  or its Python port, and a newer tool called [envio](https://github.com/envio-cli/envio) written in Rust.
