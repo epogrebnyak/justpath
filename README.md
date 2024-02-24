@@ -71,7 +71,7 @@ What are the paths that contain `bin` string?
 justpath --includes bin
 ```
 
-Are there any direcotries in `PATH` that do not exist?
+Are there any directories in `PATH` that do not exist?
 
 ```console
 justpath --invalid
