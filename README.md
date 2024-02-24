@@ -31,6 +31,9 @@ justpath --count
 justpath --invalid
 justpath --duplicates
 ```
+## Screencast
+
+[![asciicast](https://asciinema.org/a/RjfqfUhcI4iJKNw55sSkuioU5.svg)](https://asciinema.org/a/RjfqfUhcI4iJKNw55sSkuioU5)
 
 ## Basic usage
 
