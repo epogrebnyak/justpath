@@ -26,10 +26,12 @@ pip install justpath
 Try the following:
 
 ```console
+justpath --raw
 justpath
 justpath --count
 justpath --invalid
 justpath --duplicates
+justpath --correct --string
 ```
 ## Screencast
 
