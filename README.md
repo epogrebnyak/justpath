@@ -24,10 +24,9 @@ Try the following:
 
 ```console
 justpath
+justpath --count
 justpath --invalid
 justpath --duplicates
-justpath --correct
-justpath --correct --string
 ```
 
 ## Basic usage
