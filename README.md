@@ -106,7 +106,7 @@ justpath --correct --string
 
 `justpath` allows to filter paths that must or must not include a certain string.
 Filtering is case insensitive, `--includes windows` and `--includes Windows` will
-produce the same result.
+produce the same result. `--excludes` flag will filter out the directories containing provided string. 
 
 ```console
 λ justpath --sort --includes windows --excludes system32
@@ -145,7 +145,7 @@ Added file `touch d:\quarto\this_is_a_file` for example below.
 51 d:\quarto\this_is_a_file (not a directory)
 ```
 
-Use `--invalid` flag to explore what is parts of PATH do not exist.
+Use `--invalid` flag to explore what parts of PATH do not exist or not a directory. 
 
 ```console
 λ justpath --includes quarto --invalid
@@ -164,11 +164,11 @@ Use `--invalid` flag to explore what is parts of PATH do not exist.
 ```
 
 `--correct` flag is the same as applying both `--purge-invalid` and `--purge-duplicates`
-flag.
+flag. The duplicates are purged from the end of a string. 
 
 ### 4. Dump `PATH` as JSON
 
-`justpath` you can dump a list of paths from `PATH` to JSON.
+`justpath` can dump a list of paths from `PATH` to JSON.
 You may add `--correct` flag to list only correct paths.
 
 ```
