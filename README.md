@@ -70,6 +70,12 @@ What are the paths that contain `bin` string?
 justpath --includes bin
 ```
 
+What are the paths that do not contain `windows` string?
+
+```console
+justpath --excludes windows
+```
+
 Are there any directories in `PATH` that do not exist?
 
 ```console
