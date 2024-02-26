@@ -10,10 +10,9 @@ Just a simple utility to explore `PATH` environment variable on both Windows and
 
 ## Workflow
 
-Note that neither `justpath` nor any child process cannot modify your shell `PATH`, you can just view it.
+Note that neither `justpath` nor any child process cannot modify your shell `PATH` directly, you can just view it. 
 
-With `justpath` you can get a modified version of `PATH` (e.g. by excluding non-existent directory),
-and later use this new string to set `PATH` in your shell startup script or with an environment manager.
+With `justpath` you can get a modified version of `PATH` (e.g. by excluding non-existent directory). Later you can use this new string to set `PATH` in your shell startup script or with an environment manager.
 
 ## Try quickly
 
@@ -246,7 +245,7 @@ so I wrote this utility to be able to explore `PATH` more easily.
 
 ## Development notes
 
-- See [links.md](docs/links.md) for more about `PATH`.
+- See [links.md](docs/links.md) for more information about `PATH`.
 - Few good links about CLI apps in general
   - [docopt](http://docopt.org/) is a great package to develop intuition about command line interfaces.
   - [clig](https://clig.dev/) - ton of useful suggestions about CLIs.
