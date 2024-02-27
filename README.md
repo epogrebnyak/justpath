@@ -270,8 +270,6 @@ I made posts about this package on Reddit and at Hacker News. Click on badges ab
 
 See [links.md](docs/links.md) for more information about `PATH`.
 
-PATH as part of system security: https://vk9-sec.com/privilege-escalation-linux-path-hijacking/
-
 ### Making of command line interfaces (CLIs)
 
 Few good links about CLI applications in general:
