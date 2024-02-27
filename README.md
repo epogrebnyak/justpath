@@ -283,8 +283,8 @@ On Linux you can run `echo $PATH | tr ";" "\n"` to view your path line by line a
 combine it with `grep`, `sort`, `uniq` and `wc -l` to similar as most `justpath` commands.
 It is a bit more problematic to do the same on Windows without `justpath`.
 
-Check out the discussion at [HackerNews](https://news.ycombinator.com/item?id=39493363)
-about Linux scripting.
+Check out the discussion at [Hacker News](https://news.ycombinator.com/item?id=39493363)
+about Linux script and `justpath` scenarios.
 
 ### Other utilities
 
