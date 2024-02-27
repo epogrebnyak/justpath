@@ -37,13 +37,6 @@ justpath --correct --string
 
 [![asciicast](https://asciinema.org/a/RjfqfUhcI4iJKNw55sSkuioU5.svg)](https://asciinema.org/a/RjfqfUhcI4iJKNw55sSkuioU5)
 
-## Discussions
-
-[![Reddit][reddit_shield]](https://www.reddit.com/r/Python/comments/1aehs4i/clean_path_of_nonexistent_directories_with/)
-[![Hacker News][hn_logo]](https://news.ycombinator.com/item?id=39493363)
-
-I made posts about this package on Reddit and at Hacker News. Click on badges above to follow the discussions.
-
 ## Basic usage
 
 What is the raw content of `PATH` string?
@@ -263,6 +256,13 @@ Some of positive feedback I got for `justpath`:
 > It's not hard but this makes it nice.
 > Not sure I'll use it since it is one more thing to install and remember,
 > but the author had an itch and scratched it. Well done.
+
+## Discussions
+
+[![Reddit][reddit_shield]](https://www.reddit.com/r/Python/comments/1aehs4i/clean_path_of_nonexistent_directories_with/)
+[![Hacker News][hn_logo]](https://news.ycombinator.com/item?id=39493363)
+
+I made posts about this package on Reddit and at Hacker News. Click on badges above to follow the discussions.
 
 ## Development notes
 
