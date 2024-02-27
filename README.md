@@ -262,7 +262,7 @@ so I wrote this utility to be able to explore `PATH` more easily.
 Even better tools than `justpath` may exist.
 
 - On Linux you can run `echo $PATH | tr ";" "\n"` to view your path line by line and
-  combine it with `grep` to gain more insights.
+  combine it with `grep`, `sort`, `uniq` and `wc -l` to gain more insights.
 - [Rapid Environment Editor](https://www.rapidee.com/en/path-variable) for Windows
   is a gem (no affiliation).
 - Maybe some smart command-line utility in Rust will emerge for PATH specifically,
