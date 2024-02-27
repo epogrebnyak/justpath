@@ -1,7 +1,5 @@
 # justpath
 
-[![Reddit][reddit_shield]](https://www.reddit.com/r/Python/comments/1aehs4i/clean_path_of_nonexistent_directories_with/)
-[![Hacker News][hn_logo]](https://news.ycombinator.com/item?id=39493363)
 [![CI](https://github.com/epogrebnyak/justpath/actions/workflows/python-package.yml/badge.svg)](https://github.com/epogrebnyak/justpath/actions/workflows/python-package.yml)
 [![PyPI - Version](https://img.shields.io/pypi/v/justpath)](https://pypi.org/project/justpath/)
 
@@ -38,6 +36,13 @@ justpath --correct --string
 ## Screencast
 
 [![asciicast](https://asciinema.org/a/RjfqfUhcI4iJKNw55sSkuioU5.svg)](https://asciinema.org/a/RjfqfUhcI4iJKNw55sSkuioU5)
+
+## Discussions
+
+[![Reddit][reddit_shield]](https://www.reddit.com/r/Python/comments/1aehs4i/clean_path_of_nonexistent_directories_with/)
+[![Hacker News][hn_logo]](https://news.ycombinator.com/item?id=39493363)
+
+I made posts about this package on Reddit and at Hacker News. Click on badges above to follow the discussions.
 
 ## Basic usage
 
