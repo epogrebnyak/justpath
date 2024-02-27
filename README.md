@@ -18,7 +18,7 @@ Note that neither `justpath` nor any child process cannot hot change your shell 
 
 My own use case for `justpath` was exploring and sanitizing the `PATH` on Windows after each and every program 
 made changes to it over the years. 
-I find it useful to inspect `PATH` on a provided remote enviroment as well, such as Codespaces.
+I find it useful to inspect `PATH` on a provided remote enviroment as well (such as Codespaces).
 
 ## Try quickly
 
