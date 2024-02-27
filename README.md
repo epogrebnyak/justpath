@@ -267,9 +267,9 @@ See [links.md](docs/links.md) for more information about `PATH`.
 
 PATH as part of system security: https://vk9-sec.com/privilege-escalation-linux-path-hijacking/
 
-### Making of CLIs
+### Making of command line interfaces (CLIs)
 
-Few good links about CLI apps in general:
+Few good links about CLI applications in general:
 
 - [docopt](http://docopt.org/) is a great package to develop intuition about command line interfaces.
 - [clig](https://clig.dev/) - ton of useful suggestions about CLIs including expected standard flags (`--silent`, `--json`, etc).
@@ -280,11 +280,14 @@ Few good links about CLI apps in general:
 ### Linux scripting
 
 On Linux you can run `echo $PATH | tr ";" "\n"` to view your path line by line and
-combine it with `grep`, `sort`, `uniq` and `wc -l` to similar as most `justpath` commands.
-It is a bit more problematic to do the same on Windows without `justpath`.
+combine it with `grep`, `sort`, `uniq` and `wc -l` for the same effect
+as most `justpath` commands. The benefit of a script is that you do not
+need to install any extra dependency. The drawback is that not everyone is
+good at writing bash scripts. Scripting also would a bit more problematic
+on Windows.
 
 Check out the discussion at [Hacker News](https://news.ycombinator.com/item?id=39493363)
-about Linux script and `justpath` scenarios.
+about bash and zsh scripts and `justpath` scenarios.
 
 ### Other utilities
 
