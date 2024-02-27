@@ -10,9 +10,16 @@ Just a simple utility to explore `PATH` environment variable on both Windows and
 
 ## Workflow
 
-Note that neither `justpath` nor any child process cannot modify your shell `PATH` directly, you can just view it.
+`justpath` allows you to view a your `PATH` environment variable line by line.  
 
-With `justpath` you can get a modified version of `PATH` (e.g. by excluding non-existent directory). Later you can use this new string to set `PATH` in your shell startup script or with an environment manager.
+With `justpath` you can create a modified version of `PATH` (e.g. by excluding non-existent directories). 
+Later you can use this new string to set `PATH` in your shell startup script or using an environment manager.
+
+Note that neither `justpath` nor any child process cannot hot change your shell `PATH` directly. 
+
+My own use case for `justpath` was exploring and sanitizing the `PATH` on Windows after each and every program 
+made changes to it over the years. 
+I find it useful to inspect `PATH` on a provided remote enviroment as well, such as Codespaces.
 
 ## Try quickly
 
