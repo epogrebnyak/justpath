@@ -17,8 +17,8 @@ and use this new string to set `PATH` in your shell startup script or using an e
 Note that neither `justpath` nor any child process cannot hot change your shell `PATH` directly. 
 
 My own use case for `justpath` was exploring and sanitizing the `PATH` on Windows 
-after each and every program was attempting to changes it. 
-I also find it useful to inspect `PATH` on a provided remote enviroment (such as Codespaces)
+after each and every program was attempting to change it. 
+I also find it useful to inspect `PATH` on a remote enviroment like Codespaces
 to detect invalid paths. 
 
 ## Try quickly
