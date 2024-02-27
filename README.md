@@ -1,16 +1,18 @@
 # justpath
 
-[![Reddit](https://img.shields.io/badge/Reddit-%23FF4500.svg?style=flat&logo=Reddit&logoColor=white)][reddit]
+[![Reddit][reddit_shield]](https://www.reddit.com/r/Python/comments/1aehs4i/clean_path_of_nonexistent_directories_with/)
+[![Hacker News][hn_logo]](https://news.ycombinator.com/item?id=39493363)
 [![PyPI - Version](https://img.shields.io/pypi/v/justpath)](https://pypi.org/project/justpath/)
 [![CI](https://github.com/epogrebnyak/justpath/actions/workflows/python-package.yml/badge.svg)](https://github.com/epogrebnyak/justpath/actions/workflows/python-package.yml)
 
-[reddit]: https://www.reddit.com/r/Python/comments/1aehs4i/clean_path_of_nonexistent_directories_with/
+[reddit_shield]: https://img.shields.io/badge/Reddit-%23FF4500.svg?style=flat&logo=Reddit&logoColor=white
+[hn_logo]: https://img.shields.io/badge/HackerNews-F0652F?logo=ycombinator&logoColor=white
 
 Just a simple utility to explore `PATH` environment variable on both Windows and Linux.
 
 ## Workflow
 
-Note that neither `justpath` nor any child process cannot modify your shell `PATH` directly, you can just view it. 
+Note that neither `justpath` nor any child process cannot modify your shell `PATH` directly, you can just view it.
 
 With `justpath` you can get a modified version of `PATH` (e.g. by excluding non-existent directory). Later you can use this new string to set `PATH` in your shell startup script or with an environment manager.
 
@@ -32,6 +34,7 @@ justpath --invalid
 justpath --duplicates
 justpath --correct --string
 ```
+
 ## Screencast
 
 [![asciicast](https://asciinema.org/a/RjfqfUhcI4iJKNw55sSkuioU5.svg)](https://asciinema.org/a/RjfqfUhcI4iJKNw55sSkuioU5)
@@ -112,7 +115,7 @@ justpath --correct --string
 
 `justpath` allows to filter paths that must or must not include a certain string.
 Filtering is case insensitive, `--includes windows` and `--includes Windows` will
-produce the same result. `--excludes` flag will filter out the directories containing provided string. 
+produce the same result. `--excludes` flag will filter out the directories containing provided string.
 
 ```console
 λ justpath --sort --includes windows --excludes system32
@@ -151,7 +154,7 @@ Added file `touch d:\quarto\this_is_a_file` for example below.
 51 d:\quarto\this_is_a_file (not a directory)
 ```
 
-Use `--invalid` flag to explore what parts of PATH do not exist or not a directory. 
+Use `--invalid` flag to explore what parts of PATH do not exist or not a directory.
 
 ```console
 λ justpath --includes quarto --invalid
@@ -170,7 +173,7 @@ Use `--invalid` flag to explore what parts of PATH do not exist or not a directo
 ```
 
 `--correct` flag is the same as applying both `--purge-invalid` and `--purge-duplicates`
-flag. The duplicates are purged from the end of a string. 
+flag. The duplicates are purged from the end of a string.
 
 ### 4. Dump `PATH` as JSON
 
@@ -249,25 +252,49 @@ I think [this quote][quote] about `PATH` is quite right:
 `PATH` environment variable syntax on Windows and on Linux are different,
 so I wrote this utility to be able to explore `PATH` more easily.
 
+Some of positive feedback I got for `justpath`:
+
+> I like it! I do the steps involved in this occasionally, manually.
+> It's not hard but this makes it nice.
+> Not sure I'll use it since it is one more thing to install and remember,
+> but the author had an itch and scratched it. Well done.
+
 ## Development notes
 
-- See [links.md](docs/links.md) for more information about `PATH`.
-- Few good links about CLI apps in general
-  - [docopt](http://docopt.org/) is a great package to develop intuition about command line interfaces.
-  - [clig](https://clig.dev/) - ton of useful suggestions about CLIs.
-  - [12 factor CLI app](https://panlw.github.io/15394417631263.html) - cited by `clig`.
+### More about `PATH`
+
+See [links.md](docs/links.md) for more information about `PATH`.
+
+PATH as part of system security: https://vk9-sec.com/privilege-escalation-linux-path-hijacking/
+
+### Making of CLIs
+
+Few good links about CLI apps in general:
+
+- [docopt](http://docopt.org/) is a great package to develop intuition about command line interfaces.
+- [clig](https://clig.dev/) - ton of useful suggestions about CLIs including expected standard flags (`--silent`, `--json`, etc).
+- [12 factor CLI app](https://panlw.github.io/15394417631263.html) - cited by `clig`.
 
 ## Alternatives
 
+### Linux scripting
+
+On Linux you can run `echo $PATH | tr ";" "\n"` to view your path line by line and
+combine it with `grep`, `sort`, `uniq` and `wc -l` to similar as most `justpath` commands.
+It is a bit more problematic to do the same on Windows without `justpath`.
+
+Check out the discussion at [HackerNews](https://news.ycombinator.com/item?id=39493363)
+about Linux scripting.
+
+### Other utilities
+
 Even better tools than `justpath` may exist.
 
-- On Linux you can run `echo $PATH | tr ";" "\n"` to view your path line by line and
-  combine it with `grep`, `sort`, `uniq` and `wc -l` to gain more insights.
 - [Rapid Environment Editor](https://www.rapidee.com/en/path-variable) for Windows
   is a gem (no affiliation).
 - Maybe some smart command-line utility in Rust will emerge for PATH specifically,
   but [not there yet](https://gist.github.com/sts10/daadbc2f403bdffad1b6d33aff016c0a).
 - There is [pathdebug](https://github.com/d-led/pathdebug) written in Go
   that goes a step futher and attempts to trace where your PATH is defined.
-- There is a family of tools to manage environment paths on like [dotenv](https://github.com/motdotla/dotenv)
-  or its Python port, and a newer tool called [envio](https://github.com/envio-cli/envio) written in Rust.
+- There is a family of tools to manage environment paths
+  like [dotenv](https://github.com/motdotla/dotenv) or its Python port, and a newer tool called [envio](https://github.com/envio-cli/envio) written in Rust.
