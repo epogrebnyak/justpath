@@ -3,7 +3,7 @@ import subprocess
 import pytest
 from typer.testing import CliRunner
 
-from justpath.show import typer_app, unseen_before
+from justpath.show import typer_app, unseen_before, PathVar
 
 
 def test_unseen_before():
@@ -41,3 +41,8 @@ def test_it_runs_with_subprocess(args):
     args = ["justpath", *args]
     result = subprocess.run(args, text=True, capture_output=True)
     assert result.returncode == 0
+
+
+def test_from_list(tmp_path):
+    pv = PathVar.from_list([tmp_path / "a", tmp_path / "b"])
+    assert len(pv) == 2

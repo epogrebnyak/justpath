@@ -15,9 +15,12 @@ from typer import Option, Typer
 
 class PathVar(UserDict[int, Path]):
     @classmethod
-    def populate(cls):
-        paths = os.environ["PATH"].split(os.pathsep)
+    def from_list(cls, paths):
         return cls([(i + 1, Path(p)) for i, p in enumerate(paths)])
+
+    @classmethod
+    def populate(cls):
+        return cls.from_list(os.environ["PATH"].split(os.pathsep))
 
     def drop(self, i: int):
         del self.data[i]
@@ -28,7 +31,7 @@ class PathVar(UserDict[int, Path]):
 
     @property
     def max_digits(self) -> int:
-        """Number of digits in a line number."""
+        """Number of digits in a line number, usually 1 or 2."""
         return len(str(max(self.keys()))) if self.keys() else 0
 
 
