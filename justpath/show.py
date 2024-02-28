@@ -34,6 +34,26 @@ class PathVar(UserDict[int, Path]):
         """Number of digits in a line number, usually 1 or 2."""
         return len(str(max(self.keys()))) if self.keys() else 0
 
+    def to_rows(self, follow_symlinks: bool) -> list["Row"]:
+        if follow_symlinks:
+            getter = canonic
+        else:
+            getter = identity
+        counter = Counter([getter(p) for p in self.values()])
+        rows = []
+        for i, path in self.items():
+            row = Row(i, path, counter[getter(path)])
+            rows.append(row)
+        return rows
+
+
+def canonic(path: Path):
+    return str(path.resolve()).lower()
+
+
+def identity(path: Path):
+    return str(path).lower()
+
 
 @dataclass
 class Row:
@@ -68,11 +88,11 @@ def show_raw():
     print(os.environ["PATH"])
 
 
-def show_stats(json: bool = False):
+def show_stats(json: bool, follow_symlinks: bool):
     """Number of directories in your PATH."""
     path_var = PathVar.populate()
     t = len(path_var)
-    rows = to_rows(path_var)
+    rows = path_var.to_rows(follow_symlinks)
     e = sum([1 for row in rows if row.has_error])
     d = sum([1 for row in rows if row.count > 1])
     if json:
@@ -100,6 +120,7 @@ def show(
     correct: option("Exclude invalid and duplicate paths.") = False,  # type: ignore
     includes: option("Show paths that include a specific string.", str) = "",  # type: ignore
     excludes: option("Show paths that do not include a specific string.", str) = "",  # type: ignore
+    follow_symlinks: option("Resolve symbolic links.", bool) = False,  # type: ignore
     bare: option("Hide extra information about paths.") = False,  # type: ignore
     color: option("Use color to highlight errors.") = True,  # type: ignore
     string: option("Print a single string suitable as PATH content.") = False,  # type: ignore
@@ -110,10 +131,10 @@ def show(
         show_raw()
         sys.exit(0)
     if count:
-        show_stats(json)
+        show_stats(json, follow_symlinks)
         sys.exit(0)
     path_var = PathVar.populate()
-    rows = to_rows(path_var)
+    rows = path_var.to_rows(follow_symlinks)
     if correct:
         purge_duplicates = True
         purge_invalid = True
@@ -126,6 +147,7 @@ def show(
         purge_invalid,
         includes,
         excludes,
+        follow_symlinks,
     )
     paths = [str(row.path) for row in rows]
     if string:
@@ -140,7 +162,7 @@ def show(
             else:
                 print_row(row, color, path_var.max_digits)
     if color:
-        print(Style.RESET_ALL)            
+        print(Style.RESET_ALL)
 
 
 def modify_rows(
@@ -152,13 +174,14 @@ def modify_rows(
     purge_invalid,
     includes,
     excludes,
+    follow_symlinks,
 ):
     if sort:
         rows = sorted(rows, key=lambda r: realpath(r.path))
     if duplicates:
         rows = [row for row in rows if row.count > 1]
     if purge_duplicates:
-        rows = no_duplicates(rows)
+        rows = no_duplicates(rows, follow_symlinks)
     if invalid:
         rows = [row for row in rows if row.has_error]
     if purge_invalid:
@@ -181,9 +204,11 @@ def get_color(row: Row):
     return Fore.GREEN
 
 
-def get_postfix(row: Row) -> str:
-    """Create a string that tells about a type of error encountered."""
+def get_comment(row: Row) -> str:
+    """Create a string that tells about a type of error or property encountered."""
     items = []
+    if row.path.is_symlink():
+        items.append(f"resolves to {row.path.resolve()}")
     if row.error == FileNotFoundError:
         items.append("directory does not exist")
     elif row.error == NotADirectoryError():
@@ -197,28 +222,19 @@ def get_postfix(row: Row) -> str:
 
 def print_row(row: Row, color: bool, n: int):
     modifier = get_color(row) if color else ""
-    postfix = get_postfix(row)
-    print(modifier + str(row.i).rjust(n), str(row.path), postfix)
+    comment = get_comment(row)
+    print(modifier + str(row.i).rjust(n), str(row.path), comment)
 
 
-def unseen_before(xs):
+def no_duplicates(rows, follow_symlinks):
     seen = set()
-    return [x for x in xs if not (x in seen or seen.add(x))]
-
-
-def no_duplicates(rows):
-    paths = [realpath(r.path).lower() for r in rows]
-    return make_rows(unseen_before(paths))
-
-
-def make_rows(paths: list[str]) -> list[Row]:
-    counter = Counter([realpath(p) for p in paths])
-    rows = []
-    for i, path in enumerate(paths):
-        row = Row(i, Path(path), counter[realpath(path)])
-        rows.append(row)
-    return rows
-
-
-def to_rows(path_var: PathVar) -> list[Row]:
-    return make_rows([str(p) for p in path_var.values()])
+    result = []
+    for row in rows:
+        if follow_symlinks:
+            p = canonic(row.path)
+        else:
+            p = identity(row.path)
+        if p not in seen:
+            seen.add(p)
+            result.append(row)
+    return result

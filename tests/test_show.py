@@ -1,13 +1,10 @@
 import subprocess
+from pathlib import Path
 
 import pytest
 from typer.testing import CliRunner
 
-from justpath.show import typer_app, unseen_before, PathVar
-
-
-def test_unseen_before():
-    assert unseen_before([1, 2, 2, 1, 0]) == [1, 2, 0]
+from justpath.show import typer_app, PathVar
 
 
 commands = [
@@ -46,3 +43,17 @@ def test_it_runs_with_subprocess(args):
 def test_from_list(tmp_path):
     pv = PathVar.from_list([tmp_path / "a", tmp_path / "b"])
     assert len(pv) == 2
+
+
+def test_with_simlink_setup(tmp_path):
+    a = tmp_path / "a"
+    a.mkdir()
+    b = Path(tmp_path / "b")
+    b.symlink_to(a, target_is_directory=True)
+    print(a.exists())
+    print(b.exists())
+    print(a)
+    print(b)
+    print(b.resolve())
+    print(PathVar.from_list([a, b]).to_rows(True))
+    assert True
