@@ -36,9 +36,9 @@ class PathVar(UserDict[int, Path]):
 
     def to_rows(self, follow_symlinks: bool) -> list["Row"]:
         if follow_symlinks:
-            getter = canonic
+            getter = resolve
         else:
-            getter = identity
+            getter = as_is
         counter = Counter([getter(p) for p in self.values()])
         rows = []
         for i, path in self.items():
@@ -47,11 +47,11 @@ class PathVar(UserDict[int, Path]):
         return rows
 
 
-def canonic(path: Path):
+def resolve(path: Path):
     return str(path.resolve()).lower()
 
 
-def identity(path: Path):
+def as_is(path: Path):
     return str(path).lower()
 
 
@@ -165,7 +165,7 @@ def show(
             else:
                 print_row(row, color, path_var.max_digits)
     if color:
-        print(Style.RESET_ALL)
+        print(Style.RESET_ALL, end="")
 
 
 def modify_rows(
@@ -234,9 +234,9 @@ def remove_duplicates(rows, follow_symlinks):
     result = []
     for row in rows:
         if follow_symlinks:
-            p = canonic(row.path)
+            p = resolve(row.path)
         else:
-            p = identity(row.path)
+            p = as_is(row.path)
         if p not in seen:
             seen.add(p)
             row.count = 1
