@@ -100,7 +100,10 @@ def show_stats(json: bool, follow_symlinks: bool):
         print(dumps(info))
     else:
         print(t, "directories in your PATH")
-        print(e, "do" if e > 1 else "does", "not exist")
+        if e == 0:
+            print("All directories exist")
+        else:
+            print(e, "do" if e > 1 else "does", "not exist")
         print(d, "duplicate" + "s" if d > 1 else "")
 
 
@@ -181,7 +184,7 @@ def modify_rows(
     if duplicates:
         rows = [row for row in rows if row.count > 1]
     if purge_duplicates:
-        rows = no_duplicates(rows, follow_symlinks)
+        rows = remove_duplicates(rows, follow_symlinks)
     if invalid:
         rows = [row for row in rows if row.has_error]
     if purge_invalid:
@@ -226,7 +229,7 @@ def print_row(row: Row, color: bool, n: int):
     print(modifier + str(row.i).rjust(n), str(row.path), comment)
 
 
-def no_duplicates(rows, follow_symlinks):
+def remove_duplicates(rows, follow_symlinks):
     seen = set()
     result = []
     for row in rows:
@@ -236,5 +239,6 @@ def no_duplicates(rows, follow_symlinks):
             p = identity(row.path)
         if p not in seen:
             seen.add(p)
+            row.count = 1
             result.append(row)
     return result

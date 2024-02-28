@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 from typer.testing import CliRunner
 
-from justpath.show import typer_app, PathVar
+from justpath.show import typer_app, PathVar, remove_duplicates
 
 
 commands = [
@@ -18,6 +18,7 @@ commands = [
     ["--duplicates"],
     ["--purge-duplicates"],
     ["--correct"],
+    ["--correct", "--follow-symlinks"],
 ]
 
 # several commands give a fault with non-latin characters in subprocess call
@@ -45,15 +46,23 @@ def test_from_list(tmp_path):
     assert len(pv) == 2
 
 
-def test_with_simlink_setup(tmp_path):
+def test_with_simlinks(tmp_path):
     a = tmp_path / "a"
     a.mkdir()
     b = Path(tmp_path / "b")
     b.symlink_to(a, target_is_directory=True)
-    print(a.exists())
-    print(b.exists())
+    assert a.exists()
+    assert b.exists()
     print(a)
     print(b)
     print(b.resolve())
-    print(PathVar.from_list([a, b]).to_rows(True))
-    assert True
+    rows = PathVar.from_list([a, b]).to_rows(follow_symlinks=False)
+    assert rows[0].count == 1
+    assert rows[0].count == 1
+    rows = PathVar.from_list([a, b]).to_rows(follow_symlinks=True)
+    assert rows[0].count == 2
+    assert rows[1].count == 2
+    rows1 = remove_duplicates(rows, follow_symlinks=True)
+    assert len(rows1) == 1
+    rows2 = remove_duplicates(rows, follow_symlinks=False)
+    assert len(rows2) == 2
