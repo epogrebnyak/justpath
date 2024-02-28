@@ -14,7 +14,7 @@ Just a simple utility to explore `PATH` environment variable on both Windows and
 color. You can also create a modified version of `PATH` (e.g. by excluding non-existent directories)
 and use this new string to set `PATH` in your shell startup script or using an environment manager.
 
-Note that neither `justpath` nor any child process cannot hot change your shell `PATH` directly. 
+Note that neither `justpath` nor any child process can hot change your shell `PATH` directly. 
 
 My own use case for `justpath` was exploring and sanitizing the `PATH` on Windows 
 after each and every program was attempting to change it. 
