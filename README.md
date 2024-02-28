@@ -10,16 +10,15 @@ Just a simple utility to explore `PATH` environment variable on both Windows and
 
 ## Workflow
 
-`justpath` shows your `PATH` environment variable line by line with numbering, additional comments and
-color. You can also create a modified version of `PATH` (e.g. by excluding non-existent directories)
-and use this new string to set `PATH` in your shell startup script or using an environment manager.
+`justpath` shows your `PATH` environment variable line by line with numbering, comments and highlighing
+and helps detecting invalid or duplicate directories on your PATH.
 
-Note that neither `justpath` nor any child process can hot change your shell `PATH` directly. 
+You can also create a modified version of `PATH` string, for example by excluding non-existent directories.
+This new string is useful to set `PATH` in your shell startup script or with environment manager.
+Note that `justpath` cannot change your shell `PATH` directly. 
 
-My own use case for `justpath` was exploring and sanitizing the `PATH` on Windows 
-after each and every program was attempting to change it. 
-I also find it useful to inspect `PATH` on a remote enviroment like Codespaces
-to detect invalid paths. 
+My own use case for `justpath` was exploring and sanitizing the `PATH` on Windows together with Rapid Environment Editor. 
+I also find it useful to inspect `PATH` on a remote enviroment like Codespaces to detect invalid paths. 
 
 ## Try quickly
 
@@ -179,6 +178,9 @@ Use `--invalid` flag to explore what parts of PATH do not exist or not a directo
 
 `--correct` flag is the same as applying both `--purge-invalid` and `--purge-duplicates`
 flag. The duplicates are purged from the end of a string.
+
+You may also add `--follow-symlinks` flag in order to resolve symbolic links 
+when counting and purging duplicate directories.
 
 ### 4. Dump `PATH` as JSON
 

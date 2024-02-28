@@ -36,9 +36,9 @@ class PathVar(UserDict[int, Path]):
 
     def to_rows(self, follow_symlinks: bool) -> list["Row"]:
         if follow_symlinks:
-            getter = canonic
+            getter = resolve
         else:
-            getter = identity
+            getter = as_is
         counter = Counter([getter(p) for p in self.values()])
         rows = []
         for i, path in self.items():
@@ -47,11 +47,11 @@ class PathVar(UserDict[int, Path]):
         return rows
 
 
-def canonic(path: Path):
+def resolve(path: Path):
     return str(path.resolve()).lower()
 
 
-def identity(path: Path):
+def as_is(path: Path):
     return str(path).lower()
 
 
@@ -100,7 +100,10 @@ def show_stats(json: bool, follow_symlinks: bool):
         print(dumps(info))
     else:
         print(t, "directories in your PATH")
-        print(e, "do" if e > 1 else "does", "not exist")
+        if e == 0:
+            print("All directories exist")
+        else:
+            print(e, "do" if e > 1 else "does", "not exist")
         print(d, "duplicate" + "s" if d > 1 else "")
 
 
@@ -162,7 +165,7 @@ def show(
             else:
                 print_row(row, color, path_var.max_digits)
     if color:
-        print(Style.RESET_ALL)
+        print(Style.RESET_ALL, end="")
 
 
 def modify_rows(
@@ -181,7 +184,7 @@ def modify_rows(
     if duplicates:
         rows = [row for row in rows if row.count > 1]
     if purge_duplicates:
-        rows = no_duplicates(rows, follow_symlinks)
+        rows = remove_duplicates(rows, follow_symlinks)
     if invalid:
         rows = [row for row in rows if row.has_error]
     if purge_invalid:
@@ -226,15 +229,16 @@ def print_row(row: Row, color: bool, n: int):
     print(modifier + str(row.i).rjust(n), str(row.path), comment)
 
 
-def no_duplicates(rows, follow_symlinks):
+def remove_duplicates(rows, follow_symlinks):
     seen = set()
     result = []
     for row in rows:
         if follow_symlinks:
-            p = canonic(row.path)
+            p = resolve(row.path)
         else:
-            p = identity(row.path)
+            p = as_is(row.path)
         if p not in seen:
             seen.add(p)
+            row.count = 1
             result.append(row)
     return result
