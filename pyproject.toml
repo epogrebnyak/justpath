@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "justpath"
-version = "0.0.13"
+version = "0.0.14"
 description = "Explore PATH environment variable on Windows and Linux."
 authors = ["Evgeny Pogrebnyak <e.pogrebnyak@gmail.com>"]
 license = "GNU"
