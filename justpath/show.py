@@ -9,7 +9,7 @@ from os.path import realpath
 from pathlib import Path
 from typing import Annotated, Type
 
-from colorama import Fore
+from colorama import Fore, Style
 from typer import Option, Typer
 
 
@@ -139,6 +139,8 @@ def show(
                 print(modifier + str(row.path))
             else:
                 print_row(row, color, path_var.max_digits)
+    if color:
+        print(Style.RESET_ALL)            
 
 
 def modify_rows(
