@@ -16,8 +16,6 @@ and helps detecting invalid or duplicate directories on your PATH.
 You can also create a modified version of `PATH` string and use it to set `PATH` in your shell startup script
 or through an environment manager. Note that `justpath` cannot change your shell `PATH` directly. 
 
-My own use case for `justpath` was exploring and sanitizing the `PATH` on Windows together with Rapid Environment Editor. 
-I also find it useful to inspect `PATH` on a remote enviroment like Codespaces to detect invalid paths. 
 
 ## Try quickly
 
@@ -257,6 +255,9 @@ I think [this quote][quote] about `PATH` is quite right:
 
 `PATH` environment variable syntax on Windows and on Linux are different,
 so I wrote this utility to be able to explore `PATH` more easily.
+
+My own use case for `justpath` was exploring and sanitizing the `PATH` on Windows together with Rapid Environment Editor. 
+I also find it useful to inspect `PATH` on a remote enviroment like Codespaces to detect invalid paths. 
 
 Some of positive feedback I got for `justpath`:
 
