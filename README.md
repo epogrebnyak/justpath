@@ -271,6 +271,10 @@ Some of positive feedback I got for `justpath`:
 > including related implementations. That’s worth it, in my book.
 > Edit: I like the includes part, too.
 
+> I think this is a cool package.
+> Some of my first scripts in several languages have just been messing with file system abstractions.
+> Files and file paths are much more complex than most people think.
+
 ## Discussions
 
 [![Reddit][reddit_shield]](https://www.reddit.com/r/Python/comments/1aehs4i/clean_path_of_nonexistent_directories_with/)
