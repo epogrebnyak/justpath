@@ -11,11 +11,10 @@ Just a simple utility to explore `PATH` environment variable on both Windows and
 ## Workflow
 
 `justpath` shows your `PATH` environment variable line by line with numbering, comments and highlighing
-and helps detecting invalid or duplicate directories on your PATH.
+and helps detecting invalid or duplicate directories on your `PATH`.
 
-You can also create a modified version of `PATH` string and use it to set `PATH` in your shell startup script
-or through an environment manager. Note that `justpath` cannot change your shell `PATH` directly. 
-
+You can also create a modified version of `PATH` string and use it to set `PATH` variable in your shell startup script
+or through an environment manager. Note that `justpath` itself cannot change your shell `PATH` variable.
 
 ## Try quickly
 
