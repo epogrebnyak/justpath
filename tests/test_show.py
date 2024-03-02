@@ -10,6 +10,8 @@ from justpath.show import typer_app, PathVar, remove_duplicates
 commands = [
     ["--help"],
     ["--raw"],
+    ["--raw", "--shell-equivalent"],
+    ["--shell-equivalent"],    
     ["--count"],
     ["--bare"],
     ["--sort", "--includes", "mingw", "--excludes", "tools"],
