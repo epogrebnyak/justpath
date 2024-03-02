@@ -258,7 +258,7 @@ so I wrote this utility to be able to explore `PATH` more easily.
 My own use case for `justpath` was exploring and sanitizing the `PATH` on Windows together with Rapid Environment Editor.
 I also find it useful to inspect `PATH` on a remote enviroment like Codespaces to detect invalid paths.
 
-## Feedback 
+## Feedback
 
 Some of positive feedback I got about the `justpath` package:
 
@@ -313,8 +313,7 @@ Scripting would also be a bit more problematic on Windows.
 Check out the discussion at [Hacker News](https://news.ycombinator.com/item?id=39493363)
 about bash and zsh scripts and `justpath` scenarios.
 
-> [!TIP]
-> `--shell-equivalent` flag provides a reference about one line commands for several shells.
+> [!TIP] > `--shell-equivalent` flag provides a reference about one line commands for several shells.
 > Try `justpath --raw --shell-equivalent` or `justpath --shell-equivalent`.
 
 ### Other utilities
