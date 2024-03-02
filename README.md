@@ -13,7 +13,7 @@ Just a simple utility to explore `PATH` environment variable on both Windows and
 `justpath` shows your `PATH` environment variable line by line with numbering, comments and highlighing
 and helps detecting invalid or duplicate directories on your `PATH`.
 
-You can also create a modified version of `PATH` string and use it to set `PATH` variable in your shell startup script or through an environment manager. 
+You can also create a modified version of `PATH` string and use it to set `PATH` variable in your shell startup script or through an environment manager.
 Note that `justpath` itself cannot change your shell `PATH`.
 
 ## Try quickly
@@ -175,7 +175,7 @@ Use `--invalid` flag to explore what parts of PATH do not exist or not a directo
 `--correct` flag is the same as applying both `--purge-invalid` and `--purge-duplicates`
 flag. The duplicates are purged from the end of a string.
 
-You may also add `--follow-symlinks` flag in order to resolve symbolic links 
+You may also add `--follow-symlinks` flag in order to resolve symbolic links
 when counting and purging duplicate directories.
 
 ### 4. Dump `PATH` as JSON
@@ -255,8 +255,8 @@ I think [this quote][quote] about `PATH` is quite right:
 `PATH` environment variable syntax on Windows and on Linux are different,
 so I wrote this utility to be able to explore `PATH` more easily.
 
-My own use case for `justpath` was exploring and sanitizing the `PATH` on Windows together with Rapid Environment Editor. 
-I also find it useful to inspect `PATH` on a remote enviroment like Codespaces to detect invalid paths. 
+My own use case for `justpath` was exploring and sanitizing the `PATH` on Windows together with Rapid Environment Editor.
+I also find it useful to inspect `PATH` on a remote enviroment like Codespaces to detect invalid paths.
 
 Some of positive feedback I got for `justpath`:
 
@@ -265,8 +265,8 @@ Some of positive feedback I got for `justpath`:
 > Not sure I'll use it since it is one more thing to install and remember,
 > but the author had an itch and scratched it. Well done.
 
-> It's handy to see your path entries in a list. 
-> Checking whether each entry is a valid location is neat, too. 
+> It's handy to see your path entries in a list.
+> Checking whether each entry is a valid location is neat, too.
 > But even better, from my perspective, you published the code and got feedback from people,
 > including related implementations. That’s worth it, in my book.
 > Edit: I like the includes part, too.
@@ -298,15 +298,19 @@ Few good links about CLI applications in general:
 
 On Linux you can run `echo $PATH | tr ";" "\n"` to view your path line by line and
 combine it with `grep`, `sort`, `uniq` and `wc -l` for the same effect
-as most `justpath` commands. 
+as most `justpath` commands.
 
-The benefit of a script is that you do not
-need to install any extra dependency. The drawback is that not everyone is
-good at writing bash scripts. Scripting also would a bit more problematic
-on Windows.
+The benefit of a script is that you do not need to install any extra dependency.
+The drawback is that not everyone is good at writing bash scripts.
+Scripting would also be a bit more problematic on Windows.
 
 Check out the discussion at [Hacker News](https://news.ycombinator.com/item?id=39493363)
 about bash and zsh scripts and `justpath` scenarios.
+
+![TIP]
+
+> `--shell-equivalent` flag provides a reference about one line commands for several shells.
+> Try `justpath --raw --shell-equivalent` or `justpath --shell-equivalent`.
 
 ### Other utilities
 
