@@ -311,8 +311,7 @@ Scripting would also be a bit more problematic on Windows.
 Check out the discussion at [Hacker News](https://news.ycombinator.com/item?id=39493363)
 about bash and zsh scripts and `justpath` scenarios.
 
-![TIP]
-
+> [!TIP]
 > `--shell-equivalent` flag provides a reference about one line commands for several shells.
 > Try `justpath --raw --shell-equivalent` or `justpath --shell-equivalent`.
 
