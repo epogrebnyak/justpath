@@ -13,8 +13,8 @@ Just a simple utility to explore `PATH` environment variable on both Windows and
 `justpath` shows your `PATH` environment variable line by line with numbering, comments and highlighing
 and helps detecting invalid or duplicate directories on your `PATH`.
 
-You can also create a modified version of `PATH` string and use it to set `PATH` variable in your shell startup script
-or through an environment manager. Note that `justpath` itself cannot change your shell `PATH` variable.
+You can also create a modified version of `PATH` string and use it to set `PATH` variable in your shell startup script or through an environment manager. 
+Note that `justpath` itself cannot change your shell `PATH`.
 
 ## Try quickly
 
@@ -265,6 +265,12 @@ Some of positive feedback I got for `justpath`:
 > Not sure I'll use it since it is one more thing to install and remember,
 > but the author had an itch and scratched it. Well done.
 
+> It's handy to see your path entries in a list. 
+> Checking whether each entry is a valid location is neat, too. 
+> But even better, from my perspective, you published the code and got feedback from people,
+> including related implementations. That’s worth it, in my book.
+> Edit: I like the includes part, too.
+
 ## Discussions
 
 [![Reddit][reddit_shield]](https://www.reddit.com/r/Python/comments/1aehs4i/clean_path_of_nonexistent_directories_with/)
@@ -292,7 +298,9 @@ Few good links about CLI applications in general:
 
 On Linux you can run `echo $PATH | tr ";" "\n"` to view your path line by line and
 combine it with `grep`, `sort`, `uniq` and `wc -l` for the same effect
-as most `justpath` commands. The benefit of a script is that you do not
+as most `justpath` commands. 
+
+The benefit of a script is that you do not
 need to install any extra dependency. The drawback is that not everyone is
 good at writing bash scripts. Scripting also would a bit more problematic
 on Windows.
