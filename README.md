@@ -258,7 +258,9 @@ so I wrote this utility to be able to explore `PATH` more easily.
 My own use case for `justpath` was exploring and sanitizing the `PATH` on Windows together with Rapid Environment Editor.
 I also find it useful to inspect `PATH` on a remote enviroment like Codespaces to detect invalid paths.
 
-Some of positive feedback I got for `justpath`:
+## Feedback 
+
+Some of positive feedback I got about the `justpath` package:
 
 > I like it! I do the steps involved in this occasionally, manually.
 > It's not hard but this makes it nice.
