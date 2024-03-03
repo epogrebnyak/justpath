@@ -92,7 +92,7 @@ justpath --duplicates
 
 Same, but resolving symbolic links:
 
-```
+```console
 justpath --duplicates --follow-symlinks
 ```
 
