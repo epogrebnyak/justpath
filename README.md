@@ -10,8 +10,7 @@ Just a simple utility to explore `PATH` environment variable on both Windows and
 
 ## Workflow
 
-`justpath` shows your `PATH` environment variable line by line with numbering, comments and highlighing
-and helps detecting invalid or duplicate directories on your `PATH`.
+`justpath` shows your `PATH` environment variable line by line with numbering, comments and highlighing and helps detecting invalid or duplicate directories on your `PATH`.
 
 You can also create a modified version of `PATH` string and use it to set `PATH` variable in your shell startup script or through an environment manager.
 Note that `justpath` itself cannot change your shell `PATH`.
@@ -91,6 +90,12 @@ Are there any duplicate directories in `PATH`?
 justpath --duplicates
 ```
 
+Same, but resolving symbolic links:
+
+```
+justpath --duplicates --follow-symlinks
+```
+
 What is the `PATH` without invalid paths and duplicates?
 
 ```console
@@ -107,6 +112,12 @@ A clean `PATH` string in OS-native format:
 
 ```console
 justpath --correct --string
+```
+
+One-line alternatives for `justpath` commands where they exist:
+
+```console
+justpath --shell-equivalents
 ```
 
 ## Useful cases
@@ -303,8 +314,8 @@ Few good links about CLI applications in general:
 ### Linux scripting
 
 On Linux you can run `echo $PATH | tr ";" "\n"` to view your path line by line and
-combine it with `grep`, `sort`, `uniq` and `wc -l` for the same effect
-as most `justpath` commands.
+combine it with `grep`, `sort`, `uniq` and `wc -l` for the similar effect
+as `justpath` commands.
 
 The benefit of a script is that you do not need to install any extra dependency.
 The drawback is that not everyone is good at writing bash scripts.
@@ -313,8 +324,7 @@ Scripting would also be a bit more problematic on Windows.
 Check out the discussion at [Hacker News](https://news.ycombinator.com/item?id=39493363)
 about bash and zsh scripts and `justpath` scenarios.
 
-> [!TIP] > `--shell-equivalent` flag provides a reference about one line commands for several shells.
-> Try `justpath --raw --shell-equivalent` or `justpath --shell-equivalent`.
+> [!TIP] > `--shell-equivalents` flag provides a reference about one line commands for several shells that do similar jobs as `justpath` itself. Try `justpath --shell-equivalents`.
 
 ### Other utilities
 

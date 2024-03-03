@@ -12,6 +12,8 @@ from typing import Annotated, Type
 from colorama import Fore, Style
 from typer import Option, Typer
 
+from justpath.oneliners import print_alternatives
+
 
 class PathVar(UserDict[int, Path]):
     @classmethod
@@ -128,34 +130,11 @@ def show(
     color: option("Use color to highlight errors.") = True,  # type: ignore
     string: option("Print a single string suitable as PATH content.") = False,  # type: ignore
     json: option("Format output as JSON.") = False,  # type: ignore
-    shell_equivalent: option("Provide bash or cmd shell command.") = False,  # type: ignore
+    shell_equivalents: option("Print useful commands for bash, cmd and Powershell.") = False,  # type: ignore
 ):
     """Show directories from PATH."""
-    if shell_equivalent:
-        any_flag = any(
-            [
-                raw,
-                count,
-                sort,
-                invalid,
-                purge_invalid,
-                duplicates,
-                purge_duplicates,
-                includes,
-                excludes,
-            ]
-        )
-        if raw:
-            print("bash:\n  echo $PATH")
-            print("cmd.exe:\n  echo %PATH%")
-            print("poweshell:\n  echo $Env:PATH")
-            print("python:\n  python -c \"import os; print(os.environ['PATH'])\"")
-        if not any_flag:
-            print('bash:\n  echo $PATH | tr ":" "\\n"')
-            print('poweshell:\n  $env:PATH.split(";")')
-            print(
-                "python:\n  python -c \"import os; print(os.environ['PATH'].replace(os.pathsep, '\\n'))\""
-            )
+    if shell_equivalents:
+        print_alternatives()
         sys.exit(0)
     if raw:
         show_raw()
