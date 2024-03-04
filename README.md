@@ -55,7 +55,7 @@ justpath
 Same as above, but no line numbers, no comments, no color, just bare text.
 
 ```console
-justpath --bare --no-color
+justpath --bare
 ```
 
 Show directories from PATH in alphabetic order[^1]:
@@ -102,7 +102,7 @@ What is the `PATH` without invalid paths and duplicates?
 justpath --purge-invalid --purge-duplicates
 ```
 
-More concise:
+Same as above, but more concise:
 
 ```console
 justpath --correct

@@ -12,6 +12,7 @@ commands = [
     ["--shell-equivalents"],
     ["--raw"],
     ["--count"],
+    "--no-numbers --no-comments --no-color".split(),
     ["--bare"],
     ["--sort", "--includes", "mingw", "--excludes", "tools"],
     ["--invalid"],

@@ -36,6 +36,9 @@ class PathVar(UserDict[int, Path]):
         """Number of digits in a line number, usually 1 or 2."""
         return len(str(max(self.keys()))) if self.keys() else 0
 
+    def offset(self, i: int):
+        return str(i).rjust(self.max_digits)
+
     def to_rows(self, follow_symlinks: bool) -> list["Row"]:
         getter = resolve if follow_symlinks else as_is
         counter = Counter([getter(path) for path in self.values()])
@@ -168,7 +171,13 @@ def show(
         print(dumps(paths, indent=2))
     else:
         for row in rows:
-            print_row2(row, color, comments, numbers, path_var.max_digits)
+            items = [
+                get_color(row) if color else "",
+                path_var.offset(row.i) if numbers else "",
+                str(row.path),
+                get_comment(row) if comments else "",
+            ]
+            print("".join(item for item in items if item))
     if color:
         print(Style.RESET_ALL, end="")
 
@@ -226,23 +235,6 @@ def get_comment(row: Row) -> str:
     if items:
         return "(" + ", ".join(items) + ")"
     return ""
-
-
-def print_row2(row: Row, color: bool, comments: bool, numbers: bool, max_digits: int):
-    color_modifier = get_color(row) if color else ""
-    comment_text = (" " + get_comment(row)) if comments else ""
-    line_number_text = (str(row.i).rjust(max_digits) + " ") if numbers else ""
-    print("".join([color_modifier, 
-                      line_number_text,
-                      str(row.path),
-                      comment_text]))
-
-
-
-def print_row(row: Row, color: bool, n: int):
-    modifier = get_color(row) if color else ""
-    comment = get_comment(row)
-    print(modifier + str(row.i).rjust(n), str(row.path), comment)
 
 
 def remove_duplicates(rows, follow_symlinks):
