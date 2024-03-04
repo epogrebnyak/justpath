@@ -225,6 +225,17 @@ C:\tools\Cmder\bin;C:\tools\Cmder\vendor\bin;C:\Windows\system32;C:\Windows;...
 {"total": 52, "invalid": 1, "duplicates": 16}
 ```
 
+### 7. Follow symlinks when looking for duplicates
+
+Often times symbolic links are added to `PATH` to point to a particular version
+of a package. You can discover more duplicate directories with `--follow-symlinks` flag.
+
+```console
+$ justpath --duplicates --follow-symlinks --includes dotnet
+ 6 /home/codespace/.dotnet (resolves to /usr/local/dotnet/7.0.306, duplicates: 2)
+32 /usr/local/dotnet/current (resolves to /usr/local/dotnet/7.0.306, duplicates: 2)
+```
+
 ## Installation
 
 ### Stable version
@@ -325,8 +336,7 @@ Check out the discussion at [Hacker News](https://news.ycombinator.com/item?id=3
 about bash and zsh scripts and `justpath` scenarios.
 
 > [!TIP]
-> `--shell-equivalents` flag provides a reference about one line commands for several shells that do similar jobs as `justpath` itself.
-> Try `justpath --shell-equivalents`.
+> `justpath --shell-equivalents` provides a reference about one line commands for several shells that do similar jobs as `justpath` itself.
 
 ### Other utilities
 

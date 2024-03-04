@@ -46,11 +46,11 @@ class PathVar(UserDict[int, Path]):
         return [make_row(i, path) for i, path in self.items()]
 
 
-def resolve(path: Path):
+def resolve(path: Path) -> str:
     return str(path.resolve()).lower()
 
 
-def as_is(path: Path):
+def as_is(path: Path) -> str:
     return str(path).lower()
 
 
@@ -123,7 +123,9 @@ def show(
     includes: option("Show paths that include a specific string.", str) = "",  # type: ignore
     excludes: option("Show paths that do not include a specific string.", str) = "",  # type: ignore
     follow_symlinks: option("Resolve symbolic links.", bool) = False,  # type: ignore
-    bare: option("Hide extra information about paths.") = False,  # type: ignore
+    bare: option("Provide minimal text output.") = False,  # type: ignore
+    comments: option("Add extra information about paths.") = True,  # type: ignore
+    numbers: option("Add line numbers.") = True,  # type: ignore
     color: option("Use color to highlight errors.") = True,  # type: ignore
     string: option("Print a single string suitable as PATH content.") = False,  # type: ignore
     json: option("Format output as JSON.") = False,  # type: ignore
@@ -156,17 +158,17 @@ def show(
         follow_symlinks,
     )
     paths = [str(row.path) for row in rows]
+    if bare:
+        comments = False
+        numbers = False
+        color = False
     if string:
         print(os.pathsep.join(paths))
     elif json:
         print(dumps(paths, indent=2))
     else:
         for row in rows:
-            if bare:
-                modifier = get_color(row) if color else ""
-                print(modifier + str(row.path))
-            else:
-                print_row(row, color, path_var.max_digits)
+            print_row2(row, color, comments, numbers, path_var.max_digits)
     if color:
         print(Style.RESET_ALL, end="")
 
@@ -224,6 +226,17 @@ def get_comment(row: Row) -> str:
     if items:
         return "(" + ", ".join(items) + ")"
     return ""
+
+
+def print_row2(row: Row, color: bool, comments: bool, numbers: bool, max_digits: int):
+    color_modifier = get_color(row) if color else ""
+    comment_text = (" " + get_comment(row)) if comments else ""
+    line_number_text = (str(row.i).rjust(max_digits) + " ") if numbers else ""
+    print("".join([color_modifier, 
+                      line_number_text,
+                      str(row.path),
+                      comment_text]))
+
 
 
 def print_row(row: Row, color: bool, n: int):
