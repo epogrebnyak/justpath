@@ -37,16 +37,13 @@ class PathVar(UserDict[int, Path]):
         return len(str(max(self.keys()))) if self.keys() else 0
 
     def to_rows(self, follow_symlinks: bool) -> list["Row"]:
-        if follow_symlinks:
-            getter = resolve
-        else:
-            getter = as_is
-        counter = Counter([getter(p) for p in self.values()])
-        rows = []
-        for i, path in self.items():
-            row = Row(i, path, counter[getter(path)])
-            rows.append(row)
-        return rows
+        getter = resolve if follow_symlinks else as_is
+        counter = Counter([getter(path) for path in self.values()])
+
+        def make_row(i, path):
+            return Row(i, path, counter[getter(path)])
+
+        return [make_row(i, path) for i, path in self.items()]
 
 
 def resolve(path: Path):

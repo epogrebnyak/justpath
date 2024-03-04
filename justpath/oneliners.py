@@ -54,6 +54,7 @@ DUPLICATES = OneLiner(
     bash='echo $PATH |  tr ":" "\\n" | sort | uniq -d   # does not preserve order from PATH',
 )
 
+
 def print_alternatives():
     for job in [RAW, DUPLICATES, BY_LINE]:
         job.print()
