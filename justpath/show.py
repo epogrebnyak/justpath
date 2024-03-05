@@ -11,8 +11,63 @@ from typing import Annotated, Type
 
 from colorama import Fore, Style
 from typer import Option, Typer
-
 from justpath.oneliners import print_alternatives
+from dataclasses import dataclass
+from pathlib import Path
+
+
+@dataclass
+class Directory:
+    original: str
+    resolved: str
+    is_directory: bool
+    does_exist: bool
+
+    @classmethod
+    def from_path(cls, path: str):
+        return cls(
+            os.path.normcase(path),
+            os.path.realpath(path),
+            os.path.isdir(path),
+            os.path.exists(path),
+        )
+
+
+from typing import TypedDict
+
+
+def identity(x):
+    return x
+
+
+class PathVariable(TypedDict):
+    line_number: int
+    directory: tuple[Directory, int | None]
+
+    @classmethod
+    def populate(cls):
+        result = cls()
+        for i, path in enumerate(os.environ["PATH"].split(os.pathsep)):
+            result[i + 1] = (Directory.from_path(path), None)
+        return result
+
+    @property
+    def paths(self):
+        return [v[0] for v in self.values()]
+
+    def count(self, f=identity):
+        counter = Counter(map(f, self.paths))
+        cls = self.__cls__
+        return cls(
+            (line_number, (d, counter[f(d)])) for line_number, (d, _) in self.items()
+        )
+
+    def count_by_realpath(self):
+        pass
+
+
+# pv = PathVariable.populate()
+# print(isinstance(pv, PathVariable))
 
 
 class PathVar(UserDict[int, Path]):
