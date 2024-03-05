@@ -258,6 +258,10 @@ or shorter:
 pip install git+https://github.com/epogrebnyak/justpath.git
 ```
 
+### Other package managers 
+
+Installation via conda or homebrew not yet supported.
+
 ## CLI tool
 
 After installation you can try the command line script:
