@@ -4,8 +4,7 @@ from pathlib import Path
 import pytest
 from typer.testing import CliRunner
 
-from justpath.show import typer_app, PathVar, remove_duplicates
-
+from justpath.show import PathVar, remove_duplicates, typer_app
 
 commands = [
     ["--help"],

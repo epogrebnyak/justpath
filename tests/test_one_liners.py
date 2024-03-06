@@ -1,4 +1,4 @@
-from justpath.oneliners import RAW, BY_LINE, DUPLICATES
+from justpath.oneliners import BY_LINE, DUPLICATES, RAW
 
 
 def test_oneliners():

@@ -7,19 +7,18 @@ from dataclasses import dataclass
 from json import dumps
 from os.path import realpath
 from pathlib import Path
-from typing import Annotated, Type
+from typing import Annotated, Type, TypedDict
 
 from colorama import Fore, Style
 from typer import Option, Typer
+
 from justpath.oneliners import print_alternatives
-from dataclasses import dataclass
-from pathlib import Path
 
 
 @dataclass
 class Directory:
     original: str
-    resolved: str
+    canonical: str
     is_directory: bool
     does_exist: bool
 
@@ -31,43 +30,38 @@ class Directory:
             os.path.isdir(path),
             os.path.exists(path),
         )
+    
+    @property
+    def is_valid(self) -> bool:
+        return self.is_directory and self.does_exist
 
 
-from typing import TypedDict
-
-
-def identity(x):
-    return x
-
-
-class PathVariable(TypedDict):
-    line_number: int
-    directory: tuple[Directory, int | None]
+class PathVariable(UserDict[int, Path]):
 
     @classmethod
     def populate(cls):
         result = cls()
         for i, path in enumerate(os.environ["PATH"].split(os.pathsep)):
-            result[i + 1] = (Directory.from_path(path), None)
+            result[i + 1] = Directory.from_path(path)
         return result
 
     @property
     def paths(self):
-        return [v[0] for v in self.values()]
+        return [v.orginial for v in self.values()]
+    
+    def yield_rows(self, getter):
+        counter = Counter([getter(d) for d in self.values()])
+        for i, d in self.items():
+            yield (i, d, counter[getter(d)])
 
-    def count(self, f=identity):
-        counter = Counter(map(f, self.paths))
-        cls = self.__cls__
-        return cls(
-            (line_number, (d, counter[f(d)])) for line_number, (d, _) in self.items()
-        )
+    def rows_original(self):
+        return list(self.yield_rows(lambda d: d.original))
 
-    def count_by_realpath(self):
-        pass
+    def rows_resolved(self):
+        return list(self.yield_rows(lambda d: d.canonical))
 
-
-# pv = PathVariable.populate()
-# print(isinstance(pv, PathVariable))
+#pv = PathVariable.populate()
+#print(pv.rows_resolved())
 
 
 class PathVar(UserDict[int, Path]):
