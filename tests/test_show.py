@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 from typer.testing import CliRunner
 
-from justpath.show import PathVar, remove_duplicates, typer_app
+from justpath.show import PathVariable, remove_duplicates, typer_app
 
 commands = [
     ["--help"],
@@ -43,8 +43,13 @@ def test_it_runs_with_subprocess(args):
     assert result.returncode == 0
 
 
+def test_guarantee_homedir():
+    pv = PathVariable.from_list(["~"])
+    assert pv.to_rows(follow_symlinks=False)[0].directory.does_exist
+
+
 def test_from_list(tmp_path):
-    pv = PathVar.from_list([tmp_path / "a", tmp_path / "b"])
+    pv = PathVariable.from_list([tmp_path / "a", tmp_path / "b"])
     assert len(pv) == 2
 
 
@@ -58,10 +63,10 @@ def test_with_simlinks(tmp_path):
     print(a)
     print(b)
     print(b.resolve())
-    rows = PathVar.from_list([a, b]).to_rows(follow_symlinks=False)
+    rows = PathVariable.from_list([a, b]).to_rows(follow_symlinks=False)
     assert rows[0].count == 1
     assert rows[0].count == 1
-    rows = PathVar.from_list([a, b]).to_rows(follow_symlinks=True)
+    rows = PathVariable.from_list([a, b]).to_rows(follow_symlinks=True)
     assert rows[0].count == 2
     assert rows[1].count == 2
     rows1 = remove_duplicates(rows, follow_symlinks=True)

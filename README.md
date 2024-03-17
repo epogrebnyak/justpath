@@ -234,6 +234,10 @@ of a package. You can discover more duplicate directories with `--follow-symlink
 $ justpath --duplicates --follow-symlinks --includes dotnet
  6 /home/codespace/.dotnet (resolves to /usr/local/dotnet/7.0.306, duplicates: 2)
 32 /usr/local/dotnet/current (resolves to /usr/local/dotnet/7.0.306, duplicates: 2)
+
+$ justpath --duplicates --follow-symlinks --includes java
+10 /home/codespace/java/current/bin (resolves to /usr/local/sdkman/candidates/java/21.0.1-ms/bin, duplicates: 2)
+19 /usr/local/sdkman/candidates/java/current/bin (resolves to /usr/local/sdkman/candidates/java/21.0.1-ms/bin, duplicates: 2)
 ```
 
 ## Installation
