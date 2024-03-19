@@ -31,6 +31,7 @@ justpath
 justpath --count
 justpath --invalid
 justpath --duplicates
+justpath --duplicates --follow-symlinks
 justpath --correct --string
 ```
 
