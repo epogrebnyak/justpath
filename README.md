@@ -17,16 +17,10 @@ Note that `justpath` itself cannot change your shell `PATH`.
 
 ## Try quickly
 
-Install:
+Install (with pip or [pipx](https://github.com/pypa/pipx)):
 
 ```
 pip install justpath
-```
-
-or with [pipx](https://github.com/pypa/pipx)
-
-```
-pipx install justpath
 ```
 
 Try the following:
@@ -253,6 +247,12 @@ $ justpath --duplicates --follow-symlinks --includes java
 
 ```console
 pip install justpath
+```
+
+or with [pipx](https://github.com/pypa/pipx)
+
+```
+pipx install justpath
 ```
 
 ### Development version
