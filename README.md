@@ -19,7 +19,7 @@ Note that `justpath` itself cannot change your shell `PATH`.
 
 Install (with pip or [pipx](#stable-version)):
 
-```
+```console
 pip install justpath
 ```
 
