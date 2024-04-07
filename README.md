@@ -17,7 +17,7 @@ Note that `justpath` itself cannot change your shell `PATH`.
 
 ## Try quickly
 
-Install (with pip or [pipx](https://github.com/pypa/pipx)):
+Install (with pip or [pipx](#stable-version)):
 
 ```
 pip install justpath
@@ -251,7 +251,7 @@ pip install justpath
 
 or with [pipx](https://github.com/pypa/pipx)
 
-```
+```console
 pipx install justpath
 ```
 
