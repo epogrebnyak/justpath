@@ -2,6 +2,9 @@
 
 [![CI](https://github.com/epogrebnyak/justpath/actions/workflows/python-package.yml/badge.svg)](https://github.com/epogrebnyak/justpath/actions/workflows/python-package.yml)
 [![PyPI - Version](https://img.shields.io/pypi/v/justpath)](https://pypi.org/project/justpath/)
+[![Reddit][reddit_shield]](https://www.reddit.com/r/Python/comments/1aehs4i/clean_path_of_nonexistent_directories_with/)
+[![Hacker News][hn_logo]](https://news.ycombinator.com/item?id=39493363)
+[![Python Bytes](https://img.shields.io/badge/Python_Bytes-377-D7F9FF?logo=applepodcasts&labelColor=blue)](https://www.youtube.com/watch?v=eWnYlxOREu4&t=125s)
 
 [reddit_shield]: https://img.shields.io/badge/Reddit-%23FF4500.svg?style=flat&logo=Reddit&logoColor=white
 [hn_logo]: https://img.shields.io/badge/HackerNews-F0652F?logo=ycombinator&logoColor=white
@@ -314,12 +317,6 @@ Some of positive feedback I got about the `justpath` package:
 > Some of my first scripts in several languages have just been messing with file system abstractions.
 > Files and file paths are much more complex than most people think.
 
-## Discussions
-
-[![Reddit][reddit_shield]](https://www.reddit.com/r/Python/comments/1aehs4i/clean_path_of_nonexistent_directories_with/)
-[![Hacker News][hn_logo]](https://news.ycombinator.com/item?id=39493363)
-
-I made posts about this package on Reddit and at Hacker News. Click on badges above to follow the discussions.
 
 ## Development notes
 
