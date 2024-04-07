@@ -23,6 +23,12 @@ Install:
 pip install justpath
 ```
 
+or with [pipx](https://github.com/pypa/pipx)
+
+```
+pipx install justpath
+```
+
 Try the following:
 
 ```console
