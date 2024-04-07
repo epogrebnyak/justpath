@@ -9,7 +9,7 @@
 [reddit_shield]: https://img.shields.io/badge/Reddit-%23FF4500.svg?style=flat&logo=Reddit&logoColor=white
 [hn_logo]: https://img.shields.io/badge/HackerNews-F0652F?logo=ycombinator&logoColor=white
 
-Just a simple utility to explore `PATH` environment variable on both Windows and Linux.
+Just a simple utility to explore `PATH` environment variable on Windows, Linux and MacOS.
 
 ## Workflow
 
