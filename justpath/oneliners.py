@@ -37,7 +37,7 @@ RAW = OneLiner(
     bash="echo $PATH",
     cmd="echo %PATH%",
     ps="echo $Env:PATH",
-    python="import os; print(os.environ['PATH']",
+    python="import os; print(os.environ['PATH'])",
 )
 
 BY_LINE = OneLiner(
