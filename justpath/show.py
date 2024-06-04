@@ -221,7 +221,7 @@ def show(
                 get_comment(row) if comments else "",
             ]
             print(" ".join(item for item in items if item))
-    if color:
+    if color and not string:
         print(Style.RESET_ALL, end="")
 
 
