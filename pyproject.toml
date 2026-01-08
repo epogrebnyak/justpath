@@ -13,7 +13,7 @@ justpath = "justpath.show:typer_app"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-typer = "^0.9.0"
+typer = "^0.18.0"
 colorama = "^0.4.6"
 types-colorama = "^0.4.15.20240106"
 
