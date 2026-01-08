@@ -87,7 +87,7 @@ class PathVariable(UserDict[int, Path]):
     # not tested
     def append(self, path: Path):
         key = 1 + max(self.keys())
-        self.data[key] = Directory.from_path(path)
+        self.data[key] = Directory.from_path(str(path))
 
 
 @dataclass
