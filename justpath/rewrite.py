@@ -6,6 +6,8 @@ from dataclasses import dataclass
 
 @dataclass
 class Directory:
+    """Represents a directory path."""
+
     raw: str
     canonical: str
     resolved: str  # resolve symlinks
@@ -13,6 +15,7 @@ class Directory:
 
     @staticmethod
     def to_canonical(path: str) -> str:
+        """Convert a path by expanding variables and normalizing case."""
         funcs = [
             os.path.expandvars,  # expands %name% or $NAME
             os.path.expanduser,  # expands ~
@@ -24,6 +27,7 @@ class Directory:
 
     @classmethod
     def from_string(cls, raw: str):
+        """Create an instance from string."""
         visible_path = cls.to_canonical(raw)
         if not os.path.exists(visible_path):
             error = FileNotFoundError()
@@ -35,19 +39,27 @@ class Directory:
 
     @property
     def is_valid(self) -> bool:
+        """Check if the directory path exists and it is not a file."""
         return self.error is None
 
 
 def raw_path_var():
-    return os.environ["PATH"]
+    """Return PATH environment variable."""
+    try:
+        return os.environ["PATH"]
+    except KeyError:
+        raise EnvironmentError("PATH variable not found")
 
 
 @dataclass
 class PathList:
+    """Represents a list of directories."""
+
     dirs: list[Directory]
 
     @classmethod
     def populate(cls):
+        """Create a PathList by parsing the PATH environment variable."""
         paths = raw_path_var().split(os.pathsep)
         dirs = [Directory.from_string(p) for p in paths]
         return cls(dirs)
@@ -60,29 +72,36 @@ class PathList:
         return count
 
     def count_raws(self, path):
+        """Count how many directories have the same raw path."""
         return self._count_duplicates(path, "raw")
 
     def count_resolved(self, path):
+        """Count how many directories have the same resolved path."""
         return self._count_duplicates(path, "resolved")
 
-    def counter(self, d):
-        r1 = p.count_raws(d.raw)
-        r2 = p.count_resolved(d.resolved)
+    def counter(self, d: Directory):
+        """Return a Counter with raw and resolved path counts."""
+        r1 = self.count_raws(d.raw)
+        r2 = self.count_resolved(d.resolved)
         return Counter(r1, r2)
 
     def rjust(self, k: int):
+        """Right-justify a line number based on the total number of directories."""
         # number of digits in a line number, usually 1 or 2
-        max_digits = len(str(len(self.dirs)))  # may simplify
+        max_digits = len(str(len(self.dirs)))
         return str(k).rjust(max_digits)
 
 
 @dataclass
 class Counter:
+    """Stores number of occurrences of raw and resolved paths."""
+
     raw: int
     resolved: int
 
     @property
     def is_ok(self):
+        """Check if the path appears exactly once in both raw and resolved forms."""
         return self.raw == 1 and self.resolved == 1
 
 
@@ -104,18 +123,23 @@ class Minor(PathError):
 
 @dataclass
 class Line:
+    """Represents a line of output showing a directory and its validation status."""
+
     dir: Directory
     counter: Counter
 
     @classmethod
     def new(cls, d: Directory, p: PathList):
+        """Create a new Line instance for a directory with its counter."""
         counter = p.counter(d)
         return cls(d, counter)
 
     def __bool__(self):
+        """Return True if the directory is valid and has no duplicates."""
         return self.dir.is_valid and self.counter.is_ok
 
     def get_error_message(self) -> PathError | None:
+        """Return an error message for directory."""
         match self.dir.error:
             case FileNotFoundError():
                 return Critical("directory does not exist")
@@ -128,12 +152,20 @@ class Line:
                     return None
 
 
-p = PathList.populate()
-for i, d in enumerate(p.dirs):
-    lineno = p.rjust(i + 1)
-    line = Line.new(d, p)
-    if line:
-        print(lineno, d.raw)
-    else:
-        err = line.get_error_message()
-        print(lineno, "*", d.raw, err)
+def print_path(line_numbers: bool = True):
+    """Print the directories in PATH with their validation status."""
+    p = PathList.populate()
+    for i, d in enumerate(p.dirs):
+        print_items = []
+        if line_numbers:
+            print_items.append(p.rjust(i + 1))
+        line = Line.new(d, p)
+        if line:
+            print_items.append(d.raw)
+        else:
+            err = line.get_error_message()
+            print_items.extend(["*", d.raw, str(err)])
+        print(" ".join(print_items))
+
+
+print_path(False)
