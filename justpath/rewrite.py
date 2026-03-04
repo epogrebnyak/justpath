@@ -2,6 +2,7 @@
 
 import os
 from dataclasses import dataclass
+from collections import UserDict
 
 
 @dataclass
@@ -51,45 +52,39 @@ def raw_path_var():
         raise EnvironmentError("PATH variable not found")
 
 
-@dataclass
-class PathList:
+class PathDict(UserDict[int, Directory]):
     """Represents a list of directories."""
-
-    dirs: list[Directory]
 
     @classmethod
     def populate(cls):
-        """Create a PathList by parsing the PATH environment variable."""
+        """Create a PathDict by parsing the PATH environment variable."""
         paths = raw_path_var().split(os.pathsep)
-        dirs = [Directory.from_string(p) for p in paths]
+        dirs = {i + 1: Directory.from_string(p) for i, p in enumerate(paths)}
         return cls(dirs)
 
+    def filter_values(self, f) -> None:
+        """Return a new PathDict with values filtered by a function."""
+        self.data = {k: v for k, v in self.items() if f(v)}
+
     def _count_duplicates(self, path: str, attr: str):
-        count = 0
-        for d in self.dirs:
-            if getattr(d, attr) == path:
-                count += 1
-        return count
+        return sum(1 for d in self.values() if getattr(d, attr) == path)
 
-    def count_raws(self, path):
-        """Count how many directories have the same raw path."""
-        return self._count_duplicates(path, "raw")
-
-    def count_resolved(self, path):
-        """Count how many directories have the same resolved path."""
-        return self._count_duplicates(path, "resolved")
-
-    def counter(self, d: Directory):
+    def create_counter(self, d: Directory):
         """Return a Counter with raw and resolved path counts."""
-        r1 = self.count_raws(d.raw)
-        r2 = self.count_resolved(d.resolved)
+        r1 = self._count_duplicates(d.raw, "raw")
+        r2 = self._count_duplicates(d.resolved, "resolved")
         return Counter(r1, r2)
 
-    def rjust(self, k: int):
-        """Right-justify a line number based on the total number of directories."""
-        # number of digits in a line number, usually 1 or 2
-        max_digits = len(str(len(self.dirs)))
-        return str(k).rjust(max_digits)
+    def path_items(self):
+        """Create a PathItem for a given directory."""
+        for i, d in self.items():
+            counter = self.create_counter(d)
+            yield PathItem(i, d, counter)
+
+    def sorted(self) -> "PathDict":
+        """Return a new PathDict sorted by validity and duplicates."""
+        sorted_dirs = dict(sorted(self.items(), key=lambda x: x[1].raw))
+        return PathDict(sorted_dirs)
 
 
 @dataclass
@@ -109,9 +104,6 @@ class Counter:
 class PathError:
     message: str
 
-    def __str__(self):
-        return "(" + self.message + ")"
-
 
 class Critical(PathError):
     pass
@@ -122,21 +114,10 @@ class Minor(PathError):
 
 
 @dataclass
-class Line:
-    """Represents a line of output showing a directory and its validation status."""
-
+class PathItem:
+    i: int
     dir: Directory
-    counter: Counter
-
-    @classmethod
-    def new(cls, d: Directory, p: PathList):
-        """Create a new Line instance for a directory with its counter."""
-        counter = p.counter(d)
-        return cls(d, counter)
-
-    def __bool__(self):
-        """Return True if the directory is valid and has no duplicates."""
-        return self.dir.is_valid and self.counter.is_ok
+    duplicates: Counter
 
     def get_error_message(self) -> PathError | None:
         """Return an error message for directory."""
@@ -146,26 +127,64 @@ class Line:
             case NotADirectoryError():
                 return Critical("not a directory")
             case None:
-                if (n := self.counter.resolved) > 1:
-                    return Minor(f"found {n} duplicates")
+                if (n := self.duplicates.resolved) > 1:
+                    return Minor(f"{n} duplicates")
                 else:
                     return None
 
 
-def print_path(line_numbers: bool = True):
+@dataclass
+class SelectOptions:
+    show_invalid: bool = False
+    show_duplicates: bool = False
+    sort: bool = False
+
+
+@dataclass
+class DisplayOptions:
+    show_line_numbers: bool = True
+    follow_symlinks: bool = True
+    show_errors: bool = True
+    # color_output: bool = False
+
+    def apply(self, line: PathItem, max_digits: int) -> str:
+        """Format PathItem based on the display options."""
+        parts = []
+        if self.show_line_numbers:
+            lineno = str(line.i).rjust(max_digits)
+            parts.append(lineno)
+        parts.append(line.dir.raw)
+        if self.follow_symlinks and line.dir.resolved != line.dir.raw:
+            parts.append(f"→ {line.dir.resolved}")
+        if self.show_errors and (error := line.get_error_message()):
+            parts.append("(" + error.message + ")")
+        return " ".join(parts)
+
+
+def print_path(do: DisplayOptions, so: SelectOptions):
     """Print the directories in PATH with their validation status."""
-    p = PathList.populate()
-    for i, d in enumerate(p.dirs):
-        print_items = []
-        if line_numbers:
-            print_items.append(p.rjust(i + 1))
-        line = Line.new(d, p)
-        if line:
-            print_items.append(d.raw)
-        else:
-            err = line.get_error_message()
-            print_items.extend(["*", d.raw, str(err)])
-        print(" ".join(print_items))
+    holder = PathDict.populate()
+    if so.sort:
+        holder = holder.sorted()
+
+    def is_error(x):
+        return not x.is_valid
+
+    def is_duplicate(x):
+        return not holder.create_counter(x).is_ok
+
+    if so.show_invalid and so.show_duplicates:
+        holder.filter_values(lambda d: is_error(d) or is_duplicate(d))
+    if so.show_invalid:
+        holder.filter_values(is_error)
+    if so.show_duplicates:
+        holder.filter_values(is_duplicate)
+    max_digits = len(str(len(holder)))
+    for p in holder.path_items():
+        message = do.apply(p, max_digits)
+        print(message)
 
 
-print_path(False)
+so = SelectOptions(show_invalid=False, show_duplicates=True, sort=True)
+do = DisplayOptions()
+print_path(do, so)
