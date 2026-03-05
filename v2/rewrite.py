@@ -4,6 +4,9 @@ import os
 from dataclasses import dataclass
 from collections import UserDict
 
+# make new type for FileNotFoundError | NotADirectoryError | None
+PathErrorType = FileNotFoundError | NotADirectoryError | None
+
 
 @dataclass
 class Directory:
@@ -11,8 +14,8 @@ class Directory:
 
     raw: str
     canonical: str
-    resolved: str  # resolve symlinks
-    error: Exception | None
+    resolved: str  # resolved symlinks
+    error: PathErrorType
 
     @staticmethod
     def to_canonical(path: str) -> str:
@@ -30,6 +33,7 @@ class Directory:
     def from_string(cls, raw: str):
         """Create an instance from string."""
         visible_path = cls.to_canonical(raw)
+        error: PathErrorType
         if not os.path.exists(visible_path):
             error = FileNotFoundError()
         elif not os.path.isdir(visible_path):
@@ -98,6 +102,10 @@ class Counter:
     def is_ok(self):
         """Check if the path appears exactly once in both raw and resolved forms."""
         return self.raw == 1 and self.resolved == 1
+    
+    def is_duplicate(self):
+        """Check if the path appears more than once in either raw or resolved forms."""
+        return self.raw > 1 or self.resolved > 1
 
 
 @dataclass
@@ -131,6 +139,8 @@ class PathItem:
                     return Minor(f"{n} duplicates")
                 else:
                     return None
+            case _:
+                return Minor("unknown error")
 
 
 @dataclass
