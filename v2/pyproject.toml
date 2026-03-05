@@ -1,0 +1,16 @@
+[project]
+name = "justpath"
+version = "0.1.0"
+description = "Explore PATH environment variable on Windows, Mac and Linux."
+authors = ["Evgeny Pogrebnyak <e.pogrebnyak@gmail.com>"]
+license = "GNU"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "rich>=14.3.3",
+    "typer>=0.24.1",
+]
+repository = "https://github.com/epogrebnyak/justpath"
+
+[tool.mypy]
+ignore_missing_imports = true

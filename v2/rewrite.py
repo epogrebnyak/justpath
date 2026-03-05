@@ -1,10 +1,14 @@
 """Explore PATH environment variable."""
 
+from abc import ABC
 import os
 from dataclasses import dataclass
 from collections import UserDict
 
-# make new type for FileNotFoundError | NotADirectoryError | None
+from rich.console import Console
+from rich.text import Text
+
+
 PathErrorType = FileNotFoundError | NotADirectoryError | None
 
 
@@ -57,7 +61,7 @@ def raw_path_var():
 
 
 class PathDict(UserDict[int, Directory]):
-    """Represents a list of directories."""
+    """Represents directories from PATH."""
 
     @classmethod
     def populate(cls):
@@ -81,13 +85,15 @@ class PathDict(UserDict[int, Directory]):
 
     def path_items(self):
         """Create a PathItem for a given directory."""
-        for i, d in self.items():
-            counter = self.create_counter(d)
-            yield PathItem(i, d, counter)
+        for i, directory in self.items():
+            counter = self.create_counter(directory)
+            yield PathItem(i, directory, counter)
 
     def sorted(self) -> "PathDict":
         """Return a new PathDict sorted by validity and duplicates."""
-        sorted_dirs = dict(sorted(self.items(), key=lambda x: x[1].raw))
+        sorted_dirs = dict(
+            sorted(self.items(), key=lambda x: (x[1].resolved, x[1].raw))
+        )
         return PathDict(sorted_dirs)
 
 
@@ -102,23 +108,43 @@ class Counter:
     def is_ok(self):
         """Check if the path appears exactly once in both raw and resolved forms."""
         return self.raw == 1 and self.resolved == 1
-    
+
+    @property
     def is_duplicate(self):
         """Check if the path appears more than once in either raw or resolved forms."""
         return self.raw > 1 or self.resolved > 1
 
 
+# this is ABC class
+class PathStatus(ABC):
+    pass
+
+
+class NoError(PathStatus):
+    pass
+
+
 @dataclass
-class PathError:
+class CriticalError(PathStatus):
     message: str
 
 
-class Critical(PathError):
-    pass
+@dataclass
+class MinorError(PathStatus):
+    message: str
 
 
-class Minor(PathError):
-    pass
+def get_color(status: PathStatus) -> str:
+    """Return color based on error type."""
+    match status:
+        case CriticalError(_):
+            return "red"
+        case MinorError(_):
+            return "gold3"
+        case NoError():
+            return "green"
+        case _:
+            raise ValueError("Unknown status type")
 
 
 @dataclass
@@ -127,20 +153,20 @@ class PathItem:
     dir: Directory
     duplicates: Counter
 
-    def get_error_message(self) -> PathError | None:
-        """Return an error message for directory."""
+    def get_status(self) -> PathStatus:
+        """Return an error message or no error for directory."""
         match self.dir.error:
             case FileNotFoundError():
-                return Critical("directory does not exist")
+                return CriticalError("directory does not exist")
             case NotADirectoryError():
-                return Critical("not a directory")
+                return CriticalError("not a directory")
             case None:
                 if (n := self.duplicates.resolved) > 1:
-                    return Minor(f"{n} duplicates")
+                    return MinorError(f"{n} duplicates")
                 else:
-                    return None
-            case _:
-                return Minor("unknown error")
+                    return NoError()
+            # case _:
+            #    return Minor("unknown error")
 
 
 @dataclass
@@ -150,25 +176,40 @@ class SelectOptions:
     sort: bool = False
 
 
+text = Text()
+text.append("Hello", style="green")
+text.append(" World!", style="yellow")
+text.append("Hello", style="grey74")
+text.append(" World!", style="red")
+console = Console()
+console.print(text)
+
+
 @dataclass
 class DisplayOptions:
     show_line_numbers: bool = True
     follow_symlinks: bool = True
     show_errors: bool = True
-    # color_output: bool = False
 
-    def apply(self, line: PathItem, max_digits: int) -> str:
-        """Format PathItem based on the display options."""
-        parts = []
+    def apply(self, line: PathItem, max_digits: int) -> Text:
+        """Format PathItem based on display options."""
+        text = Text()
         if self.show_line_numbers:
             lineno = str(line.i).rjust(max_digits)
-            parts.append(lineno)
-        parts.append(line.dir.raw)
+            text.append(lineno, style="grey74")
+        status = line.get_status()
+        style = get_color(status)
+        text.append(" " + line.dir.raw, style=style)
         if self.follow_symlinks and line.dir.resolved != line.dir.raw:
-            parts.append(f"→ {line.dir.resolved}")
-        if self.show_errors and (error := line.get_error_message()):
-            parts.append("(" + error.message + ")")
-        return " ".join(parts)
+            text.append(f" → {line.dir.resolved}", style="steel_blue1")
+        if self.show_errors:
+            match status:
+                case CriticalError(message) | MinorError(message):
+                    message = " (" + status.message + ")"
+                    text.append(message, style="grey74")
+                case _:
+                    pass
+        return text
 
 
 def print_path(do: DisplayOptions, so: SelectOptions):
@@ -177,24 +218,25 @@ def print_path(do: DisplayOptions, so: SelectOptions):
     if so.sort:
         holder = holder.sorted()
 
-    def is_error(x):
-        return not x.is_valid
+    def is_invalid(d: Directory) -> bool:
+        return not d.is_valid
 
-    def is_duplicate(x):
-        return not holder.create_counter(x).is_ok
+    def is_duplicate(d: Directory) -> bool:
+        return not holder.create_counter(d).is_ok
 
     if so.show_invalid and so.show_duplicates:
-        holder.filter_values(lambda d: is_error(d) or is_duplicate(d))
+        holder.filter_values(lambda d: is_invalid(d) or is_duplicate(d))
     if so.show_invalid:
-        holder.filter_values(is_error)
+        holder.filter_values(is_invalid)
     if so.show_duplicates:
         holder.filter_values(is_duplicate)
     max_digits = len(str(len(holder)))
+    console = Console()
     for p in holder.path_items():
         message = do.apply(p, max_digits)
-        print(message)
+        console.print(message)
 
 
-so = SelectOptions(show_invalid=False, show_duplicates=True, sort=True)
+so = SelectOptions(show_invalid=False, show_duplicates=False, sort=True)
 do = DisplayOptions()
 print_path(do, so)
