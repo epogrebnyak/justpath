@@ -1,6 +1,6 @@
 [project]
 name = "justpath"
-version = "0.1.0"
+version = "0.1.1"
 description = "Explore PATH environment variable on Windows, Mac and Linux."
 authors = [{ name = "Evgeny Pogrebnyak", email = "e.pogrebnyak@gmail.com" }]
 license = "MIT"

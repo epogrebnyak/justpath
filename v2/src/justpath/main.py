@@ -97,11 +97,16 @@ class PathDict(UserDict[int, Directory]):
             raise EnvironmentError("PATH variable not found")
 
     @classmethod
+    def from_list(cls, paths: list[str]) -> "PathDict":
+        """Create a PathDict from a list of directory paths."""
+        dirs = {i + 1: Directory.from_string(p) for i, p in enumerate(paths)}
+        return cls(dirs)
+
+    @classmethod
     def populate(cls) -> "PathDict":
         """Create a PathDict by parsing the PATH environment variable."""
         paths = cls.raw().split(os.pathsep)
-        dirs = {i + 1: Directory.from_string(p) for i, p in enumerate(paths)}
-        return cls(dirs)
+        return cls.from_list(paths)
 
     def to_string(self) -> str:
         return os.pathsep.join(d.raw for d in self.values())
