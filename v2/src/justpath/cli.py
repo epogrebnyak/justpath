@@ -33,6 +33,12 @@ def show(
     format: OutputFormat = typer.Option(
         OutputFormat.LINES, help="Output format: lines, string, or json"
     ),
+    includes: list[str] = typer.Option(
+        default_factory=list, help="Only show directories that contain this string."
+    ),
+    excludes: list[str] = typer.Option(
+        default_factory=list, help="Skip directories that contain this string."
+    ),
 ):
     """Display directories from the PATH environment variable."""
     if count:
@@ -42,7 +48,12 @@ def show(
         print(PathDict.raw())
         sys.exit(0)
     so = SelectOptions(
-        show_invalid=invalid, show_duplicates=duplicates, sort=sort, symlinks=symlinks
+        show_invalid=invalid,
+        show_duplicates=duplicates,
+        sort=sort,
+        symlinks=symlinks,
+        includes=includes,
+        excludes=excludes,
     )
     if bare:
         line_numbers = False

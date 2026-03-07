@@ -170,18 +170,38 @@ class PathDict(UserDict[int, Directory]):
 
     def select(self, so: "SelectOptions") -> "PathDict":
         """Modify PathDict in place based on SelectOptions."""
+        # sorting (behaviour affected by --symlinks flag)
+        if so.sort:
+            if so.symlinks:
+                self.sort_resolved()
+            else:
+                self.sort_raw()
 
+        # process --includes and --excludes filters (behaviour affected by --symlinks flag as well)
+        if so.includes:
+            self.filter_values(
+                lambda d: (
+                    so.includes.lower() in d.resolved  # search lowercase in lowercase
+                    if so.symlinks
+                    else so.includes in d.raw  # search raw in raw
+                )
+            )
+        if so.excludes:
+            self.filter_values(
+                lambda d: not (
+                    so.excludes.lower() in d.resolved
+                    if so.symlinks
+                    else so.excludes in d.raw
+                )
+            )
+
+        # deal with --invalid and --duplicates flag
         def is_invalid(d: Directory) -> bool:
             return not d.is_valid
 
         def is_duplicate(d: Directory) -> bool:
             return not self.create_counter(d).is_ok
 
-        if so.sort:
-            if so.symlinks:
-                self.sort_resolved()
-            else:
-                self.sort_raw()
         if so.show_invalid and so.show_duplicates:
             self.filter_values(lambda d: is_invalid(d) or is_duplicate(d))
         elif so.show_invalid:
@@ -268,10 +288,14 @@ class ModifyOptions:
 
 @dataclass
 class SelectOptions:
+    """Used in PathDict.select to modify the PathDict in place based on these options."""
+
     show_invalid: bool
     show_duplicates: bool
     sort: bool
     symlinks: bool
+    includes: str | None
+    excludes: str | None
 
 
 @dataclass
