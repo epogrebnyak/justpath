@@ -6,7 +6,8 @@ from abc import ABC
 from collections import UserDict
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Callable
+from collections.abc import Callable, Iterator
+from typing import Any
 
 from rich.console import Console
 from rich.text import Text
@@ -123,7 +124,7 @@ class PathDict(UserDict[int, Directory]):
         r2 = self._count_duplicates(d.resolved, "resolved")
         return Counter(r1, r2)
 
-    def path_items(self):
+    def path_items(self) -> Iterator["PathItem"]:
         """Create a PathItem for a given directory."""
         for i, directory in self.items():
             counter = self.create_counter(directory)
@@ -178,22 +179,17 @@ class PathDict(UserDict[int, Directory]):
                 self.sort_raw()
 
         # process --includes and --excludes filters (behaviour affected by --symlinks flag as well)
-        if so.includes:
-            self.filter_values(
-                lambda d: (
-                    so.includes.lower() in d.resolved  # search lowercase in lowercase
-                    if so.symlinks
-                    else so.includes in d.raw  # search raw in raw
-                )
-            )
-        if so.excludes:
-            self.filter_values(
-                lambda d: not (
-                    so.excludes.lower() in d.resolved
-                    if so.symlinks
-                    else so.excludes in d.raw
-                )
-            )
+        for word in so.includes:
+            if so.symlinks:
+                self.filter_values(lambda d: word.lower() in d.resolved)
+            else:
+                self.filter_values(lambda d: word in d.raw)
+        for word in so.excludes:
+            print(word)
+            if so.symlinks:
+                self.filter_values(lambda d: word.lower() not in d.resolved)
+            else:
+                self.filter_values(lambda d: word not in d.raw)
 
         # deal with --invalid and --duplicates flag
         def is_invalid(d: Directory) -> bool:
@@ -219,12 +215,12 @@ class Counter:
     resolved: int
 
     @property
-    def is_ok(self):
+    def is_ok(self) -> bool:
         """Check if the path appears exactly once in both raw and resolved forms."""
         return self.raw == 1 and self.resolved == 1
 
     @property
-    def is_duplicate(self):
+    def is_duplicate(self) -> bool:
         """Check if the path appears more than once in either raw or resolved forms."""
         return self.raw > 1 or self.resolved > 1
 
@@ -294,8 +290,8 @@ class SelectOptions:
     show_duplicates: bool
     sort: bool
     symlinks: bool
-    includes: str | None
-    excludes: str | None
+    includes: list[str]
+    excludes: list[str]
 
 
 @dataclass

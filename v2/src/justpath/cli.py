@@ -39,7 +39,7 @@ def show(
     excludes: list[str] = typer.Option(
         default_factory=list, help="Skip directories that contain this string."
     ),
-):
+) -> None:
     """Display directories from the PATH environment variable."""
     if count:
         print_stats(holder=PathDict.populate(), use_json=format == OutputFormat.JSON)

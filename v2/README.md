@@ -338,6 +338,7 @@ Even better tools than `justpath` may exist.
 - `--no-symlinks` will hide resolved paths from display.
 - `justpath --sort` sorts by resolved paths, `justpath --sort --no-symlinks` sorts by raw paths.
 - `--format lines | string | json` flag.
+- `--includes` and `--excludes` allow repetition (`justpath --excludes bin --excludes codespace`)  
 - Dropped `--shell-equivalents` flag.
 - Using `uv` package manager.
 - `rich` for color oupput and a new color scheme

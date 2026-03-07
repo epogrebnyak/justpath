@@ -27,11 +27,11 @@ justpath --correct --format string
 justpath --sort 
 justpath --sort --no-symlinks
 justpath --sort --includes windows --excludes system32
-justpath --sort --includes sdkman
+justpath --sort --includes sdk
 justpath --includes quarto
 justpath --includes quarto --invalid
 justpath --includes quarto --correct
-
+justpath --excludes bin --excludes codespace --no-symlinks
 justpath --format json
 justpath --correct --format string
 justpath --count
