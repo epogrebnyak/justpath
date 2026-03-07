@@ -6,7 +6,7 @@ from abc import ABC
 from collections import UserDict
 from dataclasses import dataclass
 from enum import Enum
-from typing import Callable
+from typing import Any, Callable
 
 from rich.console import Console
 from rich.text import Text
@@ -44,7 +44,7 @@ class Directory:
         return path
 
     @classmethod
-    def from_string(cls, raw: str):
+    def from_string(cls, raw: str) -> "Directory":
         """Create a Directory instance from string."""
         visible_path = cls.to_canonical(raw)
         error: PathErrorType  # this is for mypy
@@ -61,7 +61,7 @@ class Directory:
         """Check if the directory path exists and it is not a file."""
         return self.error is None
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, str | bool]:
         """Return a dictionary representation of the Directory."""
         return {
             "raw": self.raw,
@@ -96,28 +96,28 @@ class PathDict(UserDict[int, Directory]):
             raise EnvironmentError("PATH variable not found")
 
     @classmethod
-    def populate(cls):
+    def populate(cls) -> "PathDict":
         """Create a PathDict by parsing the PATH environment variable."""
         paths = cls.raw().split(os.pathsep)
         dirs = {i + 1: Directory.from_string(p) for i, p in enumerate(paths)}
         return cls(dirs)
 
-    def to_string(self):
+    def to_string(self) -> str:
         return os.pathsep.join(d.raw for d in self.values())
 
-    def to_json(self):
+    def to_json(self) -> str:
         """Return JSON representation of PATH entries."""
         serial = {i: d.to_dict() for i, d in self.items()}
         return json.dumps(serial, indent=2)
 
-    def filter_values(self, f) -> None:
+    def filter_values(self, f: Callable[[Directory], bool]) -> None:
         """Return a new PathDict with values filtered with f."""
         self.data = {k: v for k, v in self.items() if f(v)}
 
-    def _count_duplicates(self, path: str, attr: str):
+    def _count_duplicates(self, path: str, attr: str) -> int:
         return sum(1 for d in self.values() if getattr(d, attr) == path)
 
-    def create_counter(self, d: Directory):
+    def create_counter(self, d: Directory) -> "Counter":
         """Return a Counter with raw and resolved path counts."""
         r1 = self._count_duplicates(d.raw, "raw")
         r2 = self._count_duplicates(d.resolved, "resolved")
@@ -129,11 +129,13 @@ class PathDict(UserDict[int, Directory]):
             counter = self.create_counter(directory)
             yield PathItem(i, directory, counter)
 
-    def _sorting(self, f_key: Callable[[Directory], bool]) -> "PathDict":
+    def _sorting(
+        self, f_key: Callable[[tuple[int, Directory]], Any]
+    ) -> dict[int, Directory]:
         """Sort inline by a given key function."""
         return dict(sorted(self.items(), key=f_key))
 
-    def sort_raw(self) -> "PathDict":
+    def sort_raw(self) -> None:
         """Sort inline by raw path."""
         self.data = self._sorting(lambda x: x[1].raw)
 
