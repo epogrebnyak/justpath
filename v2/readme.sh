@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+if [[ "${BASH_SOURCE[0]}" != "$0" ]]; then
+	echo "Run this script, do not source it: ./readme.sh or bash readme.sh"
+	return 1
+fi
+
 set -euo pipefail
 
 # justpath invocation examples from README.md
