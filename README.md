@@ -13,10 +13,8 @@ Just a simple utility to explore `PATH` environment variable on Windows, Linux a
 
 ## Workflow
 
-`justpath` shows your `PATH` environment variable line by line with numbering, comments and highlighing and helps detecting invalid or duplicate directories on your `PATH`.
+`justpath` shows your `PATH` environment variable line by line with numbering, comments and highlighing and detects invalid or duplicate directories.
 
-You can also create a modified version of `PATH` string and use it in your shell startup script or through an environment manager.
-Note that `justpath` itself cannot change your shell `PATH`.
 
 ## Try quickly
 
@@ -94,12 +92,6 @@ Are there any duplicate directories in `PATH`?
 justpath --duplicates
 ```
 
-Same, but resolving symbolic links:
-
-```console
-justpath --duplicates --follow-symlinks
-```
-
 What is the `PATH` without invalid paths and duplicates?
 
 ```console
@@ -115,13 +107,7 @@ justpath --correct
 A clean `PATH` string in OS-native format:
 
 ```console
-justpath --correct --string
-```
-
-One-line alternatives for `justpath` commands where they exist:
-
-```console
-justpath --shell-equivalents
+justpath --correct --format string
 ```
 
 ## Useful cases
@@ -190,16 +176,12 @@ Use `--invalid` flag to explore what parts of PATH do not exist or not a directo
 `--correct` flag is the same as applying both `--purge-invalid` and `--purge-duplicates`
 flag. The duplicates are purged from the end of a string.
 
-You may also add `--follow-symlinks` flag in order to resolve symbolic links
-when counting and purging duplicate directories.
-
 ### 4. Dump `PATH` as JSON
 
 `justpath` can dump a list of paths from `PATH` to JSON.
-You may add `--correct` flag to list only correct paths.
 
 ```
-justpath --correct --json
+justpath --format json
 ```
 
 ### 5. Create new content string for `PATH`
@@ -208,10 +190,10 @@ With `justpath` you can create new `PATH` contents and use it in your shell star
 As any child process `justpath` itself cannot modify PATH in your current environment.
 
 You can get a valid string for your PATH in a format native to your operating system
-using `--string` ouput flag.
+using `--format string` ouput flag.
 
 ```console
-λ justpath --correct --string
+λ justpath --correct --format string
 C:\tools\Cmder\bin;C:\tools\Cmder\vendor\bin;C:\Windows\system32;C:\Windows;...
 ```
 
@@ -227,21 +209,6 @@ C:\tools\Cmder\bin;C:\tools\Cmder\vendor\bin;C:\Windows\system32;C:\Windows;...
 ```
 λ justpath --count --json
 {"total": 52, "invalid": 1, "duplicates": 16}
-```
-
-### 7. Follow symlinks when looking for duplicates
-
-Often times symbolic links are added to `PATH` to point to a particular version
-of a package. You can discover more duplicate directories with `--follow-symlinks` flag.
-
-```console
-$ justpath --duplicates --follow-symlinks --includes dotnet
- 6 /home/codespace/.dotnet (resolves to /usr/local/dotnet/7.0.306, duplicates: 2)
-32 /usr/local/dotnet/current (resolves to /usr/local/dotnet/7.0.306, duplicates: 2)
-
-$ justpath --duplicates --follow-symlinks --includes java
-10 /home/codespace/java/current/bin (resolves to /usr/local/sdkman/candidates/java/21.0.1-ms/bin, duplicates: 2)
-19 /usr/local/sdkman/candidates/java/current/bin (resolves to /usr/local/sdkman/candidates/java/21.0.1-ms/bin, duplicates: 2)
 ```
 
 ## Installation
@@ -329,7 +296,7 @@ See [links.md](docs/links.md) for more information about `PATH`.
 Few good links about CLI applications in general:
 
 - [docopt](http://docopt.org/) is a great package to develop intuition about command line interfaces.
-- [clig](https://clig.dev/) - ton of useful suggestions about CLIs including expected standard flags (`--silent`, `--json`, etc).
+- [clig](https://clig.dev/) - lots of useful suggestions about CLIs including expected standard flags (`--silent`, `--json`, etc).
 - [12 factor CLI app](https://panlw.github.io/15394417631263.html) - cited by `clig`.
 
 ## Alternatives
@@ -347,9 +314,6 @@ Scripting would also be a bit more problematic on Windows.
 Check out the discussion at [Hacker News](https://news.ycombinator.com/item?id=39493363)
 about bash and zsh scripts and `justpath` scenarios.
 
-> [!TIP]
-> `justpath --shell-equivalents` provides a reference about one line commands for several shells that do similar jobs as `justpath` itself.
-
 ### Other utilities
 
 Even better tools than `justpath` may exist.
@@ -360,5 +324,19 @@ Even better tools than `justpath` may exist.
   but [not there yet](https://gist.github.com/sts10/daadbc2f403bdffad1b6d33aff016c0a).
 - There is [pathdebug](https://github.com/d-led/pathdebug) written in Go
   that goes a step futher and attempts to trace where your PATH is defined.
-- There is a family of tools to manage environment paths
-  like [dotenv](https://github.com/motdotla/dotenv) or its Python port, and a newer tool called [envio](https://github.com/envio-cli/envio) written in Rust.
+- There is a family of tools to manage environment paths like 
+  [dotenv](https://github.com/motdotla/dotenv) or its Python port, and a newer tool called 
+  [envio](https://github.com/envio-cli/envio) written in Rust.
+
+## Changelog
+
+### v0.1.0
+
+- Always resolve symlinks and use real path to count duplicates.
+- `--no-symlinks` will hide resolved paths from display.
+- `justpath --sort` sorts by resolved paths, `justpath --sort --no-symlinks` sorts by raw paths.
+- `--format lines | string | json` flag.
+- `--includes` and `--excludes` allow repetition (`justpath --excludes bin --excludes codespace`)  
+- Dropped `--shell-equivalents` flag.
+- Using `uv` package manager.
+- `rich` for color oupput and a new color scheme

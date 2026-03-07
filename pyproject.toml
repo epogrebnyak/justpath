@@ -1,29 +1,25 @@
-[tool.poetry]
+[project]
 name = "justpath"
-version = "0.0.18"
-description = "Explore PATH environment variable on Windows and Linux."
-authors = ["Evgeny Pogrebnyak <e.pogrebnyak@gmail.com>"]
-license = "GNU"
+version = "0.1.1"
+description = "Explore PATH environment variable on Windows, Mac and Linux."
+authors = [{ name = "Evgeny Pogrebnyak", email = "e.pogrebnyak@gmail.com" }]
+license = "MIT"
 readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "rich>=14.3.3",
+    "typer>=0.24.1",
+]
+
+[project.urls]
 repository = "https://github.com/epogrebnyak/justpath"
 
-[tool.poetry.scripts]
-pathit = "justpath.show:typer_app"
-justpath = "justpath.show:typer_app"
-
-[tool.poetry.dependencies]
-python = "^3.10"
-typer = "^0.18.0"
-colorama = "^0.4.6"
-types-colorama = "^0.4.15.20240106"
-
-[tool.poetry.group.dev.dependencies]
-mypy = "^1.8.0"
-ruff = "^0.1.14"
-isort = "^5.13.2"
-black = "^24.1.1"
-pytest = "^8.0.0"
-
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project.scripts]
+justpath = "justpath.cli:typer_app"
+
+[tool.mypy]
+ignore_missing_imports = true

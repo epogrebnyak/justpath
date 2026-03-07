@@ -17,27 +17,27 @@ typer_app = typer.Typer(add_completion=False, help="Explore PATH environment var
 
 @typer_app.command()
 def show(
-    count: bool = False,
-    raw: bool = False,
-    sort: bool = False,
-    invalid: bool = False,
-    duplicates: bool = False,
-    color: bool = True,
-    line_numbers: bool = True,
-    symlinks: bool = True,
-    comment: bool = True,
-    bare: bool = False,
-    purge_invalid: bool = False,
-    purge_duplicates: bool = False,
-    correct: bool = False,
+    raw: bool = typer.Option(False, help="Print raw PATH variable content."),
+    count: bool = typer.Option(False, help="Show count of directories in PATH."),
+    sort: bool = typer.Option(False, help="Sort directories alphabetically."),
+    invalid: bool = typer.Option(False, help="Show only invalid directories."),
+    duplicates: bool = typer.Option(False, help="Show only duplicate directories."),
+    color: bool = typer.Option(True, help="Use colored output."),
+    line_numbers: bool = typer.Option(True, help="Show line numbers."),
+    symlinks: bool = typer.Option(True, help="Show symlinks."),
+    comment: bool = typer.Option(True, help="Show error messages."),
+    bare: bool = typer.Option(False, help="Minimal output (no numbers, symlinks and comments)."),
+    purge_invalid: bool = typer.Option(False, help="Remove invalid directories from PATH."),
+    purge_duplicates: bool = typer.Option(False, help="Remove duplicate directories from PATH."),
+    correct: bool = typer.Option(False, help="Remove both invalid and duplicate directories."),
     format: OutputFormat = typer.Option(
         OutputFormat.LINES, help="Output format: lines, string, or json"
     ),
     includes: list[str] = typer.Option(
-        default_factory=list, help="Only show directories that contain this string."
+        default_factory=list, help="Only show directories that contain these strings."
     ),
     excludes: list[str] = typer.Option(
-        default_factory=list, help="Skip directories that contain this string."
+        default_factory=list, help="Skip directories that contain these strings."
     ),
 ) -> None:
     """Display directories from the PATH environment variable."""
