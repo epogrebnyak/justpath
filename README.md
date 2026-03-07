@@ -31,8 +31,9 @@ justpath
 justpath --count
 justpath --invalid
 justpath --duplicates
-justpath --duplicates --follow-symlinks
-justpath --correct --string
+justpath --duplicates --symlinks
+justpath --excludes bin --excludes codespace --no-symlinks
+justpath --correct --format string
 ```
 
 ## Screencast
@@ -114,8 +115,8 @@ justpath --correct --format string
 ### 1. Filter directory names
 
 `justpath` allows to filter paths that must or must not include a certain string.
-Filtering is case insensitive, `--includes windows` and `--includes Windows` will
-produce the same result. `--excludes` flag will filter out the directories containing provided string.
+On Windows, filtering is effectively case insensitive, so `--includes windows` and
+`--includes Windows` usually produce the same result. `--excludes` filters out directories containing the provided string.
 
 ```console
 λ justpath --sort --includes windows --excludes system32
@@ -206,7 +207,7 @@ C:\tools\Cmder\bin;C:\tools\Cmder\vendor\bin;C:\Windows\system32;C:\Windows;...
 ```
 
 ```text
-λ justpath --count --json
+λ justpath --count --format json
 {"total": 52, "invalid": 1, "duplicates": 16}
 ```
 
@@ -301,7 +302,7 @@ Few good links about CLI applications in general:
 
 ### Linux scripting
 
-On Linux you can run `echo $PATH | tr ";" "\n"` to view your path line by line and
+On Linux you can run `echo $PATH | tr ":" "\n"` to view your path line by line and
 combine it with `grep`, `sort`, `uniq` and `wc -l` for the similar effect
 as `justpath` commands.
 
