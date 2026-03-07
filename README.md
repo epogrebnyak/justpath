@@ -15,7 +15,6 @@ Just a simple utility to explore `PATH` environment variable on Windows, Linux a
 
 `justpath` shows your `PATH` environment variable line by line with numbering, comments and highlighing and detects invalid or duplicate directories.
 
-
 ## Try quickly
 
 Install (with pip or [pipx](#stable-version)):
@@ -180,7 +179,7 @@ flag. The duplicates are purged from the end of a string.
 
 `justpath` can dump a list of paths from `PATH` to JSON.
 
-```
+```text
 justpath --format json
 ```
 
@@ -206,7 +205,7 @@ C:\tools\Cmder\bin;C:\tools\Cmder\vendor\bin;C:\Windows\system32;C:\Windows;...
 16 duplicates
 ```
 
-```
+```text
 λ justpath --count --json
 {"total": 52, "invalid": 1, "duplicates": 16}
 ```
@@ -239,7 +238,7 @@ or shorter:
 pip install git+https://github.com/epogrebnyak/justpath.git
 ```
 
-### Other package managers 
+### Other package managers
 
 Installation via conda or homebrew not yet supported.
 
@@ -247,7 +246,7 @@ Installation via conda or homebrew not yet supported.
 
 After installation you can try the command line script:
 
-```
+```text
 justpath --help
 ```
 
@@ -273,23 +272,22 @@ Some of positive feedback I got about the `justpath` package:
 > It's not hard but this makes it nice.
 > Not sure I'll use it since it is one more thing to install and remember,
 > but the author had an itch and scratched it. Well done.
-
+>
 > It's handy to see your path entries in a list.
 > Checking whether each entry is a valid location is neat, too.
 > But even better, from my perspective, you published the code and got feedback from people,
 > including related implementations. That’s worth it, in my book.
 > Edit: I like the includes part, too.
-
+>
 > I think this is a cool package.
 > Some of my first scripts in several languages have just been messing with file system abstractions.
 > Files and file paths are much more complex than most people think.
-
 
 ## Development notes
 
 ### More about `PATH`
 
-See [links.md](docs/links.md) for more information about `PATH`.
+See [links.md](experimental/docs/links.md) for more information about `PATH`.
 
 ### Making of command line interfaces (CLIs)
 
@@ -324,8 +322,8 @@ Even better tools than `justpath` may exist.
   but [not there yet](https://gist.github.com/sts10/daadbc2f403bdffad1b6d33aff016c0a).
 - There is [pathdebug](https://github.com/d-led/pathdebug) written in Go
   that goes a step futher and attempts to trace where your PATH is defined.
-- There is a family of tools to manage environment paths like 
-  [dotenv](https://github.com/motdotla/dotenv) or its Python port, and a newer tool called 
+- There is a family of tools to manage environment paths like
+  [dotenv](https://github.com/motdotla/dotenv) or its Python port, and a newer tool called
   [envio](https://github.com/envio-cli/envio) written in Rust.
 
 ## Changelog

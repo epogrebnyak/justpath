@@ -1,13 +1,12 @@
 # PATH One-Liners
 
-
 This documentation covers common tasks for PATH inspection and manipulation, with equivalent shell commands across multiple platforms:
+
 - **bash** (Linux/macOS)
 - **cmd.exe** (Windows)
 - **PowerShell** (Windows)
 - **Python** (cross-platform)
 - **justpath** (cross-platform)
-
 
 ## Commands
 
@@ -16,26 +15,31 @@ This documentation covers common tasks for PATH inspection and manipulation, wit
 **Task:** Display the raw PATH environment variable without any modifications.
 
 #### Bash (Linux/macOS)
+
 ```bash
 echo $PATH
 ```
 
 #### cmd.exe (Windows)
+
 ```cmd
 echo %PATH%
 ```
 
 #### PowerShell (Windows)
+
 ```powershell
 echo $Env:PATH
 ```
 
 #### Python (any OS)
+
 ```python
 import os; print(os.environ['PATH'])
 ```
 
 #### justpath (any OS)
+
 ```bash
 justpath --raw
 ```
@@ -49,34 +53,41 @@ justpath --raw
 **Task:** Display each PATH directory on a separate line, making it easier to read and analyze.
 
 #### Bash (Linux/macOS)
+
 ```bash
 echo $PATH | tr ":" "\n" | nl
 ```
 
 **Breakdown:**
+
 - `echo $PATH` - Output the PATH variable
 - `tr ":" "\n"` - Translate colons to newlines (splits by path separator)
 - `nl` - Add line numbers to each directory
 
 #### PowerShell (Windows)
+
 ```powershell
 $env:PATH.split(";")
 ```
 
 **Breakdown:**
+
 - `$env:PATH` - Access the PATH environment variable
 - `.split(";")` - Split on semicolon (Windows path separator)
 
 #### Python (any OS)
+
 ```python
 import os; print(os.environ['PATH'].replace(os.pathsep, '\n'))
 ```
 
 **Breakdown:**
+
 - `os.environ['PATH']` - Get the PATH variable
 - `.replace(os.pathsep, '\n')` - Replace the OS-specific separator with newlines
 
 #### justpath
+
 ```bash
 justpath
 ```
@@ -90,11 +101,13 @@ justpath
 **Task:** Identify directories that appear more than once in the PATH.
 
 #### Bash (Linux/macOS) - Note: Order may not be preserved
+
 ```bash
 echo $PATH | tr ":" "\n" | sort | uniq -d
 ```
 
 **Breakdown:**
+
 - `echo $PATH` - Output the PATH variable
 - `tr ":" "\n"` - Split on colons to get one directory per line
 - `sort` - Sort the directories (this changes the original order)
@@ -103,6 +116,7 @@ echo $PATH | tr ":" "\n" | sort | uniq -d
 **Caveat:** This approach sorts the directories, which changes the order they appeared in the original PATH.
 
 #### justpath - Preserves order from PATH
+
 ```bash
 justpath --duplicates
 ```
