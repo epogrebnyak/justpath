@@ -66,7 +66,7 @@ class Directory:
             "raw": self.raw,
             "canonical": self.canonical,
             "resolved": self.resolved,
-            "error": self.error_message,
+            "is_valid": self.is_valid,
         }
     
     @property
@@ -233,9 +233,11 @@ class PathItem:
 
     def get_status(self) -> PathStatus:
         """Return an error message or no error for directory."""
-        match e := self.dir.error:
-            case FileNotFoundError() | NotADirectoryError():
-                return Error(Level.CRITICAL, self.dir.error_message)
+        match self.dir.error:
+            case FileNotFoundError():
+                return Error(Level.CRITICAL, "directory does not exist")
+            case NotADirectoryError():
+                return Error(Level.CRITICAL, "not a directory")
             case None:
                 if (n := self.duplicates.resolved) > 1:
                     return Error(Level.MINOR, f"{n} duplicates")
@@ -288,7 +290,6 @@ class DisplayOptions:
 def print_path(do: DisplayOptions, so: SelectOptions, mo: ModifyOptions) -> None:
     """Print the directories in PATH with their validation status."""
     holder = PathDict.populate().select(so).purge(mo)
-
     match do.format:
         case OutputFormat.STRING:
             print(holder.to_string())
