@@ -8,6 +8,7 @@ from justpath.main import (
     ModifyOptions,
     OutputFormat,
     print_path,
+    print_stats,
     PathDict,
 )
 
@@ -16,6 +17,7 @@ typer_app = typer.Typer(add_completion=False, help="Explore PATH environment var
 
 @typer_app.command()
 def show(
+    count: bool = False,
     raw: bool = False,
     sort: bool = False,
     invalid: bool = False,
@@ -33,6 +35,9 @@ def show(
     ),
 ):
     """Display directories from the PATH environment variable."""
+    if count:
+        print_stats(holder=PathDict.populate(), use_json=format == OutputFormat.JSON)
+        sys.exit(0)
     if raw:
         print(PathDict.raw())
         sys.exit(0)

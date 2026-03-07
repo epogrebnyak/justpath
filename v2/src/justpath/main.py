@@ -301,3 +301,19 @@ def print_path(do: DisplayOptions, so: SelectOptions, mo: ModifyOptions) -> None
             for p in holder.path_items():
                 message = do.apply(p, max_digits)
                 console.print(message)
+
+def print_stats(holder: PathDict, use_json: bool) -> None:
+    """Print of directories in your PATH."""
+    t = len(holder)
+    e = sum([1 for d in holder.values() if not d.is_valid])
+    d = sum([1 for d in holder.values() if holder.create_counter(d).is_duplicate])
+    if use_json:
+        info = dict(total=t, invalid=e, duplicates=d)
+        print(json.dumps(info))
+    else:
+        print(t, "directories in your PATH")
+        if e == 0:
+            print("All directories exist")
+        else:
+            print(e, "do" if e > 1 else "does", "not exist")
+        print(d, "duplicate" + "s" if d > 1 else "")
