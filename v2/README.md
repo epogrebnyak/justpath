@@ -334,7 +334,10 @@ Even better tools than `justpath` may exist.
 
 ### v0.1.0
 
-- Always resolves symlinks and uses real path to count duplicates.
+- Always resolve symlinks and use real path to count duplicates.
+- `--no-symlinks` will hide resolved paths from display.
+- `justpath --sort` sorts by resolved paths, `justpath --sort --no-symlinks` sorts by raw paths.
 - `--format lines | string | json` flag.
 - Dropped `--shell-equivalents` flag.
-- `uv` manager, `rich` for color.
+- Using `uv` package manager.
+- `rich` for color oupput and a new color scheme

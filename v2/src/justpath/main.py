@@ -6,6 +6,7 @@ from abc import ABC
 from collections import UserDict
 from dataclasses import dataclass
 from enum import Enum
+from typing import Callable
 
 from rich.console import Console
 from rich.text import Text
@@ -59,7 +60,7 @@ class Directory:
     def is_valid(self) -> bool:
         """Check if the directory path exists and it is not a file."""
         return self.error is None
-    
+
     def to_dict(self):
         """Return a dictionary representation of the Directory."""
         return {
@@ -68,7 +69,7 @@ class Directory:
             "resolved": self.resolved,
             "is_valid": self.is_valid,
         }
-    
+
     @property
     def error_message(self) -> str:
         """Return a string representation of the error type."""
@@ -81,6 +82,7 @@ class Directory:
                 return "none"
             case _:
                 raise ValueError("Unknown error type")
+
 
 class PathDict(UserDict[int, Directory]):
     """Represents directories from PATH."""
@@ -127,15 +129,23 @@ class PathDict(UserDict[int, Directory]):
             counter = self.create_counter(directory)
             yield PathItem(i, directory, counter)
 
-    def sort_resolved(self) -> "PathDict":
-        """Sort inline by validity and duplicates."""
-        self.data = dict(sorted(self.items(), key=lambda x: (x[1].resolved, x[1].raw)))
+    def _sorting(self, f_key: Callable[[Directory], bool]) -> "PathDict":
+        """Sort inline by a given key function."""
+        return dict(sorted(self.items(), key=f_key))
 
-    def purge_invalid(self) -> "PathDict":
+    def sort_raw(self) -> "PathDict":
+        """Sort inline by raw path."""
+        self.data = self._sorting(lambda x: x[1].raw)
+
+    def sort_resolved(self) -> None:
+        """Sort inline by resolved path (useful for grouping duplicates)."""
+        self.data = self._sorting(lambda x: (x[1].resolved, x[1].raw))
+
+    def purge_invalid(self) -> None:
         """Purge invalid directories."""
         self.filter_values(lambda d: d.is_valid)
 
-    def purge_duplicates(self) -> "PathDict":
+    def purge_duplicates(self) -> None:
         """Purge duplicate directories."""
         # keep only the first occurrence of a duplicate directory
         seen_resolved = set()
@@ -166,7 +176,10 @@ class PathDict(UserDict[int, Directory]):
             return not self.create_counter(d).is_ok
 
         if so.sort:
-            self.sort_resolved()
+            if so.symlinks:
+                self.sort_resolved()
+            else:
+                self.sort_raw()
         if so.show_invalid and so.show_duplicates:
             self.filter_values(lambda d: is_invalid(d) or is_duplicate(d))
         elif so.show_invalid:
@@ -256,6 +269,7 @@ class SelectOptions:
     show_invalid: bool
     show_duplicates: bool
     sort: bool
+    symlinks: bool
 
 
 @dataclass
@@ -301,6 +315,7 @@ def print_path(do: DisplayOptions, so: SelectOptions, mo: ModifyOptions) -> None
             for p in holder.path_items():
                 message = do.apply(p, max_digits)
                 console.print(message)
+
 
 def print_stats(holder: PathDict, use_json: bool) -> None:
     """Print of directories in your PATH."""

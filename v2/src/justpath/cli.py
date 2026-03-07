@@ -4,12 +4,12 @@ import typer
 
 from justpath.main import (
     DisplayOptions,
-    SelectOptions,
     ModifyOptions,
     OutputFormat,
+    PathDict,
+    SelectOptions,
     print_path,
     print_stats,
-    PathDict,
 )
 
 typer_app = typer.Typer(add_completion=False, help="Explore PATH environment variable.")
@@ -41,7 +41,9 @@ def show(
     if raw:
         print(PathDict.raw())
         sys.exit(0)
-    so = SelectOptions(show_invalid=invalid, show_duplicates=duplicates, sort=sort)
+    so = SelectOptions(
+        show_invalid=invalid, show_duplicates=duplicates, sort=sort, symlinks=symlinks
+    )
     if bare:
         line_numbers = False
         symlinks = False

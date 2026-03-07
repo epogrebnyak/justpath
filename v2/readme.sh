@@ -17,7 +17,6 @@ justpath --invalid
 justpath --duplicates
 justpath --correct --format string
 justpath --bare
-justpath --sort-resolved
 justpath --includes bin
 justpath --excludes windows
 justpath --invalid
@@ -25,6 +24,8 @@ justpath --duplicates
 justpath --purge-invalid --purge-duplicates
 justpath --correct
 justpath --correct --format string
+justpath --sort 
+justpath --sort --no-symlinks
 justpath --sort --includes windows --excludes system32
 justpath --sort --includes sdkman
 justpath --includes quarto
