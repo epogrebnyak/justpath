@@ -17,8 +17,8 @@ typer_app = typer.Typer(add_completion=False, help="Explore PATH environment var
 
 @typer_app.command()
 def show(
-    raw: bool = typer.Option(False, help="Print raw PATH variable content."),
-    count: bool = typer.Option(False, help="Show count of directories in PATH."),
+    raw: bool = typer.Option(False, help="Print raw PATH variable content (other flags ignored)."),
+    count: bool = typer.Option(False, help="Show count of directories in PATH (other flags ignored)."),
     sort: bool = typer.Option(False, help="Sort directories alphabetically."),
     invalid: bool = typer.Option(False, help="Show only invalid directories."),
     duplicates: bool = typer.Option(False, help="Show only duplicate directories."),
