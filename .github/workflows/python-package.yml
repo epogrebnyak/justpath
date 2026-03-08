@@ -18,7 +18,7 @@ jobs:
         uses: astral-sh/setup-uv@v7
       - name: Install the project
         run: uv sync --locked --all-extras --dev      
-      # - run: pip install -e . # this is for Windows runnable justpath.exe to exist
+      - run: pip install -e . # this is for Windows runnable justpath.exe to exist
       - run: uv run pytest
 
 
