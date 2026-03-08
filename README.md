@@ -14,7 +14,7 @@ Explore `PATH` environment variable on Windows, Linux and MacOS.
 ## Workflow
 
 `justpath` shows your `PATH` and can detect invalid or duplicate directories. 
-Display options include line numbering, color highlights and line comments.
+Display options include line numbering, real paths for symlinks and color highlights.
 
 ## Try quickly
 
