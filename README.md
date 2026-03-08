@@ -9,12 +9,14 @@
 [reddit_shield]: https://img.shields.io/badge/Reddit-%23FF4500.svg?style=flat&logo=Reddit&logoColor=white
 [hn_logo]: https://img.shields.io/badge/HackerNews-F0652F?logo=ycombinator&logoColor=white
 
-Explore `PATH` environment variable on Windows, Linux and MacOS.
+Explore `PATH` environment variable on Windows, Linux and Mac:
+
+> I always get the feeling that nobody knows what a PATH is and at this point they are too afraid to ask. ([reddit][quote])
 
 ## Workflow
 
 `justpath` shows your `PATH` and can detect invalid or duplicate directories. 
-Display options include line numbering, real paths for symlinks and color highlights.
+Display options include sorting, filtering, and real path resolution.
 
 ## Try quickly
 
@@ -66,7 +68,13 @@ justpath --bare
 Show directories from PATH in alphabetic order[^1]:
 
 ```console
-justpath --sort
+justpath --sort --no-symlinks
+```
+
+The result will look different when sorted by real paths:
+
+```console
+justpath --sort --symlinks
 ```
 
 [^1]: Sorting helps to view and analyze `PATH`. Do not put a sorted `PATH` back on your system as you will loose useful information about path resolution order.
@@ -85,11 +93,11 @@ justpath --excludes windows
 
 These flags can be repeated:
 
-```
+```console
 justpath --excludes bin --excludes codespace
 ```
 
-Are there any directories in `PATH` that do not exist?
+May there be any directories in `PATH` that do not exist?
 
 ```console
 justpath --invalid
@@ -99,6 +107,12 @@ Are there any duplicate directories in `PATH`?
 
 ```console
 justpath --duplicates
+```
+
+See the same without resolving symlinks:
+
+```console
+justpath --duplicates --no-symlinks
 ```
 
 What is the `PATH` without invalid paths and duplicates?
@@ -289,13 +303,13 @@ Some of positive feedback I got about the `justpath` package:
 > It's not hard but this makes it nice.
 > Not sure I'll use it since it is one more thing to install and remember,
 > but the author had an itch and scratched it. Well done.
->
+
 > It's handy to see your path entries in a list.
 > Checking whether each entry is a valid location is neat, too.
 > But even better, from my perspective, you published the code and got feedback from people,
 > including related implementations. That’s worth it, in my book.
 > Edit: I like the includes part, too.
->
+
 > I think this is a cool package.
 > Some of my first scripts in several languages have just been messing with file system abstractions.
 > Files and file paths are much more complex than most people think.
@@ -305,6 +319,8 @@ Some of positive feedback I got about the `justpath` package:
 ### More about `PATH`
 
 See [links.md](experimental/docs/links.md) for more information about `PATH`.
+[oneliners.md](experimental/docs/oneliners.md) provides information about 
+equivalent shell commands.  
 
 ### Making of command line interfaces (CLIs)
 
@@ -345,13 +361,22 @@ Even better tools than `justpath` may exist.
 
 ## Changelog
 
-### v0.1.0
+### Future versions
+
+- homebrew
+- TUI
+- repo section for PATHS JSONs
+
+### v0.1.2
 
 - Always resolve symlinks and use real path to count duplicates.
 - `--no-symlinks` will hide resolved paths from display.
 - `justpath --sort` sorts by resolved paths, `justpath --sort --no-symlinks` sorts by raw paths.
-- `--format lines | string | json` flag.
-- `--includes` and `--excludes` allow repetition (`justpath --excludes bin --excludes codespace`)  
-- Dropped `--shell-equivalents` flag.
-- Using `uv` package manager.
-- `rich` for color oupput and a new color scheme
+- `--format lines | string | json` modifier.
+- `--includes` and `--excludes` allow repetition (`justpath --excludes bin --excludes codespace`) 
+- `--version` flag.
+- Dropped `--shell-equivalents` flag, created [docs page](https://github.com/epogrebnyak/justpath/blob/main/experimental/docs/oneliners.md).
+- Switched `uv` package manager.
+- Using `rich` for color output and a new color scheme.
+- Should fix [#28](https://github.com/epogrebnyak/justpath/issues/28)] escape  charbug.
+- Sister project in Rust: <https://github.com/epogrebnyak/justpath.rs>
