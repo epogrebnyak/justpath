@@ -9,18 +9,21 @@
 [reddit_shield]: https://img.shields.io/badge/Reddit-%23FF4500.svg?style=flat&logo=Reddit&logoColor=white
 [hn_logo]: https://img.shields.io/badge/HackerNews-F0652F?logo=ycombinator&logoColor=white
 
-Just a simple utility to explore `PATH` environment variable on Windows, Linux and MacOS.
+Explore `PATH` environment variable on Windows, Linux and MacOS.
 
 ## Workflow
 
-`justpath` shows your `PATH` environment variable line by line with numbering, comments and highlighing and detects invalid or duplicate directories.
+`justpath` shows your `PATH` and can detect invalid or duplicate directories. 
+Display options include line numbering, color highlights and line comments.
 
 ## Try quickly
 
-Install (with pip or [pipx](#stable-version)):
+Install with pip, pipx or uv, choose any command from below:
 
 ```console
 pip install justpath
+pipx justpath
+uv tool install justpath
 ```
 
 Try the following:
@@ -31,8 +34,8 @@ justpath
 justpath --count
 justpath --invalid
 justpath --duplicates
-justpath --duplicates --symlinks
-justpath --excludes bin --excludes codespace --no-symlinks
+justpath --duplicates --no-symlinks
+justpath --correct
 justpath --correct --format string
 ```
 
@@ -80,6 +83,12 @@ What are the paths that do not contain `windows` string?
 justpath --excludes windows
 ```
 
+These flags can be repeated:
+
+```
+justpath --excludes bin --excludes codespace
+```
+
 Are there any directories in `PATH` that do not exist?
 
 ```console
@@ -98,7 +107,7 @@ What is the `PATH` without invalid paths and duplicates?
 justpath --purge-invalid --purge-duplicates
 ```
 
-Same as above, but more concise:
+Same as above but more concise:
 
 ```console
 justpath --correct
@@ -224,6 +233,13 @@ or with [pipx](https://github.com/pypa/pipx)
 ```console
 pipx install justpath
 ```
+
+or uv:
+
+```console
+uv tool install justpath
+```
+
 
 ### Development version
 

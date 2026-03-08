@@ -39,8 +39,14 @@ def show(
     excludes: list[str] = typer.Option(
         default_factory=list, help="Skip directories that contain these strings."
     ),
+    version: bool = typer.Option(False, help="Show justpath version.")
 ) -> None:
     """Display directories from the PATH environment variable."""
+    if version:
+        from justpath import __version__
+
+        print(__version__)
+        sys.exit(0)
     if count:
         print_stats(holder=PathDict.populate(), use_json=format == OutputFormat.JSON)
         sys.exit(0)

@@ -1,6 +1,6 @@
 [project]
 name = "justpath"
-version = "0.1.1"
+version = "0.1.2"
 description = "Explore PATH environment variable on Windows, Mac and Linux."
 authors = [{ name = "Evgeny Pogrebnyak", email = "e.pogrebnyak@gmail.com" }]
 license = "MIT"
@@ -20,6 +20,12 @@ build-backend = "setuptools.build_meta"
 
 [project.scripts]
 justpath = "justpath.cli:typer_app"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+]
 
 [tool.mypy]
 ignore_missing_imports = true
