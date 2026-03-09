@@ -12,13 +12,23 @@ from justpath.main import (
     print_stats,
 )
 
+# Ensure UTF-8 encoding for stdout to support Unicode characters on Windows
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8")
+
 typer_app = typer.Typer(add_completion=False, help="Explore PATH environment variable.")
 
 
 @typer_app.command()
 def show(
-    raw: bool = typer.Option(False, help="Print raw PATH variable content (other flags ignored)."),
-    count: bool = typer.Option(False, help="Show count of directories in PATH (other flags ignored)."),
+    raw: bool = typer.Option(
+        False, help="Print raw PATH variable content (other flags ignored)."
+    ),
+    count: bool = typer.Option(
+        False, help="Show count of directories in PATH (other flags ignored)."
+    ),
     sort: bool = typer.Option(False, help="Sort directories alphabetically."),
     invalid: bool = typer.Option(False, help="Show only invalid directories."),
     duplicates: bool = typer.Option(False, help="Show only duplicate directories."),
@@ -26,10 +36,18 @@ def show(
     line_numbers: bool = typer.Option(True, help="Show line numbers."),
     symlinks: bool = typer.Option(True, help="Show symlinks."),
     comment: bool = typer.Option(True, help="Show error messages."),
-    bare: bool = typer.Option(False, help="Minimal output (no numbers, symlinks and comments)."),
-    purge_invalid: bool = typer.Option(False, help="Remove invalid directories from PATH."),
-    purge_duplicates: bool = typer.Option(False, help="Remove duplicate directories from PATH."),
-    correct: bool = typer.Option(False, help="Remove both invalid and duplicate directories."),
+    bare: bool = typer.Option(
+        False, help="Minimal output (no numbers, symlinks and comments)."
+    ),
+    purge_invalid: bool = typer.Option(
+        False, help="Remove invalid directories from PATH."
+    ),
+    purge_duplicates: bool = typer.Option(
+        False, help="Remove duplicate directories from PATH."
+    ),
+    correct: bool = typer.Option(
+        False, help="Remove both invalid and duplicate directories."
+    ),
     format: OutputFormat = typer.Option(
         OutputFormat.LINES, help="Output format: lines, string, or json"
     ),
@@ -39,7 +57,7 @@ def show(
     excludes: list[str] = typer.Option(
         default_factory=list, help="Skip directories that contain these strings."
     ),
-    version: bool = typer.Option(False, help="Show justpath version.")
+    version: bool = typer.Option(False, help="Show justpath version."),
 ) -> None:
     """Display directories from the PATH environment variable."""
     if version:

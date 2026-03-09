@@ -378,5 +378,5 @@ Even better tools than `justpath` may exist.
 - Dropped `--shell-equivalents` flag, created [docs page](https://github.com/epogrebnyak/justpath/blob/main/experimental/docs/oneliners.md).
 - Switched `uv` package manager.
 - Using `rich` for color output and a new color scheme.
-- Should fix [#28](https://github.com/epogrebnyak/justpath/issues/28)] escape  charbug.
+- Should fix [#28](https://github.com/epogrebnyak/justpath/issues/28)] escape char bug.
 - Sister project in Rust: <https://github.com/epogrebnyak/justpath.rs>
