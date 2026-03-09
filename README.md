@@ -11,7 +11,7 @@
 
 > I always get the feeling that nobody knows what a PATH is and at this point they are too afraid to ask. ([reddit][quote])
 
-Explore `PATH` environment variable on Windows, Linux and Mac - `justpath` shows your `PATH` 
+Explore `PATH` environment variable on Windows, Linux and Mac – `justpath` shows your `PATH` 
 and can detect invalid or duplicate directories.
 
 ## Try quickly
