@@ -364,7 +364,7 @@ Even better tools than `justpath` may exist.
 - TUI
 - repo section for PATHS JSONs
 
-### v0.1.2
+### v0.1.3
 
 - Always resolve symlinks and use real path to count duplicates.
 - `--no-symlinks` will hide resolved paths from display.
