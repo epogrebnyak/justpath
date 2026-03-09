@@ -12,8 +12,6 @@ from typing import Any
 from rich.console import Console
 from rich.text import Text
 
-PathErrorType = FileNotFoundError | NotADirectoryError | None
-
 
 class OutputFormat(str, Enum):
     """Output format options."""
@@ -30,7 +28,8 @@ class Directory:
     raw: str
     canonical: str
     resolved: str  # resolved symlinks
-    error: PathErrorType
+    is_directory: bool
+    exists: bool
 
     @staticmethod
     def to_canonical(path: str) -> str:
@@ -48,19 +47,18 @@ class Directory:
     def from_string(cls, raw: str) -> "Directory":
         """Create a Directory instance from string."""
         visible_path = cls.to_canonical(raw)
-        error: PathErrorType  # this is for mypy
-        if not os.path.exists(visible_path):
-            error = FileNotFoundError()
-        elif not os.path.isdir(visible_path):
-            error = NotADirectoryError()
-        else:
-            error = None
-        return cls(raw, visible_path, os.path.realpath(visible_path), error)
+        return cls(
+            raw,
+            visible_path,
+            os.path.realpath(visible_path),
+            os.path.isdir(visible_path),
+            os.path.exists(visible_path),
+        )
 
     @property
     def is_valid(self) -> bool:
         """Check if the directory path exists and it is not a file."""
-        return self.error is None
+        return self.exists and self.is_directory
 
     def to_dict(self) -> dict[str, str | bool]:
         """Return a dictionary representation of the Directory."""
@@ -70,19 +68,6 @@ class Directory:
             "resolved": self.resolved,
             "is_valid": self.is_valid,
         }
-
-    @property
-    def error_message(self) -> str:
-        """Return a string representation of the error type."""
-        match self.error:
-            case FileNotFoundError():
-                return "directory does not exist"
-            case NotADirectoryError():
-                return "not a directory"
-            case None:
-                return "none"
-            case _:
-                raise ValueError("Unknown error type")
 
 
 class PathDict(UserDict[int, Directory]):
@@ -269,16 +254,13 @@ class PathItem:
 
     def get_status(self) -> PathStatus:
         """Return an error message or no error for directory."""
-        match self.dir.error:
-            case FileNotFoundError():
-                return Error(Level.CRITICAL, "directory does not exist")
-            case NotADirectoryError():
-                return Error(Level.CRITICAL, "not a directory")
-            case None:
-                if (n := self.duplicates.resolved) > 1:
-                    return Error(Level.MINOR, f"{n} duplicates")
-                else:
-                    return NoError()
+        if not self.dir.exists:
+            return Error(Level.CRITICAL, "directory does not exist")
+        if not self.dir.is_directory:
+            return Error(Level.CRITICAL, "not a directory")
+        if (n := self.duplicates.resolved) > 1:
+            return Error(Level.MINOR, f"{n} duplicates")
+        return NoError()
 
 
 @dataclass

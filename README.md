@@ -11,10 +11,11 @@
 
 > I always get the feeling that nobody knows what a PATH is and at this point they are too afraid to ask. ([reddit][quote])
 
-Explore `PATH` environment variable on Windows, Linux and Mac – `justpath` shows your `PATH` 
-and can detect invalid or duplicate directories.
+Explore `PATH` environment variable on Windows, Linux or Mac with `justpath`:
+a command-line utility that displays your `PATH`,
+detects and eliminates invalid or duplicate directories.
 
-## Try quickly
+## Quick start
 
 Install with pip, pipx or uv, choose any command from below:
 
