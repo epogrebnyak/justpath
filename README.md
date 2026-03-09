@@ -9,14 +9,10 @@
 [reddit_shield]: https://img.shields.io/badge/Reddit-%23FF4500.svg?style=flat&logo=Reddit&logoColor=white
 [hn_logo]: https://img.shields.io/badge/HackerNews-F0652F?logo=ycombinator&logoColor=white
 
-Explore `PATH` environment variable on Windows, Linux and Mac:
-
 > I always get the feeling that nobody knows what a PATH is and at this point they are too afraid to ask. ([reddit][quote])
 
-## Workflow
-
-`justpath` shows your `PATH` and can detect invalid or duplicate directories. 
-Display options include sorting, filtering, and real path resolution.
+Explore `PATH` environment variable on Windows, Linux and Mac - `justpath` shows your `PATH` 
+and can detect invalid or duplicate directories.
 
 ## Try quickly
 
