@@ -11,9 +11,7 @@
 
 > I always get the feeling that nobody knows what a PATH is and at this point they are too afraid to ask. ([reddit][quote])
 
-Explore `PATH` environment variable on Windows, Linux or Mac with `justpath`:
-a command-line utility that displays your `PATH`,
-detects and eliminates invalid or duplicate directories.
+Explore `PATH` environment variable on Windows, Linux or Mac, detect and eliminate invalid or duplicate directories.
 
 ## Quick start
 
@@ -362,7 +360,9 @@ Even better tools than `justpath` may exist.
 
 - homebrew
 - TUI
-- repo section for PATHS JSONs
+- repo section for PATH JSONs, better serialization 
+- just-style recipes with uv runner 
+- prek precommits 
 
 ### v0.1.3
 
