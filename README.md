@@ -364,6 +364,10 @@ Even better tools than `justpath` may exist.
 - just-style recipes with uv runner 
 - prek precommits 
 
+### v0.1.4
+
+- Explict MIT LICENSE file by [@thewchan][https://github.com/epogrebnyak/justpath/pull/34]
+
 ### v0.1.3
 
 - Always resolve symlinks and use real path to count duplicates.
