@@ -1,7 +1,7 @@
 class Justpath < Formula
   include Language::Python::Virtualenv
 
-  desc "Explore PATH environment variable on Windows and Linux"
+  desc "Explore PATH environment variable on Windows, MacOS, and Linux"
   homepage "https://github.com/epogrebnyak/justpath"
   url "https://files.pythonhosted.org/packages/b8/ac/5dfba6c01aeec43f96a513ce7a9797400b57b42b4444bb4dcb86350e50e7/justpath-0.0.18.tar.gz"
   sha256 "ce506820d2eb1929c74d067f81fe501011d0a317a5a15283a13d8d7f9cf9bc08"
