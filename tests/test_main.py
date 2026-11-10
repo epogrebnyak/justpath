@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from justpath.main import PathDict
+from justpath.main import PathDict, SelectOptions
 
 
 def test_from_list(tmp_path):
@@ -30,3 +30,18 @@ def test_with_simlinks(tmp_path):
     assert m[1].duplicates.resolved == 2
     p.purge_duplicates()
     assert len(p) == 1
+
+
+def test_select_excludes_stays_quiet(capsys):
+    p = PathDict.from_list(["/x/dir-aaa", "/x/dir-bbb"])
+    so = SelectOptions(
+        show_invalid=False,
+        show_duplicates=False,
+        sort=False,
+        symlinks=True,
+        includes=[],
+        excludes=["aaa"],
+    )
+    p.select(so)
+    assert capsys.readouterr().out == ""
+    assert [d.raw for d in p.values()] == ["/x/dir-bbb"]

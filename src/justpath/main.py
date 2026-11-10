@@ -175,7 +175,6 @@ class PathDict(UserDict[int, Directory]):
             else:
                 self.filter_values(lambda d: word in d.raw)
         for word in so.excludes:
-            print(word)
             if so.symlinks:
                 self.filter_values(lambda d: word.lower() not in d.resolved)
             else:
